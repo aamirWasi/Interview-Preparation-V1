@@ -1,5 +1,6 @@
 # Interview-Preparation-V1
 Q1: What is the main difference between the HTTP PUT and PATCH methods?
+
 Answer:
 1. PUT is used to update a resource by replacing the entire resource with a new version. It usually requires sending the full resource in the request.
 2. PATCH is used to partially update a resource. It allows you to send only the fields that need to be updated, rather than the entire resource.
