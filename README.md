@@ -10,11 +10,13 @@ Explanation:
 
 PUT is used to update or replace a resource on the server. The key point is that it either creates or fully updates the resource in a way that every time you send the same data, the result will be the same.
 Example: Let's say you're updating a user's profile information with PUT:
-PUT /users/123
-{
-  "name": "John Doe",
-  "email": "john@example.com"
-}
+
+    PUT /users/123
+    {
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
+
 The first time you send this request, it updates or creates the user profile for user 123 with the given name and email.
 If you send the exact same request again, nothing will change. The server will see that the resource is already in that state (the name is still "John Doe" and the email is still "john@example.com"), so it won’t do anything different.
 Result: No matter how many times you repeat the request, the final state will be the same.
@@ -24,11 +26,12 @@ Explanation:
 
 POST is used to create a new resource or perform an action. When you send a POST request, it typically creates a new resource, and sending the same request again may create a duplicate or trigger an additional action.
 Example: Let's say you're submitting a form to create a new user:
-POST /users
-{
-  "name": "John Doe",
-  "email": "john@example.com"
-}
+
+    POST /users
+    {
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
 The first time you send this request, a new user with the name "John Doe" and the email "john@example.com" is created.
 If you send the same request again, it will create another user with the same data, so now you’ll have two users with the same information (if the system allows duplicates).
 Result: Repeating the request leads to different outcomes—each POST creates a new resource.
@@ -39,10 +42,12 @@ Explanation:
 
 PATCH is used to partially update a resource. It modifies only the specified fields. Sending the same PATCH request multiple times should lead to the same result as sending it once (if the request doesn’t conflict with the resource's current state).
 Example: Let's say you're updating just the email of a user:
-PATCH /users/123
-{
-  "email": "newemail@example.com"
-}
+    
+    PATCH /users/123
+    {
+      "email": "newemail@example.com"
+    }
+
 The first time you send this request, it updates only the email field of user 123 to "newemail@example.com".
 If you send the same request again, the server will still update the email to "newemail@example.com", but since it’s already the same, the state won’t change.
 Result: If the request is structured properly, sending the same PATCH request multiple times won’t change anything after the first one. The result is idempotent because the resource is left in the same state.
