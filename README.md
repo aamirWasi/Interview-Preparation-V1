@@ -50,11 +50,14 @@ Example: Let's say you're updating just the email of a user:
     }
 
 The first time you send this request, it updates only the email field of user 123 to "newemail@example.com".
+
 If you send the same request again, the server will still update the email to "newemail@example.com", but since it’s already the same, the state won’t change.
+
 Result: If the request is structured properly, sending the same PATCH request multiple times won’t change anything after the first one. The result is idempotent because the resource is left in the same state.
 PATCH: Generally Idempotent. Repeating the same request leads to the same outcome, assuming the state doesn’t conflict.
 
 Q2: When would you choose to use PUT instead of PATCH?
+
 Answer:
 1. Use PUT when you want to completely replace the resource. If you don’t send the full resource with a PUT request, any fields you omit might be reset or lost.
 For example, if you have an object with 5 properties and want to change 1 of them, using PUT means you should send all 5 properties. Any missing properties might be deleted.
@@ -62,11 +65,13 @@ For example, if you have an object with 5 properties and want to change 1 of the
 For example, if you want to update just one field in a large object, PATCH allows you to send a small request with only the modified field(s), which can be more efficient.
 
 Q3: Can you use PUT to create a resource?
+
 Answer:
 Yes, PUT can also be used for creation if the resource does not exist yet. If you send a PUT request to a URI that does not exist, it can create a new resource at that URI.
 PATCH is typically not used for creating new resources, as it is primarily for modifications.
 
 Q4: In which scenarios could using PATCH introduce complexity compared to PUT?
+
 Answer:
 Partial updates can introduce complexity in terms of validation and conflict resolution. With PATCH, the server needs to handle merging the changes into the existing resource, which can lead to issues like conflicting changes or data inconsistency.
 Also, using PATCH requires more attention to how changes are applied, especially in concurrent environments where multiple users may update the resource at the same time.
