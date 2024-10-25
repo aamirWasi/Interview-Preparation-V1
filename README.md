@@ -1,389 +1,255 @@
 # Interview-Preparation-V1
-Q1: What is the main difference between the HTTP PUT and PATCH methods?
-
-Answer:
+## Q1: What is the main difference between the HTTP PUT and PATCH methods?
 1. PUT is used to update a resource by replacing the entire resource with a new version. It usually requires sending the full resource in the request.
 2. PATCH is used to partially update a resource. It allows you to send only the fields that need to be updated, rather than the entire resource.
-
-1. PUT Method:
-Idempotency rule: PUT is idempotent. Making the same PUT request multiple times will always result in the same state on the server.
-Explanation:
-
-PUT is used to update or replace a resource on the server. The key point is that it either creates or fully updates the resource in a way that every time you send the same data, the result will be the same.
-Example: Let's say you're updating a user's profile information with PUT:
-
-    PUT /users/123
-    {
-      "name": "John Doe",
-      "email": "john@example.com"
-    }
-
+### 1. PUT Method:
+- Idempotency rule: PUT is idempotent. Making the same PUT request multiple times will always result in the same state on the server.
+### Explanation:
+- PUT is used to update or replace a resource on the server. The key point is that it either creates or fully updates the resource in a way that every time you send the same data, the result will be the same.
+### Example: Let's say you're updating a user's profile information with PUT:
+```c#
+PUT /users/123
+{
+  "name": "John Doe",
+  "email": "john@example.com"
+}
+```
 The first time you send this request, it updates or creates the user profile for user 123 with the given name and email.
 If you send the exact same request again, nothing will change. The server will see that the resource is already in that state (the name is still "John Doe" and the email is still "john@example.com"), so it won’t do anything different.
+
 Result: No matter how many times you repeat the request, the final state will be the same.
-2. POST Method:
-Idempotency rule: POST is NOT idempotent. Making the same POST request multiple times may result in multiple resources being created or multiple actions being taken.
-Explanation:
-
-POST is used to create a new resource or perform an action. When you send a POST request, it typically creates a new resource, and sending the same request again may create a duplicate or trigger an additional action.
-Example: Let's say you're submitting a form to create a new user:
-
-    POST /users
-    {
-      "name": "John Doe",
-      "email": "john@example.com"
-    }
+### 2. POST Method:
+- Idempotency rule: POST is NOT idempotent. Making the same POST request multiple times may result in multiple resources being created or multiple actions being taken.
+### Explanation:
+- POST is used to create a new resource or perform an action. When you send a POST request, it typically creates a new resource, and sending the same request again may create a duplicate or trigger an additional action.
+### Example: Let's say you're submitting a form to create a new user:
+```c#
+POST /users
+{
+  "name": "John Doe",
+  "email": "john@example.com"
+}
+```
 The first time you send this request, a new user with the name "John Doe" and the email "john@example.com" is created.
 If you send the same request again, it will create another user with the same data, so now you’ll have two users with the same information (if the system allows duplicates).
+
 Result: Repeating the request leads to different outcomes—each POST creates a new resource.
 
-3. PATCH Method:
-Idempotency rule: PATCH is idempotent if the same request is applied multiple times. However, the change depends on how you use it.
-Explanation:
-
-PATCH is used to partially update a resource. It modifies only the specified fields. Sending the same PATCH request multiple times should lead to the same result as sending it once (if the request doesn’t conflict with the resource's current state).
-Example: Let's say you're updating just the email of a user:
-    
-    PATCH /users/123
-    {
-      "email": "newemail@example.com"
-    }
-
+### 3. PATCH Method:
+- Idempotency rule: PATCH is idempotent if the same request is applied multiple times. However, the change depends on how you use it.
+### Explanation:
+- PATCH is used to partially update a resource. It modifies only the specified fields. Sending the same PATCH request multiple times should lead to the same result as sending it once (if the request doesn’t conflict with the resource's current state).
+### Example: Let's say you're updating just the email of a user:
+ ```c#   
+PATCH /users/123
+{
+  "email": "newemail@example.com"
+}
+```
 The first time you send this request, it updates only the email field of user 123 to "newemail@example.com".
-
 If you send the same request again, the server will still update the email to "newemail@example.com", but since it’s already the same, the state won’t change.
 
 Result: If the request is structured properly, sending the same PATCH request multiple times won’t change anything after the first one. The result is idempotent because the resource is left in the same state.
-PATCH: Generally Idempotent. Repeating the same request leads to the same outcome, assuming the state doesn’t conflict.
+#### PATCH: Generally Idempotent. Repeating the same request leads to the same outcome, assuming the state doesn’t conflict.
 
-Q2: When would you choose to use PUT instead of PATCH?
-
-Answer:
+## Q2: When would you choose to use PUT instead of PATCH?
 1. Use PUT when you want to completely replace the resource. If you don’t send the full resource with a PUT request, any fields you omit might be reset or lost.
 For example, if you have an object with 5 properties and want to change 1 of them, using PUT means you should send all 5 properties. Any missing properties might be deleted.
 2. Use PATCH when you only need to update part of a resource and want to avoid sending the entire object.
 For example, if you want to update just one field in a large object, PATCH allows you to send a small request with only the modified field(s), which can be more efficient.
-
-Q3: Can you use PUT to create a resource?
-
-Answer:
+## Q3: Can you use PUT to create a resource?
 Yes, PUT can also be used for creation if the resource does not exist yet. If you send a PUT request to a URI that does not exist, it can create a new resource at that URI.
 PATCH is typically not used for creating new resources, as it is primarily for modifications.
-
-Q4: In which scenarios could using PATCH introduce complexity compared to PUT?
-
-
-
-
-![Cover Image of https://github.com/StefanTheCode/dotnet_interview_questions](https://opengraph.githubassets.com/a113a1ca1ebcffd5ede667a826acaa19a60a1a3f9772fafb978ec70d27438721/StefanTheCode/dotnet_interview_questions?auto=format&w=600&fm=auto)
-  
-# GitHub - StefanTheCode/dotnet_interview_questions
-Contribute to StefanTheCode/dotnet_interview_questions development by creating an account on GitHub.
-
-🌐 https://github.com/StefanTheCode/dotnet_interview_questions
-🔗 https://app.web-highlights.com/page/670fd0a80cef8af5b59855db
-
-**Tags**: -
-
-**Highlights & Notes**
-
-> FINALLY− The finally block is used to execute a given set of statements, whether an exception
-occur or not.
-Finally block is mostly used to dispose the
-unwanted objects when they are no more
-required. This is good for performance,
-otherwise you have to wait for garbage
-collector to dispose them.
-
-> Finalize is a method which is automatically called by the
-garbage collector to dispose the no longer needed objects
-
-> 1. What is .NET?
-
-> 2. Can you explain the Common Language Runtime (CLR)?
-
-> 1. What is .NET?
-
-> 3. What is the difference between managed and unmanaged code?
-
-> 4. Explain the basic structure of a C# program.
-
-> 5. What are Value Types and Reference Types in C#?
-
-> 6. What is garbage collection in .NET?
-
-  
-1.Finalize is a method which is automatically called by the  
-garbage collector to dispose the no longer needed objects  
-2.FINALLY− The finally block is used to execute a given set of statements, whether an exception  
-occur or not.  
-Finally block is mostly used to dispose the  
-unwanted objects when they are no more  
-required. This is good for performance,  
-otherwise you have to wait for garbage  
-collector to dispose them.
-
-> 7. Explain the concept of exception handling in C#.
-
-> 8. What are the different types of classes in C#?
-
-1.  In C#, a **static class** is a class that cannot be instantiated, meaning you cannot create an object from it. All members of a static class must also be static. It's typically used to group related methods that don’t act on instance data and are shared across the application.
-    
-    ### Key Characteristics of a Static Class:
-    
-    *   It **cannot be instantiated**.
-        
-    *   It **cannot have constructors** (except static constructors).
-        
-    *   **All members must be static** (methods, fields, properties, etc.).
-        
-    *   It's sealed, meaning it cannot be inherited.
-        
-    
-    Static classes are often used to hold utility methods, such as mathematical calculations, logging, or configuration helpers.
-    
-    "Static constructor is called once when the class is first used.");
-    
-2.  Sealed Class: In most cases, we never intend this class to be able to be inherited by other classes, we'll get a significant performance boost by adding sealed keyword in a class not inherited by other classes. By sealing the class, the JIT compiler can directly know the object's actual data type. Meanwhile, for unsealed classes, JIT needs to check whether the class has subclasses or not.
-    
-3.  **Abstract Classes**: Provide a base class with some implementation and abstract methods that derived classes must implement.
-    
-    Use an **abstract class** when there is shared behavior among subclasses, but use an **interface** when different classes need to follow the same contract, without enforcing shared behavior.
-    
-4.  Can Abstract class be Sealed or Static in C#?  
-    Sln: NO. Abstract class are used for inheritance,  
-    but sealed and static both will not allow the  
-    class to be inherited.
-    
-5.  Can you create an instance of an Abstract class or an Interface?  
-    Sln: No. Abstract class and interface purpose is to  
-    act as base class via inheritance. There object  
-    creation is not possible.
-    
-6.  **Interfaces**: Define a contract that classes must follow but do not provide any implementation.
-
-> 6. What is garbage collection in .NET?
-
-1.  Finalize is a method which is automatically called by the  
-    garbage collector to dispose the no longer needed objects
-    
-2.  FINALLY− The finally block is used to execute a  
-    given set of statements, whether an exception  
-    occur or not. Finally block is mostly used to dispose the  
-    unwanted objects when they are no more  
-    required. This is good for performance,  
-    otherwise you have to wait for garbage  
-    collector to dispose them.
-
-> 9. Can you describe what a namespace is and how it is used in C#?
-
-> 9. Can you describe what a namespace is and how it is used in C#?
-
-> 9. Can you describe what a namespace is and how it is used in C#?
-
-1.**Interfaces**: Define a contract that classes must follow but do not provide any implementation.  
-Use an **abstract class** when there is shared behavior among subclasses, but use an **interface** when different classes need to follow the same contract, without enforcing shared behavior.  
-No. Abstract class and interface purpose is to  
-act as base class via inheritance. There object  
-creation is not possible.
-
-2.
-
-> 10. What is encapsulation?
-
-1.  **Encapsulation** is the concept of restricting direct access to the internal state (fields) of an object and only exposing the necessary methods to interact with it. This ensures controlled access to the data and better security.  
-    public class BankAccount
-    
-
+## Q4: What is FINALLY?
+1. The finally block is used to execute a given set of statements, whether an exception occur or not.
+2. Finally block is mostly used to dispose the unwanted objects when they are no more required. This is good for performance, otherwise you have to wait for garbage collector to dispose them.
+## Q5: What is Finalize?
+1. Finalize is a method which is automatically called by the garbage collector to dispose the no longer needed objects 
+## Q6: What are the different types of classes in C#?
+### Static class:
+1. In C#, a **static class** is a class that cannot be instantiated, meaning you cannot create an object from it. All members of a static class must also be static. It's typically used to group related methods that don’t act on instance data and are shared across the application.
+### Key Characteristics of a Static Class:
+*   It **cannot be instantiated**.
+*   It **cannot have constructors** (except static constructors).
+*   **All members must be static** (methods, fields, properties, etc.).
+*   It's sealed, meaning it cannot be inherited.
+Static classes are often used to hold utility methods, such as mathematical calculations, logging, or configuration helpers.
+### Static constructor: "Static constructor is called once when the class is first used."
+### Sealed Class
+1. Sealed Class: In most cases, we never intend this class to be able to be inherited by other classes, we'll get a significant performance boost by adding sealed keyword in a class not inherited by other classes. By sealing the class, the JIT compiler can directly know the object's actual data type. Meanwhile, for unsealed classes, JIT needs to check whether the class has subclasses or not.
+### Abstract Classes  
+1. Provide a base class with some implementation and abstract methods that derived classes must implement.
+2. Use an **abstract class** when there is shared behavior among subclasses, but use an **interface** when different classes need to follow the same contract, without enforcing shared behavior.
+## Q7: Can Abstract class be Sealed or Static in C#?
+1. NO. Abstract class are used for inheritance, but sealed and static both will not allow the class to be inherited.
+## Q8: Can you create an instance of an Abstract class or an Interface?
+1. No. Abstract class and interface purpose is to act as base class via inheritance. Their object creation is not possible.
+## Q9: What is an Interface?
+1. Define a contract that classes must follow but does not provide any implementation.
+## Q10: What is an encapsulation?
+### Encapsulation:
+1. Encapsulation is the concept of restricting direct access to the internal state (fields) of an object and only exposing the necessary methods to interact with it. This ensures controlled access to the data and better security.  
+```c#
+public class BankAccount
 {
-
-// Private fields (encapsulation)
-
-private decimal balance;
-
-// Public method to deposit money
-
-public void Deposit(decimal amount)
-
-{
-
-if (amount > 0)
-
-{
-
-balance += amount;
-
-Console.WriteLine($"Deposited: {amount:C}. Current balance: {balance:C}");
-
-}
-
-else
-
-{
-
-Console.WriteLine("Deposit amount must be positive.");
-
-}
-
-}
-
-// Public method to check balance
-
-public decimal GetBalance()
-
-{
-
-return balance;
-
-}
-
+    // Private fields (encapsulation)
+    private decimal balance;
+    // Public method to deposit money
+    public void Deposit(decimal amount)
+    {
+        if (amount > 0)
+        {
+        balance += amount;
+        Console.WriteLine($"Deposited: {amount:C}. Current balance: {balance:C}");
+        }
+        else
+        {
+        Console.WriteLine("Deposit amount must be positive.");
+        }
+    }
+    // Public method to check balance
+    public decimal GetBalance()
+    {
+        return balance;
+    }
 }
 
 class Program
-
 {
-
-static void Main()
-
-{
-
-BankAccount account = new BankAccount();
-
-account.Deposit(500.00m); // Deposit money
-
-Console.WriteLine($"Balance: {account.GetBalance():C}"); // Check balance
-
-}
-
-}
-
-In a real-world bank account, you can't just take money out of the vault or look at the books yourself. You need to interact with the bank via ATMs or customer service, which controls access to your account.
-
-> 11. Explain polymorphism and its types in C#.
-
-1.  Polymorphism is a core concept in object-oriented programming (OOP) that allows objects to be treated as instances of their parent class rather than their actual derived class.  
-    **Polymorphism** means "many forms." It allows a method or function to behave differently based on the object it is acting upon. It can be **compile-time** (method overloading) or **runtime** (method overriding).  
-    // Base class
-    
-    public class Notification
-    
-    {
-    
-    public virtual void Send()
-    
-    {
-    
-    Console.WriteLine("Sending a generic notification.");
-    
-    }
-    
-    }
-    
-    // Derived class for email notifications
-    
-    public class EmailNotification : Notification
-    
-    {
-    
-    public override void Send()
-    
-    {
-    
-    Console.WriteLine("Sending an email notification.");
-    
-    }
-    
-    }
-    
-    // Derived class for SMS notifications
-    
-    public class SMSNotification : Notification
-    
-    {
-    
-    public override void Send()
-    
-    {
-    
-    Console.WriteLine("Sending an SMS notification.");
-    
-    }
-    
-    }
-    
-    class Program
-    
-    {
-    
     static void Main()
-    
     {
-    
-    Notification notification = new EmailNotification();
-    
-    notification.Send(); // Calls EmailNotification's Send method
-    
-    notification = new SMSNotification();
-    
-    notification.Send(); // Calls SMSNotification's Send method
-    
+    BankAccount account = new BankAccount();
+    account.Deposit(500.00m); // Deposit money
+    Console.WriteLine($"Balance: {account.GetBalance():C}"); // Check balance
     }
-    
+}
+```
+In a real-world bank account, you can't just take money out of the vault or look at the books yourself. You need to interact with the bank via ATMs or customer service, which controls access to your account.
+## Q11: Explain polymorphism and its types in C#.?
+### Polymorphism:
+1. Polymorphism is a core concept in object-oriented programming (OOP) that allows objects to be treated as instances of their parent class rather than their actual derived class.  
+**Polymorphism** means "many forms." It allows a method or function to behave differently based on the object it is acting upon. It can be **compile-time** (method overloading) or **runtime** (method overriding).  
+```c#
+// Base class
+public class Notification
+{
+    public virtual void Send()
+    {
+    Console.WriteLine("Sending a generic notification.");
     }
-    
-2.  **What is Polymorphism, and how does it improve code flexibility?**
-    
-    **Answer**: Polymorphism allows one interface to be used for different types. It can be achieved through **method overriding** or **method overloading**.
-    
-3.  **How does method overriding support polymorphism in C#?**
-    
-    **Answer**: Method overriding allows a derived class to provide a specific implementation of a method that is already defined in the base class. This is a key feature of runtime polymorphism.
-    
-4.  **Can you explain the difference between method overloading and method overriding with examples?**
-    
-    **Answer**:
-    
-    *   **Method Overloading**: Same method name but different parameters (compile-time polymorphism).  
-          
-        public class Calculator
-        
-        {
-        
-        public int Add(int a, int b) => a + b;
-        
-        public int Add(int a, int b, int c) => a + b + c;
-        
-        }
-        
-    *   **Method Overriding**: Same method name, signature, but different implementations in derived classes (runtime polymorphism).  
-          
-        public class BaseClass
-        
-        {
-        
-        public virtual void ShowMessage()
-        
-        {
-        
-        Console.WriteLine("Message from base class.");
-        
-        }
-        
-        }
-        
-        public class DerivedClass : BaseClass
-        
-        {
-        
-        public override void ShowMessage()
-        
-        {
-        
-        Console.WriteLine("Message from derived class.");
-        
-        }
-        
-        }
+}
+// Derived class for email notifications
+public class EmailNotification : Notification
+{
+    public override void Send()
+    {
+    Console.WriteLine("Sending an email notification.");
+    }
+}
+// Derived class for SMS notifications
+public class SMSNotification : Notification
+{
+    public override void Send()
+    {
+    Console.WriteLine("Sending an SMS notification.");
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        Notification notification = new EmailNotification();
+        notification.Send(); // Calls EmailNotification's Send method
+        notification = new SMSNotification();
+        notification.Send(); // Calls SMSNotification's Send method
+    }
+}
+```
+## Q12: How does method overriding support polymorphism in C#??
+1. Method overriding allows a derived class to provide a specific implementation of a method that is already defined in the base class. This is a key feature of runtime polymorphism.
+## Q12: Can you explain the difference between method overloading and method overriding with examples?
+### Method Overloading: 
+1. Same method name but different parameters (compile-time polymorphism).
+```c#
+public class Calculator
+{
+    public int Add(int a, int b) => a + b;
+    public int Add(int a, int b, int c) => a + b + c;
+}
+```
+### Method Overriding: 
+1. Same method name, and signature, but different implementations in derived classes (runtime polymorphism).
+```c#
+public class BaseClass
+{
+    public virtual void ShowMessage()
+    {
+    Console.WriteLine("Message from base class.");
+    }
+}
+
+public class DerivedClass : BaseClass
+{
+    public override void ShowMessage()
+    {
+    Console.WriteLine("Message from derived class.");
+    }
+}
+```
+## Q13: What is the default behavior of C# language in term of dispatching??
+### Static Dispatch
+In C#, the default behavior for dispatching (method/property invocation) follows early binding or static dispatch. This means that, by default, C# uses the compile-time type of an object to determine which method or property to call. This is known as static (or early) binding because the decision of which method to call is made at compile time.
+```c#
+public class Animal
+{
+    public void Speak()
+    {
+        Console.WriteLine("Animal speaks.");
+    }
+}
+public class Dog : Animal
+{
+    public void Speak()
+    {
+    Console.WriteLine("Dog barks.");
+    }
+}
+
+Animal animal = new Dog();
+animal.Speak(); // Output: "Animal speaks."
+```
+### Explanation:
+Compile-Time Binding: In this example, even though animal holds a Dog object, the method Speak() from the Animal class is invoked. This happens because the declared type of animal is Animal, and the method Speak() is not virtual. Therefore, static dispatch is used, and the decision to call the Animal.Speak() method is made at compile time.
+
+### Virtual Methods (Dynamic Dispatch)
+To enable dynamic dispatch (also known as late binding or runtime polymorphism), you need to mark the method in the base class as virtual and override it in the derived class using the override keyword. This instructs the C# runtime to make method dispatch decisions based on the runtime type of the object, rather than its compile-time type.
+#### Example of Dynamic Dispatch (Late Binding)
+```c#
+public class Animal
+{
+    public virtual void Speak()
+    {
+        Console.WriteLine("Animal speaks.");
+    }
+}
+
+public class Dog : Animal
+{
+    public override void Speak()
+    {
+        Console.WriteLine("Dog barks.");
+    }
+}
+Animal animal = new Dog();
+animal.Speak(); // Output: "Dog barks."
+```
+### Explanation:
+Runtime Binding: In this example, the Speak() method is marked as virtual in the Animal class and overridden in the Dog class. When animal.Speak() is called, the decision is made at runtime, based on the actual type of the object (Dog in this case), not the declared type. This is known as dynamic dispatch or late binding.
+##### In short, the default behavior in C# is static dispatch, and to enable dynamic dispatch, you use virtual methods.
+
+
+
+
 
 > 12. What are delegates and how are they used in C#?
 
@@ -2500,3 +2366,85 @@ notificationService.Notify("Your order has been shipped.");
 Answer:
 Partial updates can introduce complexity in terms of validation and conflict resolution. With PATCH, the server needs to handle merging the changes into the existing resource, which can lead to issues like conflicting changes or data inconsistency.
 Also, using PATCH requires more attention to how changes are applied, especially in concurrent environments where multiple users may update the resource at the same time.
+
+# What is the difference between ThreadPool.QueueWorkItem and new Thread().Start()?
+
+## Answer:
+The ThreadPool.QueueUserWorkItem and new Thread().Start() methods in .NET are both used to create and manage threads, but they have different purposes, behaviors, and use cases.
+- ThreadPool.QueueUserWorkItem: Adds work to a shared ThreadPool of pre-existing threads. Best for short-lived, frequent tasks that don’t need a dedicated thread (e.g., handling requests in a web server).
+    ThreadPool.QueueUserWorkItem assigns the task to a thread from the shared pool.
+    When the task finishes, the thread returns to the pool, ready for the next task
+
+## Using ThreadPool.QueueUserWorkItem
+```c#
+using System;
+using System.Threading;
+class Program
+{
+    static void Main()
+    {
+        ThreadPool.QueueUserWorkItem(DoWork);
+        Console.WriteLine("Task queued on thread pool.");
+        Console.ReadLine();
+    }
+    static void DoWork(object state)
+    {
+        Console.WriteLine("Working on thread: " + Thread.CurrentThread.ManagedThreadId);
+        Thread.Sleep(2000); // Simulating work
+        Console.WriteLine("Work completed.");
+    }
+}
+```
+- new Thread().Start(): Creates a dedicated thread for each task. Useful for long-running tasks where more control over the thread’s lifecycle is needed (e.g., background data analysis).
+
+## Using new Thread().Start()
+```c#
+using System;
+using System.Threading;
+class Program
+{
+    static void Main()
+    {
+        Thread workerThread = new Thread(DoWork);
+        workerThread.Start();
+        Console.WriteLine("Started new thread.");
+        Console.ReadLine();
+    }
+    static void DoWork()
+    {
+        Console.WriteLine("Working on thread: " + Thread.CurrentThread.ManagedThreadId);
+        Thread.Sleep(2000); // Simulating work
+        Console.WriteLine("Work completed.");
+    }
+}
+```
+## Real-World Example:
+
+- ThreadPool.QueueUserWorkItem: A web server processing incoming HTTP requests quickly without the overhead of creating/destroying threads.
+
+- new Thread().Start(): A long-running task that performs real-time data processing, where you may want to control priority or manage its shutdown.
+
+## Thread Management
+
+- ThreadPool.QueueUserWorkItem: Managed by the .NET runtime. Threads are reused for efficiency, so creating/destroying threads isn't required.
+
+- new Thread().Start(): Manual control over threads, which are created and destroyed as needed. Higher overhead and less efficient for frequent, short tasks.
+
+## Example:
+```c#
+// ThreadPool - efficient for short tasks
+ThreadPool.QueueUserWorkItem(_ => Console.WriteLine("Processing HTTP request"));
+// new Thread - better for a dedicated, ongoing task
+new Thread(() => Console.WriteLine("Long background task running")).Start();
+```
+## Performance & Overhead
+
+- ThreadPool.QueueUserWorkItem: Lower overhead, as thread creation/destruction is avoided. Ideal for scalable applications.
+
+- new Thread().Start(): Higher overhead as each thread is individually created and cleaned up. Use only when task requires dedicated, long-term attention.
+
+## Example:
+
+- ThreadPool: A bank’s server handling many user transactions quickly.
+
+- new Thread: An analysis tool processing large datasets for hours.
