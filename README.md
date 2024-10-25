@@ -1410,13 +1410,87 @@ public class RegularUser : IRegularUser
 }
 ```
 **Interview Tip**: Discuss how splitting the interface into smaller, more specific interfaces (like IAdminUser, IReportViewer, IRegularUser) ensures that clients (classes) only implement what they need. This reduces unnecessary code and makes the system more modular.
+## Q21:  In a notification system, you have a NotificationService that sends emails and SMS messages directly by instantiating EmailSender and SmsSender classes within it. How can you refactor this to follow the Dependency Inversion Principle?
+**What is the Dependency Inversion Principle? Can you explain with a real-world example?**
 
+**D — Dependency Inversion Principle (DIP)**: The Dependency Inversion Principle states that high-level modules should not depend on low-level modules; both should depend on abstractions. Also, abstractions should not depend on details; details should depend on abstractions.
 
+Instead of directly instantiating EmailSender and SmsSender within NotificationService, we should depend on abstractions by introducing an INotificationSender interface that both EmailSender and SmsSender can implement. This allows NotificationService to use any sender that implements INotificationSender, improving flexibility and testability.
+```c#
+public interface INotificationSender
+{
+    void Send(string message);
+}
 
+public class EmailSender : INotificationSender { /* implementation */ }
+public class SmsSender : INotificationSender { /* implementation */ }
 
+public class NotificationService
+{
+    private readonly INotificationSender _notificationSender;
 
+    public NotificationService(INotificationSender notificationSender)
+    {
+        _notificationSender = notificationSender;
+    }
 
+    public void SendNotification(string message)
+    {
+        _notificationSender.Send(message);
+    }
+}
+```
+**Real-Life Example: Notification System**
 
+In a notification system, high-level modules (like a service sending notifications) should depend on abstractions (interfaces), not on concrete implementations (like email, SMS, etc.).
+```c#
+// High-level module
+public class NotificationService
+{
+    private readonly INotificationSender _notificationSender;
+
+    public NotificationService(INotificationSender notificationSender)
+    {
+        _notificationSender = notificationSender;
+    }
+
+    public void Notify(string message)
+    {
+        _notificationSender.Send(message);
+    }
+}
+
+// Abstraction
+public interface INotificationSender
+{
+    void Send(string message);
+}
+
+// Low-level modules (implementations)
+public class EmailNotificationSender : INotificationSender
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Sending Email: {message}");
+    }
+}
+
+public class SMSNotificationSender : INotificationSender
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Sending SMS: {message}");
+    }
+}
+
+// Usage
+var emailSender = new EmailNotificationSender();
+var notificationService = new NotificationService(emailSender);
+notificationService.Notify("Your order has been shipped.");
+```
+**Interview Tip**: Emphasize that the NotificationService depends on the INotificationSender interface (abstraction), not on specific implementations like EmailNotificationSender or SMSNotificationSender. This makes the system flexible—changing the notification method doesn’t affect the high-level module.
+## Q22:  How do SOLID principles help in writing better code?
+Adhering to SOLID principles, especially DIP, makes it easier to mock dependencies in unit tests. For instance, if a service depends on an interface instead of a concrete implementation, you can easily inject a mock or stub to test different scenarios without touching the actual implementation.
 
 
 
