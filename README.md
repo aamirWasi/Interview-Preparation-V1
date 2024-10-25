@@ -80,6 +80,10 @@ Static classes are often used to hold utility methods, such as mathematical calc
 ### Abstract Classes  
 1. Provide a base class with some implementation and abstract methods that derived classes must implement.
 2. Use an **abstract class** when there is shared behavior among subclasses, but use an **interface** when different classes need to follow the same contract, without enforcing shared behavior.
+### Partial classes
+1. Allow the splitting of a class definition across multiple files.
+### Generic classes
+1. Allow the definition of classes with placeholders for the type of its fields, methods, parameters, etc.
 ## Q7: Can Abstract class be Sealed or Static in C#?
 1. NO. Abstract class are used for inheritance, but sealed and static both will not allow the class to be inherited.
 ## Q8: Can you create an instance of an Abstract class or an Interface?
@@ -88,13 +92,142 @@ Static classes are often used to hold utility methods, such as mathematical calc
 1. Define a contract that classes must follow but does not provide any implementation.
 2. In C# 8 and later, default methods in interfaces (also known as default interface methods) allow you to provide a default implementation for methods directly in the interface. This was a significant change, as prior to C# 8, interfaces could only contain method signatures (i.e., no implementation).
 
+**Backward Compatibility**: If you want to extend an interface by adding new methods without breaking the existing implementations that already implement the interface.
+```c#
+public interface IPaymentProcessor
+{
+    void ProcessPayment(decimal amount);
+    // New method with a default implementation
+    void LogPayment(decimal amount)
+    {
+        Console.WriteLine($"Logging payment of {amount}");
+    }
+}
+
+public class CreditCardPayment : IPaymentProcessor
+{
+    public void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing credit card payment of {amount}");
+    }
+    // This class doesn't need to implement LogPayment, it can use the default
+}
+
+public class PayPalPayment : IPaymentProcessor
+{
+    public void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing PayPal payment of {amount}");
+    }
+    // This class can also use the default LogPayment implementation
+}
+```
+**Shared Behavior Across Implementations**: If there is some common functionality that multiple implementations of the interface will share, you can provide that behavior in the default method, avoiding code duplication.
+1. In C# 8 and later, interface default implementations like ApplySeasonalDiscount are not automatically accessible within implementing classes (like HolidayDiscount and RegularDiscount). Default implementations in interfaces are only available directly from the interface itself, not from the implementing classes.(so cast in classes)
+```c#
+public interface IDiscountCalculator
+{
+    decimal CalculateDiscount(decimal totalAmount);
+    // Default method to calculate seasonal discounts
+    decimal ApplySeasonalDiscount(decimal totalAmount)
+    {
+        return totalAmount * 0.90m; // 10% off as a default seasonal discount
+    }
+}
+
+public class HolidayDiscount : IDiscountCalculator
+{
+    public decimal CalculateDiscount(decimal totalAmount)
+    {
+        // Specific discount calculation for holidays
+        return ((IDiscountCalculator)this).ApplySeasonalDiscount(totalAmount - 20); // Additional $20 off
+    }
+}
+
+public class RegularDiscount : IDiscountCalculator
+{
+    public decimal CalculateDiscount(decimal totalAmount)
+    {
+        // Uses the default seasonal discount provided in the interface
+        return ((IDiscountCalculator)this).ApplySeasonalDiscount(totalAmount);
+    }
+}
+```
 **When to Avoid Default Methods?**
 1. Over-complicating interfaces: If you add too many default methods, interfaces can become bloated and harder to understand.
 2. Increased coupling: Default methods can sometimes introduce coupling between the interface and its implementations, which can make future changes more difficult.
 3. Breaking SOLID principles: If you're not careful, default methods can violate principles like Single Responsibility Principle (SRP) by adding too much behavior to an interface that should focus solely on abstraction.
+## Q9.1: What is the difference between an abstract class and an interface?
+In C#, both abstract classes and interfaces are types that enable polymorphism, allowing objects of different classes to be treated as objects of a common super class. However, they serve different purposes and have different rules.
+1. **Abstract Classes**: Provide a base class with some implementation and abstract methods that derived classes must implement.
+2. **Interfaces**: Define a contract that classes must follow but do not provide any implementation.
+
+**Interview Tip**: Use an abstract class when there is shared behavior among subclasses, but use an interface when different classes need to follow the same contract, without enforcing shared behavior.
+```c#
+public abstract class Payment
+{
+    public void LogTransaction(decimal amount) // Concrete method
+    {
+        Console.WriteLine($"Logging transaction of {amount:C}.");
+    }
+    public abstract void ProcessPayment(decimal amount); // Abstract method
+}
+
+public class CreditCardPayment : Payment
+{
+    public override void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing credit card payment of {amount:C}.");
+    }
+}
+
+public class PayPalPayment : Payment
+{
+    public override void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing PayPal payment of {amount:C}.");
+    }
+
+}
+
+
+public interface INotification
+{
+    void Send(string message);
+}
+
+public class EmailNotification : INotification
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Sending email notification: {message}");
+    }
+}
+
+public class SMSNotification : INotification
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Sending SMS notification: {message}");
+    }
+}
+```
+### Abstract Class:
+1. Can contain implementation of methods, properties, fields, or events.
+2. Can have access modifiers (public, protected, etc.).
+3. A class can inherit from only one abstract class (single inheritance).
+4. Can contain constructors.
+5. Used when different implementations of objects have common methods or properties that can share a common implementation.
+### Interface:
+1. Cannot contain implementations, only declarations of methods, properties, events, or indexers.
+2. Members of an interface are implicitly public.
+3. A class or struct can implement multiple interfaces (multiple inheritance).
+4. Cannot contain fields or constructors.
+5. Used to define a contract for classes without imposing inheritance hierarchies.
 ## Q10: What is an encapsulation?
 ### Encapsulation:
-1. Encapsulation is the concept of restricting direct access to the internal state (fields) of an object and only exposing the necessary methods to interact with it. This ensures controlled access to the data and better security.  
+1. Encapsulation is the concept of restricting direct access to the internal state (fields) of an object and only exposing the necessary methods to interact with it. This ensures controlled access to the data and better security.
+2. This is typically achieved through the use of access modifiers such as private, public, protected, and internal. 
 ```c#
 public class BankAccount
 {
@@ -171,6 +304,8 @@ class Program
     }
 }
 ```
+### What is Polymorphism, and how does it improve code flexibility?
+1. Polymorphism allows one interface to be used for different types. It can be achieved through method overriding or method overloading.
 ## Q12: How does method overriding support polymorphism in C#??
 1. Method overriding allows a derived class to provide a specific implementation of a method that is already defined in the base class. This is a key feature of runtime polymorphism.
 ## Q12: Can you explain the difference between method overloading and method overriding with examples?
