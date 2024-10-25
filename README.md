@@ -1965,30 +1965,18 @@ int i = (int)arrayList[0]; //Unboxing
 ### Summary
 - it is recommended to use boxing and unboxing when it is necessary only.
 - Converting from one type to another type is not good from a performance point of view.
+## Q24: What are delegates and how are they used in C#?
+**Delegates** in C# are type-safe function pointers or references to methods with a specific parameter list and return type. They allow methods to be passed as parameters, stored in variables, and returned by other methods, which enables flexible and extensible programming designs such as event handling and callback methods. Delegates are particularly useful in implementing the observer pattern and designing frameworks or components that need to notify other objects about events or changes without knowing the specifics of those objects.
 
+There are three main types of delegates in C#:
 
+- Single-cast delegates: Point to a single method at a time.
+- Multicast delegates: Can point to multiple methods on a single invocation list. A multicast delegate is a delegate that holds references to more than one method. When invoked, all methods in the invocation list are called sequentially.
+- Anonymous methods/Lambda expressions: Allow inline methods or lambda expressions to be used wherever a delegate is expected.
 
+**Multicast Delegate**:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-> 12. What are delegates and how are they used in C#?
-
-1.  A multicast delegate is a delegate that holds references to more than one method. When invoked, all methods in the invocation list are called sequentially.  
+1. A multicast delegate is a delegate that holds references to more than one method. When invoked, all methods in the invocation list are called sequentially.  
       
     **What is the difference between delegates and events in C#?**
     
@@ -2000,439 +1988,267 @@ int i = (int)arrayList[0]; //Unboxing
         
     *   An event restricts users from invoking notification methods directly, providing better encapsulation.  
           
-        Why Use Delegates?
-        
+     **Why Use Delegates?**
     
     *   **Loose Coupling**: The order processing logic doesn’t need to know the details of the notification system (Email or SMS). It only calls the delegate, making the system more flexible.
         
     *   **Extensibility**: In the future, if you want to add another notification method (e.g., a push notification), you can just add it to the delegate without changing the core logic of the order processing.  
-          
-        EmailNotifierV2 emailNotifierV2 = new();
-        
-    
-    SmsNotifierV2 smsNotifierV2 = new();
-    
-    OrderProcessorV2 orderProcessorV2 = new();
-    
-    orderProcessorV2.NotifyV2Delegate += emailNotifierV2.SendMail;
-    
-    orderProcessorV2.NotifyV2Delegate += smsNotifierV2.SendSms;
-    
-    orderProcessorV2.ProcessOrder();
-    
-    Console.ReadLine();  
-    public class Message
-    
-    {
-    
+```c#
+EmailNotifier emailNotifier = new();
+SmsNotifier smsNotifier = new();
+OrderProcessor orderProcessor = new();
+
+orderProcessor.NotifyDelegate += emailNotifier.SendMail;
+orderProcessor.NotifyDelegate += smsNotifier.SendSms;
+
+orderProcessor.ProcessOrder();
+
+Console.ReadLine();
+
+public delegate void Notify(Message message);
+
+public class Message
+{
     public string Content { get; set; } = string.Empty;
-    
-    }
-    
-    public class EmailMessage : Message
-    
-    {
-    
+}
+
+public class EmailMessage : Message
+{
     public string Subject { get; set; } = string.Empty;
-    
     public string Attachment { get; set; } = string.Empty;
-    
-    }
-    
-    public delegate void NotifyV2(Message message);
-    
-    public class EmailNotifierV2
-    
-    {
-    
+}
+
+
+public class EmailNotifier
+{
     public void SendMail(Message message)
-    
     {
-    
-    EmailMessage? emailMessage = message as EmailMessage;
-    
-    if (emailMessage is not null)
-    
-    Console.WriteLine($"Email Sent:" +
-    
-    $"Subject: {emailMessage.Subject}," +
-    
-    $"Body: {emailMessage.Content}," +
-    
-    $"Attachment: {emailMessage.Attachment}");
-    
+        EmailMessage? emailMessage = message as EmailMessage;
+        if (emailMessage is not null)
+            Console.WriteLine($"Email Sent:" +
+            $"Subject: {emailMessage.Subject}," +
+            $"Body: {emailMessage.Content}," +
+            $"Attachment: {emailMessage.Attachment}");
     }
-    
-    }
-    
-    public class SmsNotifierV2
-    
-    {
-    
+}
+
+public class SmsNotifier
+{
     public void SendSms(Message message)
-    
     {
-    
-    Console.WriteLine($"Sms Sent: {message.Content}");
-    
+        Console.WriteLine($"Sms Sent: {message.Content}");
     }
-    
-    }
-    
-    public class OrderProcessorV2
-    
-    {
-    
-    public NotifyV2? NotifyV2Delegate { get; set; }
-    
+}
+
+public class OrderProcessor
+{
+    public Notify? NotifyDelegate { get; set; }
     public void ProcessOrder()
-    
     {
-    
-    Console.WriteLine("Order is being processed...");
-    
-    Message smsMessage = new()
-    
-    {
-    
-    Content = "Your order is processed. Thank you for shopping!"
-    
-    };
-    
-    EmailMessage emailMessage = new EmailMessage
-    
-    {
-    
-    Subject = "Order Confirmation",
-    
-    Content = "Your order has been successfully processed.",
-    
-    Attachment = "Invoice.pdf"
-    
-    };
-    
-    var delegates = NotifyV2Delegate!.GetInvocationList();
-    
-    if (delegates is not null)
-    
-    {
-    
-    foreach (var notifier in delegates)
-    
-    {
-    
-    //The idea is to only invoke the appropriate notifier for each message type rather than invoking all subscribed methods for both messages.
-    
-    if (notifier.Target is SmsNotifierV2)
-    
-    notifier.DynamicInvoke(smsMessage);
-    
-    else if (notifier.Target is EmailNotifierV2)
-    
-    notifier.DynamicInvoke(emailMessage);
-    
+        Console.WriteLine("Order is being processed...");
+        Message smsMessage = new()
+        {
+            Content = "Your order is processed. Thank you for shopping!"
+        };
+
+        EmailMessage emailMessage = new EmailMessage
+        {
+            Subject = "Order Confirmation",
+            Content = "Your order has been successfully processed.",
+            Attachment = "Invoice.pdf"
+        };
+
+        var delegates = NotifyDelegate!.GetInvocationList();
+        if (delegates is not null)
+        {
+            foreach (var notifier in delegates)
+            {
+                //The idea is to only invoke the appropriate notifier for each message type rather than invoking all subscribed methods for both messages.
+                if (notifier.Target is SmsNotifier)
+                    notifier.DynamicInvoke(smsMessage);
+                else if (notifier.Target is EmailNotifier)
+                    notifier.DynamicInvoke(emailMessage);
+            }
+        }
+
+        //Here is an issue
+
+        //invoking all subscribed methods for both messages//
+        //NotifyV2Delegate?.Invoke(smsMessage);
+        //NotifyV2Delegate?.Invoke(emailMessage);
     }
-    
-    }
-    
-    //Here is an issue
-    
-    /\*invoking all subscribed methods for both messages\*/
-    
-    /\*NotifyV2Delegate?.Invoke(smsMessage);
-    
-    NotifyV2Delegate?.Invoke(emailMessage);\*/
-    
-    }
-    
-    }  
-    
-2.  Without violating OCP  
-    INotify smsNotifier = new SmsNotifier();
-    
-    INotify emailNotifier = new EmailNotifier();
-    
-    INotify pushNotifier = new PushNotifier();
-    
-    List<INotify> notifiers = new() { smsNotifier, emailNotifier, pushNotifier };
-    
-    OrderProcessor orderProcessor = new OrderProcessor(notifiers);
-    
-    orderProcessor.ProcessOrder();
-    
-    Console.ReadLine();
-    
-    public interface INotify
-    
-    {
-    
+}
+```   
+**Without violating OCP**  
+```c#
+INotify smsNotifier = new SmsNotifier();
+INotify emailNotifier = new EmailNotifier();
+INotify pushNotifier = new PushNotifier();
+
+List<INotify> notifiers = new() { smsNotifier, emailNotifier, pushNotifier };
+
+OrderProcessor orderProcessor = new OrderProcessor(notifiers);
+orderProcessor.ProcessOrder();
+
+Console.ReadLine();
+
+public interface INotify
+{
     void Notify();
-    
-    }
-    
-    public class SmsNotifier : INotify
-    
-    {
-    
+}
+
+public class SmsNotifier : INotify
+{
     public void Notify()
-    
     {
-    
-    Message message = new()
-    
-    {
-    
-    Content = "Your order is processed. Thank you for shopping"
-    
-    };
-    
-    Console.WriteLine($"SMS Sent: {message.Content}");
-    
+        Message message = new()
+        {
+            Content = "Your order is processed. Thank you for shopping"
+        };
+
+        Console.WriteLine($"SMS Sent: {message.Content}");
     }
-    
-    }
-    
-    public class PushNotifier : INotify
-    
-    {
-    
+}
+
+public class PushNotifier : INotify
+{
     public void Notify()
-    
     {
-    
-    PushMessage message = new()
-    
-    {
-    
-    Content = "(Pushing)Your order is processed. Thank you for shopping"
-    
-    };
-    
-    Console.WriteLine($"SMS Sent: {message.Content}");
-    
+        PushMessage message = new()
+        {
+            Content = "(Pushing)Your order is processed. Thank you for shopping"
+        };
+
+        Console.WriteLine($"SMS Sent: {message.Content}");
     }
-    
-    }
-    
-    public class EmailNotifier : INotify
-    
-    {
-    
+}
+
+public class EmailNotifier : INotify
+{
     public void Notify()
-    
     {
-    
-    EmailMessage emailMessage = new()
-    
-    {
-    
-    Subject = "Order Confirmation",
-    
-    Content = "Your order has been processed successfully",
-    
-    Attachment = "Invoice.pdf"
-    
-    };
-    
-    Console.WriteLine($"Email Sent: " +
-    
-    $"Subject: {emailMessage.Subject}," +
-    
-    $"Body: {emailMessage.Content}," +
-    
-    $"Attachment: {emailMessage.Attachment}");
-    
+        EmailMessage emailMessage = new()
+        {
+            Subject = "Order Confirmation",
+            Content = "Your order has been processed successfully",
+            Attachment = "Invoice.pdf"
+        };
+
+        Console.WriteLine($"Email Sent: " +
+        $"Subject: {emailMessage.Subject}," +
+        $"Body: {emailMessage.Content}," +
+        $"Attachment: {emailMessage.Attachment}");
     }
-    
-    }
-    
-    public class OrderProcessor
-    
-    {
-    
-    private readonly List<INotify> \_notifies;
-    
+}
+
+public class OrderProcessor
+{
+    private readonly List<INotify> _notifies;
     public OrderProcessor(List<INotify> notifies)
-    
     {
-    
-    \_notifies = notifies;
-    
+        _notifies = notifies;
     }
-    
+
     public void ProcessOrder()
-    
     {
-    
-    Console.WriteLine("Order is beng processed...");
-    
-    foreach (var notifier in \_notifies)
-    
-    {
-    
-    notifier.Notify();
-    
+        Console.WriteLine("Order is beng processed...");
+        foreach (var notifier in _notifies)
+        {
+            notifier.Notify();
+        }
     }
-    
-    }
-    
-    }
-    
-    //public delegate void Notify(Message message);
-    
-    public class Message
-    
-    {
-    
+}
+
+//public delegate void Notify(Message message);
+public class Message
+{
     public string Content { get; set; } = string.Empty;
-    
-    }
-    
-    public class PushMessage : Message
-    
-    {
-    
-    }
-    
-    public class EmailMessage : Message
-    
-    {
-    
+}
+
+public class PushMessage : Message
+{
+}
+
+public class EmailMessage : Message
+{
     public string Subject { get; set; } = string.Empty;
-    
     public string Attachment { get; set; } = string.Empty;
-    
-    }
-    
-3.  **Event Handling**: Delegates are used to define event signatures, and events allow methods to subscribe to notifications when specific actions occur (e.g., button clicks, download start).  
-      
-    public class Program
-    
+}
+```
+2. **Event Handling**: Delegates are used to define event signatures, and events allow methods to subscribe to notifications when specific actions occur (e.g., button clicks, download start).  
+```c#
+public class Program
+{
+    static void Main(string[] args)
     {
-    
-    static void Main(string\[\] args)
-    
-    {
-    
-    // Step 1: Create a Button object
-    
-    Button button = new Button();
-    
-    // Step 2: Subscribe methods ShowMessage and SaveData to the OnClick event
-    
-    button.OnClick += ShowMessage; // First method added to the delegate list
-    
-    button.OnClick += SaveData; // Second method added to the delegate list
-    
-    // Step 3: Simulate button click
-    
-    button.Click(); // This will invoke both ShowMessage and SaveData
-    
+        // Step 1: Create a Button object
+        Button button = new Button();
+        // Step 2: Subscribe methods ShowMessage and SaveData to the OnClick event
+        button.OnClick += ShowMessage; // First method added to the delegate list
+        button.OnClick += SaveData; // Second method added to the delegate list
+        // Step 3: Simulate button click
+        button.Click(); // This will invoke both ShowMessage and SaveData
     }
-    
+
     public static void ShowMessage()
-    
     {
-    
-    // Step 4: This will be executed first
-    
-    Console.WriteLine("Button clicked! Showing message...");
-    
+        // Step 4: This will be executed first
+        Console.WriteLine("Button clicked! Showing message...");
     }
-    
+
     public static void SaveData()
-    
     {
-    
-    // Step 5: This will be executed second
-    
-    Console.WriteLine("Button clicked! Saving data...");
-    
+        // Step 5: This will be executed second
+        Console.WriteLine("Button clicked! Saving data...");
     }
-    
-    }
-    
-      
-    
-4.  **Callback Methods**: Delegates allow methods to be passed as parameters to handle tasks (e.g., download completion) asynchronously.  
-      
-    public class Program
-    
+}
+```
+4. **Callback Methods**: Delegates allow methods to be passed as parameters to handle tasks (e.g., download completion) asynchronously.  
+```c#  
+public class Program
+{
+    static void Main()
     {
-    
-    static void Main(string\[\] args)
-    
-    {
-    
-    // Step 1: Create an instance of FileDownloader
-    
-    FileDownloader downloader = new FileDownloader();
-    
-    // Step 2: Initiate the file download and pass the OnDownloadComplete as a callback
-    
-    downloader.DownloadFile("http://example.com/file", OnDownloadComplete);
-    
-    // The Main method finishes, but the download happens asynchronously
-    
+        // Step 1: Create an instance of FileDownloader
+        FileDownloader downloader = new FileDownloader();
+        // Step 2: Initiate the file download and pass the OnDownloadComplete as a callback
+        downloader.DownloadFile("http://example.com/file", OnDownloadComplete);
+        // The Main method finishes, but the download happens asynchronously
     }
-    
     // Step 5: This method will be called once the file download completes (as a callback)
-    
+
     public static void OnDownloadComplete(string message)
-    
     {
-    
-    // Step 6: Print the message to indicate the download is complete
-    
-    Console.WriteLine(message);
-    
-    // Step 7: Log the download
-    
-    LogDownload(message);
-    
+        // Step 6: Print the message to indicate the download is complete
+        Console.WriteLine(message);
+        // Step 7: Log the download
+        LogDownload(message);
     }
-    
+
     public static void LogDownload(string message)
-    
     {
-    
-    // Step 8: Print the log message
-    
-    Console.WriteLine($"Logging download: {message}");
-    
+        // Step 8: Print the log message
+        Console.WriteLine($"Logging download: {message}");
     }
-    
-    }
-    
-    public class FileDownloader
-    
-    {
-    
+}
+
+public class FileDownloader
+{
     public void DownloadFile(string fileUrl, DownloadCompletedCallback callback)
-    
     {
-    
-    // Step 3: Simulate asynchronous file download with Task.Run
-    
-    Task.Run(() =>
-    
-    {
-    
-    // Simulate a delay to mimic file download
-    
-    Thread.Sleep(2000); // Step 4: Wait for 2 seconds
-    
-    // Step 5: After the simulated download, invoke the callback
-    
-    callback($"File downloaded from {fileUrl} successfully.");
-    
-    });
-    
+        // Step 3: Simulate asynchronous file download with Task.Run
+        Task.Run(() =>
+        {
+            // Simulate a delay to mimic file download
+            Thread.Sleep(2000); // Step 4: Wait for 2 seconds
+            // Step 5: After the simulated download, invoke the callback
+            callback($"File downloaded from {fileUrl} successfully.");
+        });
     }
-    
-    }
-    
-    public delegate void DownloadCompletedCallback(string message);
+}
+
+public delegate void DownloadCompletedCallback(string message);
+```
 
 > 13. Describe what LINQ is and give an example of where it might be used.
 
