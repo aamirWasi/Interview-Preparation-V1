@@ -99,12 +99,12 @@ public class BankAccount
     {
         if (amount > 0)
         {
-        balance += amount;
-        Console.WriteLine($"Deposited: {amount:C}. Current balance: {balance:C}");
+          balance += amount;
+          Console.WriteLine($"Deposited: {amount:C}. Current balance: {balance:C}");
         }
         else
         {
-        Console.WriteLine("Deposit amount must be positive.");
+          Console.WriteLine("Deposit amount must be positive.");
         }
     }
     // Public method to check balance
@@ -118,9 +118,9 @@ class Program
 {
     static void Main()
     {
-    BankAccount account = new BankAccount();
-    account.Deposit(500.00m); // Deposit money
-    Console.WriteLine($"Balance: {account.GetBalance():C}"); // Check balance
+      BankAccount account = new BankAccount();
+      account.Deposit(500.00m); // Deposit money
+      Console.WriteLine($"Balance: {account.GetBalance():C}"); // Check balance
     }
 }
 ```
@@ -246,6 +246,175 @@ animal.Speak(); // Output: "Dog barks."
 ### Explanation:
 Runtime Binding: In this example, the Speak() method is marked as virtual in the Animal class and overridden in the Dog class. When animal.Speak() is called, the decision is made at runtime, based on the actual type of the object (Dog in this case), not the declared type. This is known as dynamic dispatch or late binding.
 ##### In short, the default behavior in C# is static dispatch, and to enable dynamic dispatch, you use virtual methods.
+## Q14: Imagine two classes with inheritence hierarchy below.
+```c#
+public class BaseClass
+{
+    public BaseClass()
+    {
+        Print();
+    }
+
+    public virtual void Print()
+    {
+        Console.WriteLine("From Base Class");
+    }
+}
+```
+```c#
+public class ChildClass : BaseClass
+{
+    private readonly string _declaration;
+    public ChildClass()
+    {
+        _declaration = "I am a child!";
+    }
+    public override void Print()
+    {
+        Console.WriteLine(_declaration.ToLower());
+    }
+}
+```
+what will happen if we construct the ChildClass like below?
+```c#
+var child = new ChildClass();
+```
+### Explanation:
+Gives Exception.
+
+1. When you create an instance of ChildClass, the constructor of the base class (BaseClass) is called first, because the constructor of the base class is always called before the constructor of the derived class in C#.
+**BaseClass constructor**:
+Inside the BaseClass constructor, the Print() method is called:
+```c#
+public BaseClass()
+{
+  Print(); // Calls the overridden method in ChildClass
+}
+```
+**Virtual method call:**
+C# uses dynamic dispatch for virtual methods, meaning the overridden method in ChildClass is called even though it's invoked from the BaseClass constructor. Therefore, Print() in ChildClass is called.
+
+**ChildClass Print() method:**
+In ChildClass, the Print() method tries to access the _declaration field, but at this point, the ChildClass constructor hasn't been executed yet. The _declaration field is initialized inside the ChildClass constructor:
+```c#
+public ChildClass()
+{
+  _declaration = "I am a child!";
+}
+```
+Since the ChildClass constructor hasn't finished running when Print() is called, the _declaration field is still null (its default value for reference types).
+
+**Resulting output:**
+When Print() in ChildClass is called, it tries to execute this line:
+```c#
+Console.WriteLine(_declaration.ToLower());
+```
+- Since _declaration is null, calling .ToLower() on a null string would result in a NullReferenceException. However, to avoid that, let's update the explanation based on the current code logic:
+- Since the overridden method is called, but the field _declaration has not been initialized yet (because the child class constructor hasn't run), this would throw a NullReferenceException. The final behavior would be that you'd see "From Base Class" printed first, and then an exception would be thrown.
+
+**Fixing the Issue:**
+To avoid this problem, it's generally a **bad practice to call virtual methods from constructors**. The base class should avoid calling virtual methods during construction, because the derived class might not be fully initialized at that point.
+```c#
+ChildClass childClass = new ChildClass();
+childClass.Initialize();
+
+public class BaseClass
+{
+    public BaseClass()
+    {
+    }
+
+    public void Initialize()
+    {
+        Print();
+    }
+
+    protected virtual void Print()
+    {
+        Console.WriteLine("From Base Class");
+    }
+}
+
+public class ChildClass : BaseClass
+{
+    private readonly string _declarartion;
+    public ChildClass()
+    {
+        _declarartion = "From Child Class";
+    }
+
+    protected override void Print()
+    {
+        Console.WriteLine(_declarartion.ToLower());
+    }
+}
+```
+**o/p**: From Child Class
+
+**note**: if i called Initilaize() from constructor in also throw exception
+### Explanation of Why It Causes Issues
+Object Construction Process:
+- When you create an instance of a derived class, the base class constructor executes first.
+- At this point, the derived class has not yet completed its constructor, meaning that any fields or properties in the derived class may not be initialized.
+- If the base class calls a method (even if it's a non-virtual method), and that method uses any members from the derived class, it can lead to a NullReferenceException.
+## Q15: Imagine two classes blew. Customer class is child of User class. What will print in the console output?
+```c#
+public class User
+{
+    public string UserName { get; set; } = "Base User Name";
+}
+```
+```c#
+public class Customer : User
+{
+    public string UserName { get; set; } = "Customer User Name";
+}
+```
+```c#
+User user = new Customer();
+Console.WriteLine(user.UserName); //Output?
+```
+### Explanation
+It will print "Base User Name"
+The Problem here is that we are violating liskov principle and base class will hide the child class implementation.
+### Key Concepts
+**Inheritance**: The Customer class inherits from the User class, which means it gets all the properties and methods of the User class.
+
+**Property Hiding (Shadowing)**: In the Customer class, the UserName property is redefined using the new keyword (implicitly, since it's not marked virtual in the base class), which means it hides the UserName property from the User class. This is not polymorphism; it’s property hiding or shadowing.
+
+1. Here, the variable user is of type User, but it holds an instance of Customer. This means you are creating an object of Customer, but referring to it as a User.
+2. **Property Access**: When you access user.UserName, you are accessing the UserName property from the User class, not from the Customer class.
+    - Why? This is because property hiding (not overriding) is at play here. Since the type of the variable (user) is User, it will access the UserName property defined in the User class, which has the default       value "Base User Name". The Customer's version of UserName is not considered because it’s hidden, not overridden.
+3. **Output**: The value of user.UserName will be "Base User Name", because the UserName property from the User class is accessed.
+
+**Why Not "Customer User Name"?**
+
+For the Customer's UserName to be used polymorphically, you would need to use inheritance with polymorphism by marking the base property as virtual and the derived property as override. Here’s how you would do that:
+**Using Virtual and Override for Polymorphism**
+
+If you want the Customer class to properly override the UserName property in a polymorphic way, you can use the virtual and override keywords:
+```c#
+User user = new Customer();
+Console.WriteLine(user.UserName); // Output: Customer User Name
+
+public class User
+{
+    public string UserName { get; set; } = "user: aamir";
+}
+
+public class Customer : User
+{
+    public string UserName { get; set; } = "customer: aamir";
+}
+```
+**Explanation of the Updated Code:**
+- virtual in the User class: This allows the property to be overridden in derived classes.
+- override in the Customer class: This provides a new implementation of the UserName property in the Customer class.
+
+Now, when you create a Customer object and reference it as a User, the overridden UserName property from the Customer class will be used, and the output will be "Customer User Name".
+
+
+
 
 
 
