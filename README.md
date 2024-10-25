@@ -1920,6 +1920,54 @@ Why Use Extension Methods Here?
 - **Cleaner Syntax**: Instead of creating a separate DiscountCalculator class or utility function, you can invoke CalculateDiscount directly on the Product object.
 - **Encapsulation**: The method logic is encapsulated, and the Product class remains untouched. You don't have to modify or inherit from Product to add this functionality.
 
+### the"𝙩𝙝𝙞𝙨" keyword:
+
+However, this keyword is powerful in creating 𝐞𝐱𝐭𝐞𝐧𝐬𝐢𝐨𝐧 𝐦𝐞𝐭𝐡𝐨𝐝𝐬.
+𝟐𝟎𝟐𝟐 𝐅𝐈𝐅𝐀 𝐖𝐨𝐫𝐥𝐝 𝐂𝐮𝐩 𝐟𝐢𝐧𝐚𝐥 was a football match, Argentina vs France.
+
+This match was held at the 𝙇𝙪𝙨𝙖𝙞𝙡 𝙎𝙩𝙖𝙙𝙞𝙪𝙢 in Qatar, played in front of 88,966 people.
+
+But technically, more than 1.5 𝘣𝘪𝘭𝘭𝘪𝘰𝘯 𝘱𝘦𝘰𝘱𝘭𝘦 watched this match, and final became one of the most widely watched televised sporting events in history.
+
+How did it happen? To make activities light, easy and interesting(in the 88,966 capacity stadium), 1.5 billiion people were connected to 𝐭𝐡𝐢𝐬(using the this keyword) stadium on 𝐭𝐞𝐥𝐞𝐯𝐢𝐬𝐢𝐨𝐧𝐬(using extension methods).
+
+It's now safe to say that, 1.5 billion crowd were in the stadium on that final.
+This is very similar to how extension methods work in C#.
+From the analogy above, I can say:
+
+Extension method is a static method from an existing container(class,interface, struct...), without modifying or making changes in the original container.
+```c#
+//Extension Method
+public static void AddPermission(CallConvThiscall AuthorizationOptions options, string permission)
+{
+    options.AddPolicy(permission, policy =>
+    {
+        policy.RequireAssertion(context =>
+        {
+            context.User.HasClaim(c => c.Type == permission && bool.Parse(c.Value) == true));
+        })
+    });
+}
+
+//Service Configuration
+builder.Services.AddAuthorization(options =>
+{
+    Enum.GetNames<Permission>().ForEach(AddPermission =>
+    {
+        options.AddPermission(permission);
+    });
+});
+```
+Why use 𝐞𝐱𝐭𝐞𝐧𝐬𝐢𝐨𝐧 𝐦𝐞𝐭𝐡𝐨𝐝𝐬?
+
+👉Extension methods allow you to add new methods to existing types, including those you don't have control over (like built-in .NET types).
+
+👉They can make your code more intuitive and readable by allowing you to chain method calls in a natural way.
+
+👉You can add methods to interfaces without breaking existing implementations.
+
+👉Instead of creating utility classes with static methods, you can use extension methods for a more object-oriented feel.
+
 ## Q24: What are Value Types and Reference Types in C#?
 In C#, data types are divided into two categories: Value Types and Reference Types. This distinction affects how values are stored and manipulated within memory.
 
