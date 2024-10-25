@@ -519,7 +519,11 @@ Console.WriteLine(user.UserName); //Output?
 ### Explanation
 It will print "Base User Name"
 The Problem here is that we are violating liskov principle and base class will hide the child class implementation.
+In the code provided, you're defining the UserName property in both the base class User and the derived class Customer. This violates the Liskov Substitution Principle (LSP) because the base class User and the derived class Customer don't behave consistently when substituted for one another. Additionally, the derived class's property is hiding the base class property instead of overriding it. This can lead to confusion and unexpected behavior.
 ### Key Concepts
+**Liskov Substitution Principle (LSP)**: The Liskov Substitution Principle states that objects of a derived class must be able to replace objects of the base class without affecting the correctness of the program. In other words, a subclass should behave in a way that is consistent with the expectations from the base class.
+Liskov Substitution Principle (LSP), which says that a derived class (Customer) should be able to replace its base class (User) without breaking the behavior.
+
 **Inheritance**: The Customer class inherits from the User class, which means it gets all the properties and methods of the User class.
 
 **Property Hiding (Shadowing)**: In the Customer class, the UserName property is redefined using the new keyword (implicitly, since it's not marked virtual in the base class), which means it hides the UserName property from the User class. This is not polymorphism; it’s property hiding or shadowing.
@@ -1031,6 +1035,178 @@ public class BankAccount
 }
 ```
 **Interview Tip**: Explain how access modifiers help encapsulate the data, ensuring only the required parts are accessible from outside the class.
+## Q18: In a real-life e-commerce application, you have a class called OrderManager responsible for creating, updating, and deleting orders as well as sending confirmation emails and updating inventory. How would you refactor this class to follow the Single Responsibility Principle?
+**What is the Single Responsibility Principle? Can you give a real-life example?**
+
+**S — Single Responsibility Principle (SRP)**: The Single Responsibility Principle states that a class should have only one reason to change, meaning it should have only one responsibility or purpose.
+To follow SRP, OrderManager should focus on managing order data only. we need to separate each responsibility within OrderManager. Currently, OrderManager is handling multiple responsibilities:
+- Managing the lifecycle of orders (creating, updating, and deleting orders).
+- Sending confirmation emails.
+- Updating inventory.
+Here’s a refactored version where each responsibility is isolated into its own class
+
+**Example Refactor:**
+```c#
+public class OrderManager
+{
+    private readonly OrderService _orderService;
+    private readonly IEmailService _emailService;
+    private readonly IInventoryService _inventoryService;
+
+    public OrderManager(OrderService orderService, IEmailService emailService, IInventoryService inventoryService)
+    {
+        _orderService = orderService;
+        _emailService = emailService;
+        _inventoryService = inventoryService;
+    }
+
+    public async Task CreateOrderAsync(Order order)
+    {
+        await _orderService.CreateOrderAsync(order);
+        await _emailService.SendConfirmationAsync(order);
+        await _inventoryService.UpdateStockAsync(order);
+    }
+}
+```
+**1. OrderService**
+```c#
+public class OrderService
+{
+    public async Task CreateOrderAsync(Order order)
+    {
+        // Code to save the order to the database (async if I/O bound)
+        Console.WriteLine("Order created in the database.");
+    }
+
+    public async Task UpdateOrderAsync(Order order)
+    {
+        // Code to update order in the database
+        Console.WriteLine("Order updated in the database.");
+    }
+
+    public async Task DeleteOrderAsync(int orderId)
+    {
+        // Code to delete order from the database
+        Console.WriteLine("Order deleted from the database.");
+    }
+}
+```
+**2. IEmailService and EmailService**
+Interface and implementation for sending emails.
+```c#
+public interface IEmailService
+{
+    Task SendConfirmationAsync(Order order);
+}
+
+public class EmailService : IEmailService
+{
+    public async Task SendConfirmationAsync(Order order)
+    {
+        // Asynchronously send an email confirmation
+        Console.WriteLine($"Email confirmation sent for Order ID: {order.Id}");
+    }
+}
+```
+**3. IInventoryService and InventoryService**
+Interface and implementation for updating inventory.
+```c#
+public interface IInventoryService
+{
+    Task UpdateStockAsync(Order order);
+}
+
+public class InventoryService : IInventoryService
+{
+    public async Task UpdateStockAsync(Order order)
+    {
+        // Asynchronously update the inventory stock
+        Console.WriteLine($"Inventory updated for Order ID: {order.Id}");
+    }
+}
+```
+Explanation
+1. **Single Responsibility**: Each service (OrderService, EmailService, InventoryService) is dedicated to a single responsibility, making the code modular and more maintainable.
+
+2. **Asynchronous Operations**: By making external services asynchronous, we can avoid blocking the main thread during I/O operations, which is ideal in real-world applications.
+
+3. **Loose Coupling**: The OrderManager now depends on abstractions (IEmailService, IInventoryService), so we can swap out implementations easily, which also supports testing and future scaling.
+
+This setup follows the SRP effectively and prepares the application for any additional features without impacting the core OrderManager logic.
+
+**Problem:**
+```c#
+public async Task CreateOrderAsync(Order order)
+{
+    await _orderService.CreateOrderAsync(order);
+    await _emailService.SendConfirmationAsync(order);
+    await _inventoryService.UpdateStockAsync(order);
+}
+```
+in the above code snippet we're using await & the method pauses and waits for this task to complete before moving to the next line. also, it changes the behavior to a sequential, synchronous-like execution.
+
+**How to Improve the Code with Parallel Execution**
+If the tasks are truly independent and do not rely on each other's results or have no dependencies, you can run them concurrently to improve performance.
+
+Here’s how to refactor the code to run these tasks in parallel:
+```c#
+public async Task CreateOrderAsync(Order order)
+{
+    // Start all tasks without awaiting
+    var orderTask = _orderService.CreateOrderAsync(order);
+    var emailTask = _emailService.SendConfirmationAsync(order);
+    var inventoryTask = _inventoryService.UpdateStockAsync(order);
+
+    // Await all tasks to complete in parallel
+    await Task.WhenAll(orderTask, emailTask, inventoryTask);
+}
+```
+**Explanation of Each Line**
+Each of these lines looks like they’re being executed sequentially, but in reality, they’re starting each task asynchronously without blocking the execution flow. Here’s a breakdown:
+1. var orderTask = _orderService.CreateOrderAsync(order);
+    - **What’s Happening**: This line calls the asynchronous method FetchOrdersAsync() and immediately assigns the resulting Task to ordersTask.
+    - **Behind the Scenes**: The FetchOrdersAsync method might, for instance, start an HTTP request or database call and return a Task representing this ongoing work. However, because there’s no await here, the method doesn’t wait for the request to complete. Instead,         it immediately moves on to the next line.
+    - **Real-World Parallel**: Imagine asking a colleague to go fetch order data for you, and without waiting for them to return, you turn to another colleague and ask them for inventory data.
+as well as for 
+- var emailTask = _emailService.SendConfirmationAsync(order);
+- var inventoryTask = _inventoryService.UpdateStockAsync(order);
+
+**Why It’s Asynchronous, Not Synchronous**
+- **No await Means No Waiting**: By not using await immediately, you’re not pausing or blocking execution to wait for each task to complete. Each call to FetchOrdersAsync, FetchInventoryAsync, and FetchCustomersAsync returns a Task that represents the ongoing work,        but the method moves on without waiting.
+
+- **All Tasks Run in Parallel**: The Task objects (ordersTask, inventoryTask, and customersTask) represent operations that are all happening in parallel. They’re “promises” of future results but are not awaited yet, so the application doesn’t stop to wait for any of 
+    them at this stage.
+
+**When Does the Method Actually Wait?**
+The waiting occurs later with:
+```c#
+await Task.WhenAll(orderTask, emailTask, inventoryTask);
+```
+This line **awaits all tasks to complete**, but only at this point does the method pause. Up until this line, each task started running asynchronously and concurrently, allowing other work to be done or other requests to be handled while they’re in progress.
+
+**Real-World Difference**
+
+    - Sequential Execution with Await per Line: Each data fetch happens one after another. If each task takes, say, 1 second, the total time to get all data would be approximately 3 seconds (1 second for orders, 1 for inventory, and 1 for customers).
+    - Parallel Execution with Task.WhenAll: All tasks start at the same time and complete independently. Here, if each fetch still takes 1 second, the total time to get all data is approximately 1 second (since they’re all running concurrently).
+
+**When to Use Sequential vs. Parallel**
+
+**- Sequential (await one after another)**: Use this if tasks depend on each other’s completion or need results from the previous task.
+
+**- Parallel (Task.WhenAll)**: Use this if tasks are independent and do not rely on the output of each other.
+
+Using Task.WhenAll here provides a more optimized solution if each service can safely execute without waiting for another.
+### Summary
+By not using await immediately, we’ve started all three tasks without waiting. The tasks run asynchronously and concurrently, which makes it possible to fetch all three sets of data simultaneously rather than sequentially. Only when we reach await Task.WhenAll(...) does the method wait for all tasks to complete, making the process highly efficient.
+
+
+
+
+
+
+
+
+
 
 
 
