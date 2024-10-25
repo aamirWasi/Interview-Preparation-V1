@@ -2519,22 +2519,6 @@ public class MyClass
     public void MyMethod() { }
 }
 ```
-
-
-
-
-
-
-
-
-
-
-> 13. Describe what LINQ is and give an example of where it might be used.
-
-> 15. How do you manage memory in .NET applications?
-
-> 16. Explain the concept of threading in .NET.
-
 ### Q28. **What is a race condition, and how can it occur in a multi-threaded .NET application?**
 *   **Follow-up**: Imagine you are building an e-commerce application where multiple users can update the stock of products. How would a race condition manifest in this scenario, and how can you avoid it?  
       
@@ -2999,6 +2983,12 @@ In this example, **two customers** order coffee at the same time. The `Task.When
       
 In asynchronous programming, particularly when using `async` and `await` in C#, the compiler transforms the code into a **state machine**. A state machine is a programming construct that controls the flow of execution through a series of states. Each state represents a particular point in the execution of the method, and the state machine keeps track of where to continue when a task resumes after an `await`.
 
+
+> 13. Describe what LINQ is and give an example of where it might be used.
+
+> 15. How do you manage memory in .NET applications?
+
+> 16. Explain the concept of threading in .NET.
 > 18. Describe the Entity Framework and its advantages.
 
 1.  Explain the difference between `DbContext` and `DbSet`.  
