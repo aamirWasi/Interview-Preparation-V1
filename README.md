@@ -2535,8 +2535,7 @@ public class MyClass
 
 > 16. Explain the concept of threading in .NET.
 
-### 1. **What is a race condition, and how can it occur in a multi-threaded .NET application?**
-
+### Q28. **What is a race condition, and how can it occur in a multi-threaded .NET application?**
 *   **Follow-up**: Imagine you are building an e-commerce application where multiple users can update the stock of products. How would a race condition manifest in this scenario, and how can you avoid it?  
       
     **Answer Guide**:
@@ -2967,49 +2966,38 @@ Both threads have completed.
     
     *   Think of a parking lot with only 3 spaces (semaphore capacity = 3). As soon as all spots are taken, new cars must wait for one of the cars to leave before parking. Each car that enters reduces the available spaces, and when a car leaves, a new spot opens up for another car.
 
-> 17. What is async/await and how does it work?
+## Q29. What is async/await and how does it work?
+1. **async**: The method is marked as asynchronous, which tells the compiler to generate a state machine.
+2. **await**: Awaits the result of an asynchronous method without blocking the calling thread.
 
-> 17. What is async/await and how does it work?
+In real-world applications, await is used for tasks that take time but don't need to block other parts of the system while they’re running. Here are a few examples showing how await allows asynchronous processing without blocking the calling thread:
+    
+- Here, `Task.Delay(5000)` simulates a 5-second file download. While the download is happening, the main thread (which handles UI) **doesn’t block**—the user can still click on buttons, scroll, or interact with the app.
 
-1.  `async`: The method is marked as asynchronous, which tells the compiler to generate a state machine.  
-    
-2.  Here, `Task.Delay(5000)` simulates a 5-second file download. While the download is happening, the main thread (which handles UI) **doesn’t block**—the user can still click on buttons, scroll, or interact with the app.
-    
-    Without `await`, the UI would freeze until the file download is complete, which would result in a poor user experience.  
+- Without `await`, the UI would freeze until the file download is complete, which would result in a poor user experience.  
       
-    Here’s the complete explanation again with a real-world coffee shop example:
-    
-    1.  **The** `await` **keyword is applied to a task**: Just like ordering coffee and then waiting for it, you’re asking the method to "wait" at a certain point (`await` the task) without blocking the entire system.
+Here’s the complete explanation again with a real-world coffee shop example:
+
+1.  **The** `await` **keyword is applied to a task**: Just like ordering coffee and then waiting for it, you’re asking the method to "wait" at a certain point (`await` the task) without blocking the entire system.
+2.  **Indicating that the method should pause until the awaited task completes**: The method pauses at the `await`, similar to you waiting for your coffee, but the entire coffee shop (the system) doesn't pause—just that specific task.
+3.  **Allowing other operations to run concurrently**: While the method is paused waiting for the task, other methods and tasks can continue running (other customers are getting served while you wait for your coffee).
+4.  **Without blocking the main thread**: If this were an app, the user interface (UI) wouldn’t freeze. In the real world, the coffee shop doesn’t shut down while your coffee is being made; it continues working efficiently.  
+```c#
+public async Task ServeMultipleCustomersAsync()
+{
+    // Multiple customers ordering coffee concurrently
+    var customer1 = ServeCoffeeAsync();
+    var customer2 = ServeCoffeeAsync();
+    // Await both coffees to be ready concurrently
+    await Task.WhenAll(customer1, customer2);
+    Console.WriteLine("Both customers served!");
+}
+```
+In this example, **two customers** order coffee at the same time. The `Task.WhenAll` ensures both orders are processed concurrently. No one customer waits for the other to finish. Similarly, in a real-world coffee shop, multiple orders can be handled in parallel, without one customer blocking another’s order.
         
-    2.  **Indicating that the method should pause until the awaited task completes**: The method pauses at the `await`, similar to you waiting for your coffee, but the entire coffee shop (the system) doesn't pause—just that specific task.
-        
-    3.  **Allowing other operations to run concurrently**: While the method is paused waiting for the task, other methods and tasks can continue running (other customers are getting served while you wait for your coffee).
-        
-    4.  **Without blocking the main thread**: If this were an app, the user interface (UI) wouldn’t freeze. In the real world, the coffee shop doesn’t shut down while your coffee is being made; it continues working efficiently.  
-          
-        public async Task ServeMultipleCustomersAsync()
-        
-        {
-        
-        // Multiple customers ordering coffee concurrently
-        
-        var customer1 = ServeCoffeeAsync();
-        
-        var customer2 = ServeCoffeeAsync();
-        
-        // Await both coffees to be ready concurrently
-        
-        await Task.WhenAll(customer1, customer2);
-        
-        Console.WriteLine("Both customers served!");
-        
-        }
-        
-        In this example, **two customers** order coffee at the same time. The `Task.WhenAll` ensures both orders are processed concurrently. No one customer waits for the other to finish. Similarly, in a real-world coffee shop, multiple orders can be handled in parallel, without one customer blocking another’s order.
-        
-3.  **State Machine**: A state machine is automatically created when you write asynchronous code using `async` and `await`. It controls how the method moves between different "states" of execution.  
+3. **State Machine**: A state machine is automatically created when you write asynchronous code using `async` and `await`. It controls how the method moves between different "states" of execution.  
       
-    In asynchronous programming, particularly when using `async` and `await` in C#, the compiler transforms the code into a **state machine**. A state machine is a programming construct that controls the flow of execution through a series of states. Each state represents a particular point in the execution of the method, and the state machine keeps track of where to continue when a task resumes after an `await`.
+In asynchronous programming, particularly when using `async` and `await` in C#, the compiler transforms the code into a **state machine**. A state machine is a programming construct that controls the flow of execution through a series of states. Each state represents a particular point in the execution of the method, and the state machine keeps track of where to continue when a task resumes after an `await`.
 
 > 18. Describe the Entity Framework and its advantages.
 
