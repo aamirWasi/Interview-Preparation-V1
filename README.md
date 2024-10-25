@@ -1178,6 +1178,7 @@ as well as for
     them at this stage.
 
 **When Does the Method Actually Wait?**
+
 The waiting occurs later with:
 ```c#
 await Task.WhenAll(orderTask, emailTask, inventoryTask);
@@ -1185,15 +1186,14 @@ await Task.WhenAll(orderTask, emailTask, inventoryTask);
 This line **awaits all tasks to complete**, but only at this point does the method pause. Up until this line, each task started running asynchronously and concurrently, allowing other work to be done or other requests to be handled while they’re in progress.
 
 **Real-World Difference**
-
-    - Sequential Execution with Await per Line: Each data fetch happens one after another. If each task takes, say, 1 second, the total time to get all data would be approximately 3 seconds (1 second for orders, 1 for inventory, and 1 for customers).
-    - Parallel Execution with Task.WhenAll: All tasks start at the same time and complete independently. Here, if each fetch still takes 1 second, the total time to get all data is approximately 1 second (since they’re all running concurrently).
+  - **Sequential Execution with Await per Line**: Each data fetch happens one after another. If each task takes, say, 1 second, the total time to get all data would be approximately 3 seconds (1 second for orders, 1 for inventory, and 1 for customers).
+  - **Parallel Execution with Task.WhenAll**: All tasks start at the same time and complete independently. Here, if each fetch still takes 1 second, the total time to get all data is approximately 1 second (since they’re all running concurrently).
 
 **When to Use Sequential vs. Parallel**
 
-**- Sequential (await one after another)**: Use this if tasks depend on each other’s completion or need results from the previous task.
+  - **Sequential (await one after another)**: Use this if tasks depend on each other’s completion or need results from the previous task.
 
-**- Parallel (Task.WhenAll)**: Use this if tasks are independent and do not rely on the output of each other.
+  - **Parallel (Task.WhenAll)**: Use this if tasks are independent and do not rely on the output of each other.
 
 Using Task.WhenAll here provides a more optimized solution if each service can safely execute without waiting for another.
 ### Summary
