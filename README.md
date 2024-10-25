@@ -1356,6 +1356,89 @@ public class NotificationService
 }
 ```
 You can pass either EmailSender or SmsSender to the Notify method, and it will work without issues, thanks to LSP. Each sender behaves according to its own type but maintains the contract defined by the NotificationSender base class.
+## Q20:  You have an IEmployee interface with methods like Work, AttendMeeting, TakeBreak, and ProcessPayroll. Why does this violate ISP, and how can you refactor it?
+**What is the Interface Segregation Principle? How would you apply it in a real-life situation?**
+
+**I — Interface Segregation Principle (ISP)**: The Interface Segregation Principle states that no client should be forced to implement methods it does not use. Instead of having large, general-purpose interfaces, it's better to have smaller, specific ones.
+
+Having all these methods in IEmployee forces every implementation of the interface to include methods that may not be relevant to its role (e.g., a contractor who does not need payroll processing). Breaking down the IEmployee interface into more specific interfaces, such as IWorkable, IAttendable, and IPayable, allows each class to implement only what it needs.
+```c#
+public interface IWorkable { void Work(); }
+public interface IAttendable { void AttendMeeting(); }
+public interface IPayable { void ProcessPayroll(); }
+
+public class FullTimeEmployee : IWorkable, IAttendable, IPayable { /* implementations */ }
+public class Contractor : IWorkable, IAttendable { /* implementations */ }
+```
+**Real-Life Example: User Management System**
+
+In a user management system, different types of users might require different functionalities. A large IUser interface that includes methods for all user types (like admin, guest, regular user) violates ISP. Instead, you should create smaller interfaces.
+```c#
+// Too large interface, violates ISP
+public interface IUser
+{
+    void Login();
+    void ManageUsers();  // Only admins need this method
+    void ViewReports();  // Only specific users need this
+}
+
+// Applying ISP by splitting into smaller interfaces
+public interface IRegularUser
+{
+    void Login();
+}
+
+public interface IAdminUser : IRegularUser
+{
+    void ManageUsers();
+}
+
+public interface IReportViewer : IRegularUser
+{
+    void ViewReports();
+}
+
+public class Admin : IAdminUser
+{
+    public void Login() => Console.WriteLine("Admin logged in.");
+    public void ManageUsers() => Console.WriteLine("Admin managing users.");
+}
+
+public class RegularUser : IRegularUser
+{
+    public void Login() => Console.WriteLine("Regular user logged in.");
+}
+```
+**Interview Tip**: Discuss how splitting the interface into smaller, more specific interfaces (like IAdminUser, IReportViewer, IRegularUser) ensures that clients (classes) only implement what they need. This reduces unnecessary code and makes the system more modular.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
