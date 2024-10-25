@@ -1839,6 +1839,69 @@ Here, the IServiceProvider creates a new instance of TransientService when reque
 - To solve this, avoid injecting transient services directly into singletons. Instead, inject a factory (Func) or the IServiceProvider to create transient services as needed, ensuring their proper lifecycle.
 - This ensures that the singleton service can still use transient services without violating their expected lifetimes.
 By following these patterns, you can avoid lifecycle mismatches and maintain proper dependency management in your ASP.NET Core application.
+## Q24: What are Value Types and Reference Types in C#?
+In C#, data types are divided into two categories: Value Types and Reference Types. This distinction affects how values are stored and manipulated within memory.
+
+**Value Types**: Store data directly and are allocated on the stack. This means that when you assign one value type to another, a direct copy of the value is created. Basic data types (int, double, bool, etc.) and structs are examples of value types. Operations on value types are generally faster due to stack allocation.
+
+**Reference Types**: Store a reference (or pointer) to the actual data, which is allocated on the heap. When you assign one reference type to another, both refer to the same object in memory; changes made through one reference are reflected in the other. Classes, arrays, delegates, and strings are examples of reference types.
+
+Here's a simple example to illustrate the difference:
+```c#
+// Value type example
+int a = 10;
+int b = a;
+b = 20;
+Console.WriteLine(a); // Output: 10
+Console.WriteLine(b); // Output: 20
+
+// Reference type example
+var list1 = new List<int> { 1, 2, 3 };
+var list2 = list1;
+list2.Add(4);
+Console.WriteLine(list1.Count); // Output: 4
+Console.WriteLine(list2.Count); // Output: 4
+```
+In the value type example, changing b does not affect a because b is a separate copy. In the reference type example, list2 is not a separate copy; it's another reference to the same list object as list1, so changes made through list2 are visible when accessing list1.
+
+## What are Boxing and Unboxing? Where to use Boxing and Unboxing in real applications?
+**Boxing** -Boxing is the process of converting from value type to reference type.
+**Unboxing** -Unboxing is the process of converting reference type to value type. Unboxing is an explicit conversion process.
+```c#
+int num = 10;
+object obj = num; // Boxing
+int i = (int)obj; //Unboxing
+```
+We internally use boxing when the item is added to ArrayList. We use unboxing when an item is extracted from ArrayList.
+```c#
+using System.Collections;
+
+int num = 10;
+ArrayList arrayList = new();
+arrayList.Add(num); ; // Boxing
+int i = (int)arrayList[0]; //Unboxing
+```
+### Summary
+- it is recommended to use boxing and unboxing when it is necessary only.
+- Converting from one type to another type is not good from a performance point of view.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
