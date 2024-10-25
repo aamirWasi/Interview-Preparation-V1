@@ -1258,20 +1258,104 @@ public class PaymentService
 }
 ```
 **Interview Tip**: Demonstrate how adding new functionality (like a new payment method) involves creating a new class (PayPalPayment) rather than modifying the existing PaymentProcessor or CreditCardPayment class. This makes the system easier to maintain and extend.
+## Q19: Imagine you have a payment processing system that handles different types of payment methods (e.g., credit card, PayPal, or bank transfer). You have a base class PaymentProcessor that defines common behavior for all payment types, and specific processors like CreditCardProcessor and PayPalProcessor inherit from this base class.
+**What is the Liskov Substitution Principle (LSP)? Can you provide a real-life example?**
 
+**L — Liskov Substitution Principle (LSP)**: The Liskov Substitution Principle (LSP) is one of the five SOLID principles. It states that objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program. In other words, a subclass should be able to stand in for its parent class without breaking the behavior expected from the parent class.
 
+**Real-World Example 1: Payment Processing System**
 
+**Context**:
 
+Imagine you have a payment processing system that handles different types of payment methods (e.g., credit card, PayPal, or bank transfer). You have a base class PaymentProcessor that defines common behavior for all payment types, and specific processors like CreditCardProcessor and PayPalProcessor inherit from this base class.
 
+**Code Example**:
+```c#
+public abstract class PaymentProcessor
+{
+    public abstract void ProcessPayment(decimal amount);
+}
 
+public class CreditCardProcessor : PaymentProcessor
+{
+    public override void ProcessPayment(decimal amount)
+    {
+        // Process credit card payment
+        Console.WriteLine($"Processing credit card payment of {amount}");
+    }
+}
 
+public class PayPalProcessor : PaymentProcessor
+{
+    public override void ProcessPayment(decimal amount)
+    {
+        // Process PayPal payment
+        Console.WriteLine($"Processing PayPal payment of {amount}");
+    }
+}
+```
+**Explanation**:
+- CreditCardProcessor and PayPalProcessor are subclasses of PaymentProcessor.
+- LSP states that you should be able to substitute any subclass for the parent class without affecting the behavior of the application.
 
+**Usage:**
+```c#
+public class Checkout
+{
+    public void ProcessOrder(PaymentProcessor paymentProcessor, decimal amount)
+    {
+        paymentProcessor.ProcessPayment(amount);
+    }
+}
+```
+Here, you can pass either CreditCardProcessor or PayPalProcessor to the ProcessOrder method, and the program will work correctly without modifying the Checkout class. Both subclasses follow LSP because they behave in ways that are consistent with the base class.
 
+**Real-World Example 2: Notification System**
 
+**Context**:
 
+Consider a system that sends notifications via different channels, like email, SMS, and push notifications. You have a base class NotificationSender, and subclasses like EmailSender, SmsSender, and PushNotificationSender.
 
+**Code Example**:
+```c#
+public abstract class NotificationSender
+{
+    public abstract void SendNotification(string message);
+}
 
+public class EmailSender : NotificationSender
+{
+    public override void SendNotification(string message)
+    {
+        // Send email notification
+        Console.WriteLine($"Sending email: {message}");
+    }
+}
 
+public class SmsSender : NotificationSender
+{
+    public override void SendNotification(string message)
+    {
+        // Send SMS notification
+        Console.WriteLine($"Sending SMS: {message}");
+    }
+}
+```
+**Explanation**:
+- EmailSender and SmsSender are subclasses of NotificationSender.
+- They adhere to LSP because either one can replace the base class NotificationSender without breaking the functionality.
+
+**Usage**:
+```c#
+public class NotificationService
+{
+    public void Notify(NotificationSender sender, string message)
+    {
+        sender.SendNotification(message);
+    }
+}
+```
+You can pass either EmailSender or SmsSender to the Notify method, and it will work without issues, thanks to LSP. Each sender behaves according to its own type but maintains the contract defined by the NotificationSender base class.
 
 
 
