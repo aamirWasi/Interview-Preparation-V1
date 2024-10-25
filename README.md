@@ -86,6 +86,12 @@ Static classes are often used to hold utility methods, such as mathematical calc
 1. No. Abstract class and interface purpose is to act as base class via inheritance. Their object creation is not possible.
 ## Q9: What is an Interface?
 1. Define a contract that classes must follow but does not provide any implementation.
+2. In C# 8 and later, default methods in interfaces (also known as default interface methods) allow you to provide a default implementation for methods directly in the interface. This was a significant change, as prior to C# 8, interfaces could only contain method signatures (i.e., no implementation).
+
+**When to Avoid Default Methods?**
+1. Over-complicating interfaces: If you add too many default methods, interfaces can become bloated and harder to understand.
+2. Increased coupling: Default methods can sometimes introduce coupling between the interface and its implementations, which can make future changes more difficult.
+3. Breaking SOLID principles: If you're not careful, default methods can violate principles like Single Responsibility Principle (SRP) by adding too much behavior to an interface that should focus solely on abstraction.
 ## Q10: What is an encapsulation?
 ### Encapsulation:
 1. Encapsulation is the concept of restricting direct access to the internal state (fields) of an object and only exposing the necessary methods to interact with it. This ensures controlled access to the data and better security.  
