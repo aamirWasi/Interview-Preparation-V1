@@ -1198,10 +1198,66 @@ This line **awaits all tasks to complete**, but only at this point does the meth
 Using Task.WhenAll here provides a more optimized solution if each service can safely execute without waiting for another.
 ### Summary
 By not using await immediately, we’ve started all three tasks without waiting. The tasks run asynchronously and concurrently, which makes it possible to fetch all three sets of data simultaneously rather than sequentially. Only when we reach await Task.WhenAll(...) does the method wait for all tasks to complete, making the process highly efficient.
+## Q19: Imagine you’re working on a payment processing system with multiple payment methods, such as credit card, PayPal, and bank transfer. How would you design it to be easily extendable for adding new payment methods without modifying existing code?
+**What is the Open/Closed Principle? Can you provide a real-life example?**
 
+**O — Open/Closed Principle (OCP)**: The Open/Closed Principle means that classes should be open for extension but closed for modification. You should be able to add new functionality without changing existing code.
 
+**Real-Life Example: Payment Processing System**
 
+In a system that processes payments via different methods (Credit Card, PayPal, etc.), instead of modifying the existing PaymentProcessor class to add new payment methods, we use interfaces or abstract classes and extend the functionality by creating new classes.
 
+**by abstract class**:
+```c#
+public abstract class PaymentProcessor
+{
+    public abstract void ProcessPayment(decimal amount);
+}
+
+// Existing payment methods
+public class CreditCardPayment : PaymentProcessor
+{
+    public override void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing credit card payment of {amount:C}.");
+    }
+}
+
+// Adding a new payment method without modifying existing code
+public class PayPalPayment : PaymentProcessor
+{
+    public override void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing PayPal payment of {amount:C}.");
+    }
+}
+```
+**by interface**
+```c#
+public interface IPaymentProcessor
+{
+    void ProcessPayment(decimal amount);
+}
+
+public class CreditCardProcessor : IPaymentProcessor { /* implementation */ }
+public class PayPalProcessor : IPaymentProcessor { /* implementation */ }
+
+public class PaymentService
+{
+    private readonly IPaymentProcessor _paymentProcessor;
+
+    public PaymentService(IPaymentProcessor paymentProcessor)
+    {
+        _paymentProcessor = paymentProcessor;
+    }
+
+    public void ProcessPayment(decimal amount)
+    {
+        _paymentProcessor.ProcessPayment(amount);
+    }
+}
+```
+**Interview Tip**: Demonstrate how adding new functionality (like a new payment method) involves creating a new class (PayPalPayment) rather than modifying the existing PaymentProcessor or CreditCardPayment class. This makes the system easier to maintain and extend.
 
 
 
