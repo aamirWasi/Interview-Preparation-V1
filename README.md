@@ -304,9 +304,10 @@ class Program
     }
 }
 ```
-### What is Polymorphism, and how does it improve code flexibility?
+**What is Polymorphism, and how does it improve code flexibility?**
 1. Polymorphism allows one interface to be used for different types. It can be achieved through method overriding or method overloading.
-## Q12: How does method overriding support polymorphism in C#??
+
+**How does method overriding support polymorphism in C#?**
 1. Method overriding allows a derived class to provide a specific implementation of a method that is already defined in the base class. This is a key feature of runtime polymorphism.
 ## Q12: Can you explain the difference between method overloading and method overriding with examples?
 ### Method Overloading: 
@@ -553,6 +554,489 @@ public class Customer : User
 - override in the Customer class: This provides a new implementation of the UserName property in the Customer class.
 
 Now, when you create a Customer object and reference it as a User, the overridden UserName property from the Customer class will be used, and the output will be "Customer User Name".
+## Q16: Can you explain OOPS & C# - Inheritance, Abstraction, Encapsulation & Polymorphism?
+### Inheritance
+1. In C#, inheritance allows a class (called a derived class) to inherit members (fields, methods, properties) from another class (called a base class). This enables code reuse and polymorphism.
+
+**Real-Life Example**: Employee and Manager
+```c#
+// Base class
+public class Employee
+{
+    public string Name { get; set; }
+    public int EmployeeId { get; set; }
+
+    public void Work()
+    {
+        Console.WriteLine($"{Name} is working.");
+    }
+}
+
+// Derived class
+public class Manager : Employee
+{
+    public void ManageTeam()
+    {
+        Console.WriteLine($"{Name} is managing the team.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Manager manager = new Manager { Name = "Alice", EmployeeId = 101 };
+        manager.Work();  // Inherited from Employee
+        manager.ManageTeam();  // Defined in Manager class
+    }
+}
+```
+Think of an "Employee" as a general role. A "Manager" is a specialized role, which can do everything an employee does but also has added responsibilities, like managing a team.
+### Abstraction
+1. Abstraction allows hiding the complexity of a system by exposing only the necessary parts. This is typically achieved using abstract classes or interfaces.
+
+**Real-Life Example**: Payment System
+```c#
+// Abstract class
+public abstract class Payment
+{
+    public abstract void ProcessPayment(decimal amount);  // Abstract method
+}
+
+// Derived class for credit card payments
+public class CreditCardPayment : Payment
+{
+    public override void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing credit card payment of {amount:C}.");
+    }
+}
+
+// Derived class for PayPal payments
+public class PayPalPayment : Payment
+{
+    public override void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing PayPal payment of {amount:C}.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Payment payment = new CreditCardPayment();
+        payment.ProcessPayment(100.50m);  // Calls CreditCardPayment's method
+        
+        payment = new PayPalPayment();
+        payment.ProcessPayment(75.25m);  // Calls PayPalPayment's method
+    }
+}
+```
+Consider the concept of "Payment." Whether you pay using a credit card or PayPal, the user only needs to know how much to pay, not the underlying process. The complexities of how each payment method works are abstracted away.
+### Encapsulation
+1. Encapsulation is the concept of restricting direct access to the internal state (fields) of an object and only exposing the necessary methods to interact with it. This ensures controlled access to the data and better security.
+2. This is typically achieved through the use of access modifiers such as private, public, protected, and internal. 
+
+**Real-Life Example**: Bank Account
+```c#
+public class BankAccount
+{
+    // Private fields (encapsulation)
+    private decimal balance;
+
+    // Public method to deposit money
+    public void Deposit(decimal amount)
+    {
+        if (amount > 0)
+        {
+            balance += amount;
+            Console.WriteLine($"Deposited: {amount:C}. Current balance: {balance:C}");
+        }
+        else
+        {
+            Console.WriteLine("Deposit amount must be positive.");
+        }
+    }
+
+    // Public method to check balance
+    public decimal GetBalance()
+    {
+        return balance;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        BankAccount account = new BankAccount();
+        account.Deposit(500.00m);  // Deposit money
+        Console.WriteLine($"Balance: {account.GetBalance():C}");  // Check balance
+    }
+}
+```
+In a real-world bank account, you can't just take money out of the vault or look at the books yourself. You need to interact with the bank via ATMs or customer service, which controls access to your account.
+### Polymorphism:
+1. Polymorphism is a core concept in object-oriented programming (OOP) that allows objects to be treated as instances of their parent class rather than their actual derived class.  
+**Polymorphism** means "many forms." It allows a method or function to behave differently based on the object it is acting upon. It can be **compile-time** (method overloading) or **runtime** (method overriding).
+
+**Real-Life Example**: Notification System
+```c#
+// Base class
+public class Notification
+{
+    public virtual void Send()
+    {
+    Console.WriteLine("Sending a generic notification.");
+    }
+}
+// Derived class for email notifications
+public class EmailNotification : Notification
+{
+    public override void Send()
+    {
+    Console.WriteLine("Sending an email notification.");
+    }
+}
+// Derived class for SMS notifications
+public class SMSNotification : Notification
+{
+    public override void Send()
+    {
+    Console.WriteLine("Sending an SMS notification.");
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        Notification notification = new EmailNotification();
+        notification.Send(); // Calls EmailNotification's Send method
+        notification = new SMSNotification();
+        notification.Send(); // Calls SMSNotification's Send method
+    }
+}
+```
+Consider a notification system. Whether the notification is an email, SMS, or push notification, the system knows how to "send" the message based on the type of notification, even though the method called is the same (Send()).
+## Q16: What are the different types of Inheritance?
+### Inheritance
+1. In C#, inheritance allows a class (called a derived class) to inherit members (fields, methods, properties) from another class (called a base class). This enables code reuse and polymorphism.
+### 1. Single Inheritance
+In single inheritance, a class derives from only one base class. This is the simplest and most common form of inheritance.
+
+**Real-World Example**: Employee and Manager
+```c#
+// Base class
+public class Employee
+{
+    public string Name { get; set; }
+    public int EmployeeId { get; set; }
+
+    public void Work()
+    {
+        Console.WriteLine($"{Name} is working.");
+    }
+}
+
+// Derived class
+public class Manager : Employee
+{
+    public void Manage()
+    {
+        Console.WriteLine($"{Name} is managing the team.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Manager manager = new Manager { Name = "Alice", EmployeeId = 101 };
+        manager.Work();  // Inherited from Employee
+        manager.Manage();  // Method in Manager class
+    }
+}
+```
+### Explanation:
+Manager class inherits from Employee. Manager can access Work() method from Employee without redefining it.
+### 2. Multilevel Inheritance
+In multilevel inheritance, a class derives from another derived class, forming a chain of inheritance.
+
+**Real-World Example**: Person → Employee → Manager
+```c#
+// Base class
+public class Person
+{
+    public string FullName { get; set; }
+
+    public void Introduce()
+    {
+        Console.WriteLine($"Hello, my name is {FullName}.");
+    }
+}
+
+// Derived from Person
+public class Employee : Person
+{
+    public int EmployeeId { get; set; }
+
+    public void Work()
+    {
+        Console.WriteLine($"{FullName} is working.");
+    }
+}
+
+// Derived from Employee
+public class Manager : Employee
+{
+    public void Manage()
+    {
+        Console.WriteLine($"{FullName} is managing a team.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Manager manager = new Manager { FullName = "Bob", EmployeeId = 102 };
+        manager.Introduce();  // Inherited from Person
+        manager.Work();  // Inherited from Employee
+        manager.Manage();  // Defined in Manager class
+    }
+}
+```
+### Explanation:
+Manager inherits from Employee, and Employee inherits from Person. Manager can access members from both Employee and Person.
+### 3. Hierarchical Inheritance
+In hierarchical inheritance, multiple classes inherit from a single base class.
+
+**Real-World Example**: Employee, Contractor, and Intern inherit from Person
+```c#
+// Base class
+public class Person
+{
+    public string FullName { get; set; }
+
+    public void Introduce()
+    {
+        Console.WriteLine($"Hello, my name is {FullName}.");
+    }
+}
+
+// Derived class
+public class Employee : Person
+{
+    public int EmployeeId { get; set; }
+
+    public void Work()
+    {
+        Console.WriteLine($"{FullName} is working as an employee.");
+    }
+}
+
+// Another derived class
+public class Contractor : Person
+{
+    public string ContractId { get; set; }
+
+    public void Work()
+    {
+        Console.WriteLine($"{FullName} is working as a contractor.");
+    }
+}
+
+// Another derived class
+public class Intern : Person
+{
+    public string School { get; set; }
+
+    public void Study()
+    {
+        Console.WriteLine($"{FullName} is studying at {School}.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Employee emp = new Employee { FullName = "Charlie", EmployeeId = 103 };
+        Contractor contractor = new Contractor { FullName = "Dave", ContractId = "C104" };
+        Intern intern = new Intern { FullName = "Eve", School = "Tech University" };
+
+        emp.Introduce();
+        emp.Work();
+        
+        contractor.Introduce();
+        contractor.Work();
+        
+        intern.Introduce();
+        intern.Study();
+    }
+}
+```
+### Explanation:
+Multiple derived classes (Employee, Contractor, Intern) inherit from the single base class Person. Each subclass can have its own methods but still share common functionality (like Introduce() from Person).
+### 4. Multiple Inheritance (Not Supported Directly in C#)
+C# does not support multiple inheritance (where a class can inherit from more than one base class) directly. However, multiple inheritance can be achieved using interfaces.
+
+**Real-World Example**: IWorker and IManager
+```c#
+// Interface 1
+public interface IWorker
+{
+    void Work();
+}
+
+// Interface 2
+public interface IManager
+{
+    void Manage();
+}
+
+// Class implementing both interfaces
+public class Employee : IWorker, IManager
+{
+    public void Work()
+    {
+        Console.WriteLine("Employee is working.");
+    }
+
+    public void Manage()
+    {
+        Console.WriteLine("Employee is managing the team.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Employee employee = new Employee();
+        employee.Work();  // From IWorker interface
+        employee.Manage();  // From IManager interface
+    }
+}
+```
+### Explanation:
+Employee implements both IWorker and IManager interfaces, achieving the effect of multiple inheritance by inheriting behavior from both.
+### 5. Hybrid Inheritance
+Hybrid inheritance is a combination of two or more types of inheritance. This typically involves a mix of single, multilevel, hierarchical, or interface-based inheritance. Since C# does not directly support multiple inheritance for classes, hybrid inheritance often relies on interfaces.
+
+**Real-World Example**: Combining Interface and Multilevel Inheritance
+```c#
+// Interface
+public interface IReportable
+{
+    void GenerateReport();
+}
+
+// Base class
+public class Employee
+{
+    public string Name { get; set; }
+
+    public void Work()
+    {
+        Console.WriteLine($"{Name} is working.");
+    }
+}
+
+// Derived class from Employee and implementing interface
+public class Manager : Employee, IReportable
+{
+    public void Manage()
+    {
+        Console.WriteLine($"{Name} is managing the team.");
+    }
+
+    public void GenerateReport()
+    {
+        Console.WriteLine($"{Name} is generating a report.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Manager manager = new Manager { Name = "Frank" };
+        manager.Work();  // Inherited from Employee
+        manager.Manage();  // Defined in Manager
+        manager.GenerateReport();  // Defined from IReportable
+    }
+}
+```
+### Explanation:
+Manager class inherits from Employee (multilevel inheritance) and also implements IReportable interface. This is a mix of inheritance and interface implementation (hybrid inheritance).
+### What is the difference between single and multilevel inheritance?
+#### Single Inheritance: A class derives from only one base class.
+#### Multilevel Inheritance: A class derives from a derived class, forming a chain.
+**Single Inheritance Example**:
+```c#
+public class Employee
+{
+    public string Name { get; set; }
+    public int EmployeeId { get; set; }
+}
+
+public class Developer : Employee
+{
+    public void Code()
+    {
+        Console.WriteLine($"{Name} is writing code.");
+    }
+}
+```
+**Multilevel Inheritance Example**:
+```c#
+public class Person
+{
+    public string FullName { get; set; }
+}
+
+public class Employee : Person
+{
+    public int EmployeeId { get; set; }
+}
+
+public class Manager : Employee
+{
+    public void ManageTeam()
+    {
+        Console.WriteLine($"{FullName} is managing the team.");
+    }
+}
+```
+## Q17: What are access modifiers in C#? How do they relate to encapsulation?
+Access modifiers in C# (like public, private, protected, internal) control the visibility of class members, supporting encapsulation by allowing you to hide certain details from external access.
+
+**Real-Life Example**: A Bank Account
+```c#
+public class BankAccount
+{
+    private decimal balance;  // Only accessible within the class
+
+    public void Deposit(decimal amount)  // Publicly accessible
+    {
+        if (amount > 0) balance += amount;
+    }
+
+    public decimal GetBalance()  // Publicly accessible method
+    {
+        return balance;
+    }
+}
+```
+**Interview Tip**: Explain how access modifiers help encapsulate the data, ensuring only the required parts are accessible from outside the class.
+
+
+
+
+
+
 
 
 
