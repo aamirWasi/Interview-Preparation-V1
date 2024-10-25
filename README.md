@@ -2471,15 +2471,15 @@ app.UseCors("AllowSpecificOrigins");
 
 **Common Uses of Attributes**:
 
-✔️Marking methods as test methods in a unit testing framework (e.g., [TestMethod] in MSTest).
+👉Marking methods as test methods in a unit testing framework (e.g., [TestMethod] in MSTest).
 
-✔️Specifying serialization rules (e.g., [Serializable], [DataMember]).
+👉Specifying serialization rules (e.g., [Serializable], [DataMember]).
 
-✔️Controlling binding and model validation in ASP.NET Core (e.g., [Required], [Bind]).
+👉Controlling binding and model validation in ASP.NET Core (e.g., [Required], [Bind]).
 
-✔️Defining aspects of web service behaviors (e.g., [WebMethod]).
+👉Defining aspects of web service behaviors (e.g., [WebMethod]).
 
-✔️Custom attributes for domain-specific purposes.
+👉Custom attributes for domain-specific purposes.
 
 **Example of Using an Attribute**:
 
@@ -2543,175 +2543,129 @@ public class MyClass
     
     *   A race condition occurs when multiple threads access shared data simultaneously, and the outcome depends on the timing of thread execution. In an e-commerce scenario, two users could try to update the stock of a product at the same time, potentially causing incorrect data to be stored.
         
-    *   Solution: Use locking mechanisms like `lock`, `Mutex`, or `Semaphore` to ensure only one thread can access the shared resource at a time. Alternatively, use high-level concurrency classes like `ConcurrentDictionary` or atomic operations like `Interlocked`.  
+    *   Solution: Use locking mechanisms like `lock`, `Mutex`, or `Semaphore` to ensure only one thread can access the shared resource at a time. Alternatively, use high-level concurrency classes like `ConcurrentDictionary` or atomic operations like `Interlocked`.
           
-          
-        **Example 1: Race Condition Demonstration**
-        
-        Let's consider an example where two users (threads) are trying to update the stock of a product simultaneously without synchronization.
-        
-        #### Code Example Without Proper Synchronization:  
-          
-        using System;
-        
-        using System.Threading;
-        
-        class Program
-        
-        {
-        
-        static int stock = 100;
-        
-        static void Main(string\[\] args)
-        
-        {
-        
-        Thread user1 = new Thread(new ThreadStart(UpdateStock));
-        
-        Thread user2 = new Thread(new ThreadStart(UpdateStock));
-        
-        user1.Start();
-        
-        user2.Start();
-        
-        user1.Join();
-        
-        user2.Join();
-        
-        Console.WriteLine($"Final stock: {stock}");
-        
-        }
-        
-        static void UpdateStock()
-        
-        {
-        
-        int stockBefore = stock;
-        
-        Console.WriteLine($"User {Thread.CurrentThread.ManagedThreadId} sees stock: {stockBefore}");
-        
-        // Simulate some delay
-        
-        Thread.Sleep(100);
-        
-        stockBefore -= 10; // User reduces stock by 10
-        
-        Console.WriteLine($"User {Thread.CurrentThread.ManagedThreadId} updates stock to: {stockBefore}");
-        
-        stock = stockBefore; // Update shared stock variable
-        
-        }
-        
-        }
-        
-          
-        Output (Example) — Race Condition:  
-        User 1 sees stock: 100
-        
-        User 2 sees stock: 100
-        
-        User 1 updates stock to: 90
-        
-        User 2 updates stock to: 90
-        
-        Final stock: 90  
-          
-        **Explanation of Output:**
-        
-        *   Both users saw the stock as 100 (before either thread updated the stock).
-            
-        *   Both users tried to reduce it by 10. However, because they both accessed the stock without synchronization, they both ended up setting it to 90.
-            
-        *   **Final stock is incorrect**: It should have been 80, but due to the race condition, it's 90 because both users overwrote the stock value based on the same initial state.  
-            
-        
-        ### **Example 2: Fixing the Race Condition with Synchronization (**`lock` **keyword)**
-        
-        To avoid race conditions, we can use the `lock` keyword to ensure only one thread can access the shared resource (in this case, the `stock` variable) at a time.
-        
-        #### Code Example With Proper Synchronization:  
-        
-        using System;
-        
-        using System.Threading;
-        
-        class Program
-        
-        {
-        
-        static int stock = 100;
-        
-        static readonly object \_lockObject = new object();
-        
-        static void Main(string\[\] args)
-        
-        {
-        
-        Thread user1 = new Thread(new ThreadStart(UpdateStock));
-        
-        Thread user2 = new Thread(new ThreadStart(UpdateStock));
-        
-        user1.Start();
-        
-        user2.Start();
-        
-        user1.Join();
-        
-        user2.Join();
-        
-        Console.WriteLine($"Final stock: {stock}");
-        
-        }
-        
-        static void UpdateStock()
-        
-        {
-        
-        lock (\_lockObject)
-        
-        {
-        
-        int stockBefore = stock;
-        
-        Console.WriteLine($"User {Thread.CurrentThread.ManagedThreadId} sees stock: {stockBefore}");
-        
-        // Simulate some delay
-        
-        Thread.Sleep(100);
-        
-        stockBefore -= 10; // User reduces stock by 10
-        
-        Console.WriteLine($"User {Thread.CurrentThread.ManagedThreadId} updates stock to: {stockBefore}");
-        
-        stock = stockBefore; // Update shared stock variable
-        
-        }
-        
-        }
-        
-        }
-        
-          
-        **Explanation:**
-        
-        1.  `lock (_lockObject)`: Ensures that only one thread at a time can enter the critical section (reading and updating the stock).
-            
-        2.  The `_lockObject` ensures that other threads must wait until the first thread finishes its update before they can access the `stock`.  
-              
-            Output — With Synchronization:  
-            User 1 sees stock: 100
-            
-            User 1 updates stock to: 90
-            
-            User 2 sees stock: 90
-            
-            User 2 updates stock to: 80
-            
-            Final stock: 80
-            
+**Example 1: Race Condition Demonstration**
 
-### **2\. What is a deadlock, and how can it occur in a .NET application?**
+Let's consider an example where two users (threads) are trying to update the stock of a product simultaneously without synchronization.
 
+#### Code Example Without Proper Synchronization:  
+```c#
+using System;
+using System.Threading;
+        
+class Program
+{
+    static int stock = 100;
+    static void Main(string\[\] args)
+    {
+        Thread user1 = new Thread(new ThreadStart(UpdateStock));
+        Thread user2 = new Thread(new ThreadStart(UpdateStock));
+
+        user1.Start();
+        user2.Start();
+
+        user1.Join();
+        user2.Join();
+
+        Console.WriteLine($"Final stock: {stock}");
+    }
+
+    static void UpdateStock()
+    {
+        int stockBefore = stock;
+        Console.WriteLine($"User {Thread.CurrentThread.ManagedThreadId} sees stock: {stockBefore}");
+
+        // Simulate some delay
+        Thread.Sleep(100);
+
+        stockBefore -= 10; // User reduces stock by 10
+
+        Console.WriteLine($"User {Thread.CurrentThread.ManagedThreadId} updates stock to: {stockBefore}");
+
+        stock = stockBefore; // Update shared stock variable
+    }
+}
+```
+        
+          
+**Output (Example) — Race Condition:**
+
+User 1 sees stock: 100
+User 2 sees stock: 100
+
+User 1 updates stock to: 90
+User 2 updates stock to: 90
+
+Final stock: 90  
+          
+**Explanation of Output:**
+
+*   Both users saw the stock as 100 (before either thread updated the stock).
+    
+*   Both users tried to reduce it by 10. However, because they both accessed the stock without synchronization, they both ended up setting it to 90.
+    
+*   **Final stock is incorrect**: It should have been 80, but due to the race condition, it's 90 because both users overwrote the stock value based on the same initial state.  
+    
+
+### **Example 2: Fixing the Race Condition with Synchronization (**`lock` **keyword)**
+
+To avoid race conditions, we can use the `lock` keyword to ensure only one thread can access the shared resource (in this case, the `stock` variable) at a time.
+
+#### Code Example With Proper Synchronization:  
+```c#
+using System;
+using System.Threading;
+        
+class Program
+{
+    static int stock = 100;
+    static readonly object _lockObject = new object ();
+    static void Main()
+    {
+        Thread user1 = new Thread(new ThreadStart(UpdateStock));
+        Thread user2 = new Thread(new ThreadStart(UpdateStock));
+
+        user1.Start();
+        user2.Start();
+
+        user1.Join();
+        user2.Join();
+
+        Console.WriteLine($"Final stock: {stock}");
+    }
+
+    static void UpdateStock()
+    {
+        lock (_lockObject)
+        {
+            int stockBefore = stock;
+            Console.WriteLine($"User {Thread.CurrentThread.ManagedThreadId} sees stock: {stockBefore}");
+            // Simulate some delay
+            Thread.Sleep(100);
+            stockBefore -= 10; // User reduces stock by 10
+            Console.WriteLine($"User {Thread.CurrentThread.ManagedThreadId} updates stock to: {stockBefore}");
+            stock = stockBefore; // Update shared stock variable
+        }
+    }
+}
+```       
+**Explanation:**
+
+1.  `lock (_lockObject)`: Ensures that only one thread at a time can enter the critical section (reading and updating the stock).
+2.  The `_lockObject` ensures that other threads must wait until the first thread finishes its update before they can access the `stock`.  
+      
+**Output — With Synchronization:**
+
+User 1 sees stock: 100
+User 1 updates stock to: 90
+
+User 2 sees stock: 90
+User 2 updates stock to: 80
+
+Final stock: 80
+            
+### **2. What is a deadlock, and how can it occur in a .NET application?**
 **Follow-up**: Suppose you are developing a banking application where transfers between accounts can happen in parallel. How might a deadlock occur during a funds transfer between two accounts, and how can you prevent it?  
   
 **Answer Guide**:
@@ -2723,70 +2677,46 @@ public class MyClass
 *   Solution: Use a consistent locking order (e.g., always lock Account 1 before Account 2), or use `Monitor.TryEnter` with a timeout to avoid deadlocks.
     
 
-Example 1: Deadlock Code  
+**Example 1: Deadlock Code**  
+```c#
 using System;
-
 using System.Threading;
 
 class Program
-
 {
+    static object account1Lock = new object();
+    static object account2Lock = new object();
 
-static object account1Lock = new object();
+    static void Main()
+    {
+        Thread threadA = new Thread(() => TransferMoney("Thread A", account1Lock, account2Lock));
+        Thread threadB = new Thread(() => TransferMoney("Thread B", account2Lock, account1Lock));
 
-static object account2Lock = new object();
+        threadA.Start();
+        threadB.Start();
 
-static void Main(string\[\] args)
+        threadA.Join();
+        threadB.Join();
 
-{
+        Console.WriteLine("Both threads have completed.");
+    }
 
-Thread threadA = new Thread(() => TransferMoney("Thread A", account1Lock, account2Lock));
-
-Thread threadB = new Thread(() => TransferMoney("Thread B", account2Lock, account1Lock));
-
-threadA.Start();
-
-threadB.Start();
-
-threadA.Join();
-
-threadB.Join();
-
-Console.WriteLine("Both threads have completed.");
-
+    static void TransferMoney(string threadName, object lockA, object lockB)
+    {
+        lock (lockA)
+        {
+            Console.WriteLine($"{threadName} locked first account.");
+            // Simulate some work
+            Thread.Sleep(100);
+            Console.WriteLine($"{threadName} is waiting for the second account...");
+            lock (lockB)
+            {
+                Console.WriteLine($"{threadName} locked second account. Transfer successful!");
+            }
+        }
+    }
 }
-
-static void TransferMoney(string threadName, object lockA, object lockB)
-
-{
-
-lock (lockA)
-
-{
-
-Console.WriteLine($"{threadName} locked first account.");
-
-// Simulate some work
-
-Thread.Sleep(100);
-
-Console.WriteLine($"{threadName} is waiting for the second account...");
-
-lock (lockB)
-
-{
-
-Console.WriteLine($"{threadName} locked second account. Transfer successful!");
-
-}
-
-}
-
-}
-
-}
-
-  
+```
 **Explanation:**
 
 1.  **Two threads (**`Thread A` **and** `Thread B`**)**:
@@ -2803,17 +2733,13 @@ Console.WriteLine($"{threadName} locked second account. Transfer successful!");
         
 3.  **Thread.Sleep(100)** simulates some delay to increase the likelihood of encountering the deadlock.
     
-
-Visualizing the Output:  
+**Visualizing the Output**:  
 Thread A locked first account.
-
 Thread B locked first account.
 
 Thread A is waiting for the second account...
-
 Thread B is waiting for the second account...
 
-  
 **Explanation of Output**:
 
 1.  **Thread A** locks the first account (Account 1) and waits for the second account (Account 2).
@@ -2821,80 +2747,53 @@ Thread B is waiting for the second account...
 2.  **Thread B** locks the second account (Account 2) and waits for the first account (Account 1).
     
 3.  Both threads are now waiting on each other indefinitely, and the program will hang because of the deadlock.
-    
-
 The program will not print the final line `"Both threads have completed."` because neither thread can proceed. They are both stuck waiting for the resource the other thread holds.
 
-  
 **Example 2: Solution Using Consistent Lock Order**
 
 The deadlock can be avoided by enforcing a **consistent locking order**. Always lock **Account 1** before **Account 2**, regardless of the thread’s operation.
 
 #### Code Example With Consistent Locking Order:  
-  
+```c#
 using System;
-
 using System.Threading;
 
 class Program
-
 {
+    static object account1Lock = new object();
+    static object account2Lock = new object();
 
-static object account1Lock = new object();
+    static void Main()
+    {
+        Thread threadA = new Thread(() => TransferMoney("Thread A"));
+        Thread threadB = new Thread(() => TransferMoney("Thread B"));
 
-static object account2Lock = new object();
+        threadA.Start();
+        threadB.Start();
 
-static void Main()
+        threadA.Join();
+        threadB.Join();
 
-{
+        Console.WriteLine("Both threads have completed.");
+    }
 
-Thread threadA = new Thread(() => TransferMoney("Thread A"));
-
-Thread threadB = new Thread(() => TransferMoney("Thread B"));
-
-threadA.Start();
-
-threadB.Start();
-
-threadA.Join();
-
-threadB.Join();
-
-Console.WriteLine("Both threads have completed.");
-
+    static void TransferMoney(string threadName)
+    {
+        // Always lock in the same order: account1Lock first, account2Lock second
+        lock (account1Lock)
+        {
+            Console.WriteLine($"{threadName} locked Account 1.");
+            // Simulate some work
+            Thread.Sleep(100);
+            Console.WriteLine($"{threadName} is waiting for Account 2...");
+            lock (account2Lock)
+            {
+                Console.WriteLine($"{threadName} locked Account 2. Transfer successful!");
+            }
+        }
+    }
 }
-
-static void TransferMoney(string threadName)
-
-{
-
-// Always lock in the same order: account1Lock first, account2Lock second
-
-lock (account1Lock)
-
-{
-
-Console.WriteLine($"{threadName} locked Account 1.");
-
-// Simulate some work
-
-Thread.Sleep(100);
-
-Console.WriteLine($"{threadName} is waiting for Account 2...");
-
-lock (account2Lock)
-
-{
-
-Console.WriteLine($"{threadName} locked Account 2. Transfer successful!");
-
-}
-
-}
-
-}
-
-}
+```
 
 ### **Explanation**:
 
@@ -2902,7 +2801,6 @@ Console.WriteLine($"{threadName} locked Account 2. Transfer successful!");
     
 2.  **Thread.Sleep(100)** is used again to simulate some delay.
     
-
 ### **Visualizing the Output:**
 
 Thread A locked Account 1.  
@@ -2918,7 +2816,6 @@ Thread B locked Account 2. Transfer successful!
 
 Both threads have completed.
 
-  
 **Explanation of Output**:
 
 1.  **Thread A** locks Account 1 and then Account 2, successfully completing the transfer.
@@ -2927,118 +2824,73 @@ Both threads have completed.
     
 3.  The program completes successfully without a deadlock.  
     
-
 ### **Example 3: Avoiding Deadlocks with** `Monitor.TryEnter` **and Timeout**
 
 Another approach to avoid deadlocks is to use `Monitor.TryEnter` with a timeout. This allows a thread to attempt acquiring a lock and, if it can't do so within a specified time, it will exit gracefully instead of waiting indefinitely.
 
 #### Code Example with `Monitor.TryEnter`:  
-  
+```c#
 using System;
-
 using System.Threading;
 
 class Program
-
 {
+    static object account1Lock = new object();
+    static object account2Lock = new object();
 
-static object account1Lock = new object();
+    static void Main()
+    {
+        Thread threadA = new Thread(() => SafeTransfer("Thread A"));
+        Thread threadB = new Thread(() => SafeTransfer("Thread B"));
 
-static object account2Lock = new object();
+        threadA.Start();
+        threadB.Start();
+        
+        threadA.Join();
+        threadB.Join();
 
-static void Main(string\[\] args)
+        Console.WriteLine("Both threads have completed.");
+    }
 
-{
-
-Thread threadA = new Thread(() => SafeTransfer("Thread A"));
-
-Thread threadB = new Thread(() => SafeTransfer("Thread B"));
-
-threadA.Start();
-
-threadB.Start();
-
-threadA.Join();
-
-threadB.Join();
-
-Console.WriteLine("Both threads have completed.");
-
+    static void SafeTransfer(string threadName)
+    {
+        bool lockAccount1 = false;
+        bool lockAccount2 = false;
+        try
+        {
+            lockAccount1 = Monitor.TryEnter(account1Lock, TimeSpan.FromMilliseconds(500));
+            if (lockAccount1)
+            {
+                Console.WriteLine($"{threadName} locked Account 1.");
+                Thread.Sleep(100); // Simulate work
+                lockAccount2 = Monitor.TryEnter(account2Lock, TimeSpan.FromMilliseconds(500));
+                if (lockAccount2)
+                {
+                    Console.WriteLine($"{threadName} locked Account 2. Transfer successful!");
+                }
+                else
+                {
+                    Console.WriteLine($"{threadName} could not lock Account 2. Transfer failed!");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{threadName} could not lock Account 1. Transfer failed!");
+            }
+        }
+        finally
+        {
+            if (lockAccount2) Monitor.Exit(account2Lock);
+            if (lockAccount1) Monitor.Exit(account1Lock);
+        }
+    }
 }
-
-static void SafeTransfer(string threadName)
-
-{
-
-bool lockAccount1 = false;
-
-bool lockAccount2 = false;
-
-try
-
-{
-
-lockAccount1 = Monitor.TryEnter(account1Lock, TimeSpan.FromMilliseconds(500));
-
-if (lockAccount1)
-
-{
-
-Console.WriteLine($"{threadName} locked Account 1.");
-
-Thread.Sleep(100); // Simulate work
-
-lockAccount2 = Monitor.TryEnter(account2Lock, TimeSpan.FromMilliseconds(500));
-
-if (lockAccount2)
-
-{
-
-Console.WriteLine($"{threadName} locked Account 2. Transfer successful!");
-
-}
-
-else
-
-{
-
-Console.WriteLine($"{threadName} could not lock Account 2. Transfer failed!");
-
-}
-
-}
-
-else
-
-{
-
-Console.WriteLine($"{threadName} could not lock Account 1. Transfer failed!");
-
-}
-
-}
-
-finally
-
-{
-
-if (lockAccount2) Monitor.Exit(account2Lock);
-
-if (lockAccount1) Monitor.Exit(account1Lock);
-
-}
-
-}
-
-}
-
-  
+```  
 **Explanation**:
 
 1.  `Monitor.TryEnter` tries to acquire the lock on **Account 1** and **Account 2**, but it will only wait for 500 milliseconds. If the lock cannot be acquired within that time, the thread gives up and avoids deadlock.
     
-2.  **Locks are always released** in the `finally` block to ensure the program exits cleanly, even if the transfer fails.  
-    
+2.  **Locks are always released** in the `finally` block to ensure the program exits cleanly, even if the transfer fails.
 
 **Visualizing the Output**:  
 Thread A locked Account 1.
@@ -3051,7 +2903,6 @@ Thread B could not lock Account 2. Transfer failed!
 
 Both threads have completed.
 
-  
 **Explanation of Output**:
 
 1.  **Thread A** completes the transfer successfully.
@@ -3095,14 +2946,14 @@ Both threads have completed.
 *   For a financial application, you might prefer `Monitor.TryEnter` with a timeout to avoid deadlocks and provide better control over how long the system waits for a lock.
     
 
-5\. **Mutex (Mutual Exclusion)**
+5. **Mutex (Mutual Exclusion)**
 
 *   A **mutex** is a locking mechanism that ensures that only one thread can access a shared resource at a time. It is like having a key to a door: only one person (thread) can hold the key (mutex) and access the room (shared resource) at any given time. The key must be released (unlocked) for others to use it.  
       
     Imagine a single bathroom key that two people (threads) are trying to use. Only one person can enter the bathroom at a time (mutual exclusion). The second person waits until the first person finishes and hands over the key (releases the mutex).  
     
 
-6\. **Semaphore**
+6. **Semaphore**
 
 *   **Semaphore** is used to allow multiple threads to access a limited number of resources concurrently, making it suitable for scenarios where multiple instances of a resource can be shared up to a certain capacity.
     
