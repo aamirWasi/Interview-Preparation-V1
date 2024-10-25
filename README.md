@@ -2297,219 +2297,194 @@ public class FileDownloader
 
 public delegate void DownloadCompletedCallback(string message);
 ```
+## Q25: Can you explain the concept of middleware in ASP.NET Core?
+ Middleware in ASP.NET Core is software that's assembled into an application pipeline to handle requests and responses. Each component in the middleware pipeline is responsible for invoking the next component in the sequence or short-circuiting the chain if necessary. Middleware components can perform a variety of tasks, such as authentication, routing, session management, and logging.
+ 
+Middleware enables you to customize the request pipeline in ways that are most suited to your application's needs. They are executed in the order they are added to the pipeline, allowing for precise control over how requests are processed and how responses are constructed.
+1. Each middleware component can:
+- Process incoming requests.
+- Modify the request or response.
+- Call the next middleware in the pipeline, or short-circuit the pipeline to return a response immediately.
+
+If a middleware component short-circuits, it prevents further middleware from executing (e.g., if authentication fails, you might return an error immediately).
+
+**Real-World Example: Logging Incoming Requests**
+
+Imagine you're building an **e-commerce application**. You want to log every incoming request to the system so that you can monitor traffic or debug issues.
+
+You can create a custom middleware to handle this.
+
+**Step-by-Step: Implementing a Custom Middleware**
+```c#
+//1.Creating the Middleware
+public class RequestLoggingMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public RequestLoggingMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        // Log the incoming request
+        Console.WriteLine($"Incoming Request: {context.Request.Method} {context.Request.Path}");
+        // Call the next middleware in the pipeline
+        await _next(context);
+        // Log after the request has been handled
+        Console.WriteLine($"Response Status Code: {context.Response.StatusCode}");
+    }
+}
+
+//2.Registering the Middleware in the Pipeline
+app.UseMiddleware<RequestLoggingMiddleware>(); 
+// Register custom logging middleware app.UseRouting(); 
+// Sets up routing app.UseAuthentication(); 
+// Handles authentication app.UseEndpoints(endpoints => { endpoints.MapControllers(); // Maps API controllers });
+```
+**Testing the Middleware**
+
+Now, whenever you make an HTTP request (e.g., to /api/products), you’ll see the following output in your console:
+
+Incoming Request: GET /api/products
+
+Response Status Code: 200
+
+**Middleware Order**
+
+The order of middleware in the pipeline is critical. For example, authentication middleware must run before authorization middleware because a user must be authenticated before checking if they have the right permissions.
+```c#
+app.UseAuthentication(); // Authenticate the user
+app.UseAuthorization(); // Check if the user is allowed to access the resource
+```
+**Sgort-Circut**: In ASP.NET Core, short-circuiting refers to a scenario where a middleware in the request pipeline stops the flow and prevents further middleware components from executing. This can occur deliberately (by design) or unintentionally.
+
+**When Does Short-Circuiting Happen?**
+
+Short-circuiting can happen when:
+1. A middleware decides to handle the request completely without calling the next middleware in the pipeline (by not calling await _next(context);).
+2. A condition is met that causes a middleware to return a response immediately, such as an authentication failure or a validation error.
+
+**Example of Short-Circuiting**
+
+Consider the following middleware pipeline:
+```c#
+public class Startup
+{
+    public void Configure(IApplicationBuilder app)
+    {
+        app.UseMiddleware<RequestLoggingMiddleware>();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseRouting();
+        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+    }
+}
+```
+**Scenario 1: Short - circuiting with Authentication**
+
+If a request comes in and the user is not authenticated, app.UseAuthentication() middleware might short-circuit the pipeline by returning an unauthorized (401) response, without passing the request further down the pipeline (e.g., app.UseAuthorization() or app.UseEndpoints() won’t execute).
+
+Here's an example where authentication middleware might short-circuit:
+```c#
+public class AuthenticationMiddleware
+{
+    private readonly RequestDelegate _next;
+    public AuthenticationMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        // Simulate an authentication check
+        bool isAuthenticated = false;
+        if (!isAuthenticated)
+        {
+            // Short-circuit the pipeline by returning a 401 Unauthorized response
+            context.Response.StatusCode = 401;
+            await context.Response.WriteAsync("Unauthorized");
+            return; // No call to _next(context), so no further middleware is invoked
+        }
+
+        await _next(context); // Pass the request to the next middleware
+    }
+}
+```
+In this case:
+- If the user is not authenticated, the pipeline is short-circuited. The middleware returns a 401 response and does not call _next(context), preventing further middleware (like routing, authorization, etc.) from running.
+- If the user is authenticated, it proceeds to the next middleware by calling _next(context).
+
+**Scenario 2: Short-circuiting with Custom Middleware**
+
+Let’s take another example where a custom logging middleware short-circuits the pipeline for certain requests:
+```c#
+public class RequestLoggingMiddleware
+{
+    private readonly RequestDelegate _next;
+    public RequestLoggingMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        // Check for a special condition (e.g., a certain request path)
+        if (context.Request.Path == "/forbidden")
+        {
+            // Short-circuit the pipeline by returning a 403 Forbidden response
+            context.Response.StatusCode = 403;
+            await context.Response.WriteAsync("Forbidden path");
+            return; // Prevent further middleware from executing
+        }
+
+        await _next(context); // Otherwise, pass the request to the next middleware
+    }
+}
+```
+## Q26: What is CORS(Cross - Origin Resource Sharing) ?
+**CORS(Cross - Origin Resource Sharing)** is a security feature implemented by web browsers that controls how web applications interact with resources from different origins (domains). 
+
+**CORS (Cross-Origin Resource Sharing)** is a security feature implemented by browsers to prevent unauthorized cross-origin requests. It is important for security purposes, ensuring that web applications can't freely access resources from different origins without permission.
+```c#
+// Define a CORS policy 
+builder
+    .Services
+    .AddCors(options => 
+    { 
+        options.AddPolicy("AllowSpecificOrigins", builder => { 
+                builder
+                  .WithOrigins("http://example.com")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+    });
+
+// Apply the CORS policy globally
+app.UseCors("AllowSpecificOrigins");
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 > 13. Describe what LINQ is and give an example of where it might be used.
-
-> 14. What is the difference between an abstract class and an interface?
-
-1.**Abstract Classes**: Provide a base class with some implementation and abstract methods that derived classes must implement.
-
-**Interfaces**: Define a contract that classes must follow but do not provide any implementation.  
-  
-**Interview Tip**: Use an **abstract class** when there is shared behavior among subclasses, but use an **interface** when different classes need to follow the same contract, without enforcing shared behavior.  
-  
-public abstract class Payment
-
-{
-
-public void LogTransaction(decimal amount) // Concrete method
-
-{
-
-Console.WriteLine($"Logging transaction of {amount:C}.");
-
-}
-
-public abstract void ProcessPayment(decimal amount); // Abstract method
-
-}
-
-public class CreditCardPayment : Payment
-
-{
-
-public override void ProcessPayment(decimal amount)
-
-{
-
-Console.WriteLine($"Processing credit card payment of {amount:C}.");
-
-}
-
-}
-
-public class PayPalPayment : Payment
-
-{
-
-public override void ProcessPayment(decimal amount)
-
-{
-
-Console.WriteLine($"Processing PayPal payment of {amount:C}.");
-
-}
-
-}
-
-  
-public interface INotification
-
-{
-
-void Send(string message);
-
-}
-
-public class EmailNotification : INotification
-
-{
-
-public void Send(string message)
-
-{
-
-Console.WriteLine($"Sending email notification: {message}");
-
-}
-
-}
-
-public class SMSNotification : INotification
-
-{
-
-public void Send(string message)
-
-{
-
-Console.WriteLine($"Sending SMS notification: {message}");
-
-}
-
-}
-
-2.  Q: Only abstract methods (unless default methods in C# 8+) when it recommended to use default methods in interfaces with examples?  
-      
-    In C# 8 and later, **default methods in interfaces** (also known as **default interface methods**) allow you to provide a **default implementation** for methods directly in the interface. This was a significant change, as prior to C# 8, interfaces could only contain method signatures (i.e., no implementation).  
-      
-    **Backward Compatibility**: If you want to extend an interface by adding new methods without breaking the existing implementations that already implement the interface.  
-      
-    public interface IPaymentProcessor
-    
-    {
-    
-    void ProcessPayment(decimal amount);
-    
-    // New method with a default implementation
-    
-    void LogPayment(decimal amount)
-    
-    {
-    
-    Console.WriteLine($"Logging payment of {amount}");
-    
-    }
-    
-    }
-    
-    public class CreditCardPayment : IPaymentProcessor
-    
-    {
-    
-    public void ProcessPayment(decimal amount)
-    
-    {
-    
-    Console.WriteLine($"Processing credit card payment of {amount}");
-    
-    }
-    
-    // This class doesn't need to implement LogPayment, it can use the default
-    
-    }
-    
-    public class PayPalPayment : IPaymentProcessor
-    
-    {
-    
-    public void ProcessPayment(decimal amount)
-    
-    {
-    
-    Console.WriteLine($"Processing PayPal payment of {amount}");
-    
-    }
-    
-    // This class can also use the default LogPayment implementation
-    
-    }
-    
-      
-    Shared Behavior Across Implementations: If there is some common functionality that multiple implementations of the interface will share, you can provide that behavior in the default method, avoiding code duplication.  
-      
-    public interface IDiscountCalculator
-    
-    {
-    
-    decimal CalculateDiscount(decimal totalAmount);
-    
-    // Default method to calculate seasonal discounts
-    
-    decimal ApplySeasonalDiscount(decimal totalAmount)
-    
-    {
-    
-    return totalAmount \* 0.90m; // 10% off as a default seasonal discount
-    
-    }
-    
-    }
-    
-    public class HolidayDiscount : IDiscountCalculator
-    
-    {
-    
-    public decimal CalculateDiscount(decimal totalAmount)
-    
-    {
-    
-    // Specific discount calculation for holidays
-    
-    return ApplySeasonalDiscount(totalAmount - 20); // Additional $20 off
-    
-    }
-    
-    }
-    
-    public class RegularDiscount : IDiscountCalculator
-    
-    {
-    
-    public decimal CalculateDiscount(decimal totalAmount)
-    
-    {
-    
-    // Uses the default seasonal discount provided in the interface
-    
-    return ApplySeasonalDiscount(totalAmount);
-    
-    }
-    
-    }
-    
-3.  When to Avoid Default Methods?  
-    **Over-complicating interfaces**: If you add too many default methods, interfaces can become bloated and harder to understand.
-    
-    **Increased coupling**: Default methods can sometimes introduce coupling between the interface and its implementations, which can make future changes more difficult.
-    
-    **Breaking SOLID principles**: If you're not careful, default methods can violate principles like **Single Responsibility Principle (SRP)** by adding too much behavior to an interface that should focus solely on abstraction.
 
 > 15. How do you manage memory in .NET applications?
 
 > 16. Explain the concept of threading in .NET.
 
-### 1\. **What is a race condition, and how can it occur in a multi-threaded .NET application?**
+### 1. **What is a race condition, and how can it occur in a multi-threaded .NET application?**
 
 *   **Follow-up**: Imagine you are building an e-commerce application where multiple users can update the stock of products. How would a race condition manifest in this scenario, and how can you avoid it?  
       
@@ -2818,7 +2793,7 @@ static object account1Lock = new object();
 
 static object account2Lock = new object();
 
-static void Main(string\[\] args)
+static void Main()
 
 {
 
@@ -3047,7 +3022,7 @@ Both threads have completed.
       
     
 
-### **3\. How would you avoid deadlocks when using** `async` **and** `await` **in .NET?**
+### **3. How would you avoid deadlocks when using** `async` **and** `await` **in .NET?**
 
 *   **Follow-up**: In an order processing system, you have asynchronous calls to an external payment gateway followed by calls to update the order status in the database. How would you structure your code to avoid deadlocks?
     
@@ -3059,7 +3034,7 @@ Both threads have completed.
 *   Solution: Always await asynchronous calls and avoid blocking the thread with `.Result` or `Wait()`. Ensure that all calls in the chain are asynchronous.
     
 
-4\. Can you explain the difference between `lock` and `Monitor` in .NET? When would you use one over the other?  
+4. Can you explain the difference between `lock` and `Monitor` in .NET? When would you use one over the other?  
 **Follow-up**: Imagine a financial application where transactions need to be locked before processing. Would you use `lock` or `Monitor`, and why?  
   
 **Answer Guide**:
