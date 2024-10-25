@@ -1491,30 +1491,354 @@ notificationService.Notify("Your order has been shipped.");
 **Interview Tip**: Emphasize that the NotificationService depends on the INotificationSender interface (abstraction), not on specific implementations like EmailNotificationSender or SMSNotificationSender. This makes the system flexible—changing the notification method doesn’t affect the high-level module.
 ## Q22:  How do SOLID principles help in writing better code?
 Adhering to SOLID principles, especially DIP, makes it easier to mock dependencies in unit tests. For instance, if a service depends on an interface instead of a concrete implementation, you can easily inject a mock or stub to test different scenarios without touching the actual implementation.
+## Q22: What is the Dependency Inversion Principle (DIP), and how does it differ from Dependency Injection?
+**DIP**: The Dependency Inversion Principle (DIP) is a design principle in the SOLID principles that says:
+1. High-level modules (business logic) should not depend on low-level modules (details). Both should depend on abstractions. Abstractions should not depend on details. Details (implementations) should depend on abstractions.
+2. DIP is one of the SOLID principles and states that high-level modules should not depend on low-level modules. Both should depend on abstractions (interfaces or abstract classes). This decouples classes and makes the system more flexible and maintainable. Dependency Injection is a technique used to implement DIP by injecting dependencies (like services) rather than hardcoding them inside classes.
 
+**How is DIP applied in your code?**
 
+**High-Level Module:**
+```c#
+public class NotificationService
+{
+	private readonly INotificationSender _notificationSender;
 
+	public NotificationService(INotificationSender notificationSender)
+	{
+		_notificationSender = notificationSender;
+	}
 
+	public void Notify(string message)
+	{
+		_notificationSender.Send(message);
+	}
+}
+```
+NotificationService is the high-level module. It’s responsible for notifying users with messages.
 
+Instead of depending directly on low-level modules (like EmailNotificationSender or SMSNotificationSender), it depends on an abstraction (INotificationSender).
 
+**Low-Level Modules**:
+```c#
+public class EmailNotificationSender : INotificationSender
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Sending Email: {message}");
+    }
+}
 
+public class SMSNotificationSender : INotificationSender
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Sending SMS: {message}");
+    }
+}
+```
+EmailNotificationSender and SMSNotificationSender are low-level modules that implement the INotificationSender abstraction.
 
+The abstraction (INotificationSender) does not depend on the details of how emails or SMS are sent. Instead, these implementations depend on the abstraction.
 
+**What happens if you don't follow DIP in your design?**
+- Violating DIP creates tight coupling between classes, making the system harder to maintain or extend. For example, if a reporting system depends directly on SqlReportGenerator, switching to another reporting method (e.g., CsvReportGenerator) requires changes in every place where SqlReportGenerator is used. By depending on an abstraction (like IReportGenerator), the switch is seamless.
 
+**What is Dependency Injection (DI) and what are the types of DI?**
 
+**DI**: DI is a technique used to inject dependencies into a class, rather than the class creating the dependencies itself. This makes the code more flexible, testable, and easier to maintain. This promotes loose coupling. The three types of DI are:
+1. **Constructor Injection**: Dependencies are provided through a class's constructor.
+2. **Property (Setter) Injection**: Dependencies are assigned via public properties.
+3. **Method Injection**: Dependencies are passed through a method when needed.
 
+**Advantages:**
 
+- Loose Coupling: Classes are decoupled, making the code easier to maintain and extend.
+- Testability: It’s easier to unit test components since dependencies can be mocked or substituted.
+- Flexibility: Components can be reused and swapped out without modifying the consuming code.
 
+**What are the different types of lifetimes in IoC containers, and how do they affect object creation?**
 
+1. **Transient**: A new instance is created every time it's requested.
+2. **Scoped**: A new instance is created per request (or scope), making it useful for web applications.
+3. **Singleton**: A single instance is created and shared throughout the application’s lifetime.
 
+**What is Inversion of Control (IoC), and how is it related to Dependency Injection?**
 
+**Inversion of Control (IoC)**: IoC is a broader principle that says the control of object creation and the flow of a program should be inverted from traditional procedural code. Rather than a class controlling its dependencies, external code controls them. Dependency Injection is one specific way to implement IoC, by injecting dependencies into classes rather than allowing them to create their own.
 
+**Can you give a real-life example of IoC?**
 
+In a web application, the framework (like ASP.NET Core) manages the lifecycle of controllers and services. You don't manually instantiate these components; instead, the framework injects them where needed using DI containers, inverting the control of object creation.
 
+**What is an IoC container, and why is it useful?**
 
+An IoC container is a framework that manages object creation and lifetime. It resolves dependencies automatically and injects them where needed. Examples include ASP.NET Core's built-in DI container, Autofac, and Ninject.
 
+**Why it's useful**: It simplifies dependency management by handling object creation, lifecycle management (e.g., singleton, scoped), and dependency resolution, making your code cleaner and easier to maintain.
 
+**How does IoC promote loose coupling in a system?**
 
+IoC removes the responsibility of instantiating dependencies from the classes that use them, allowing classes to depend on abstractions (interfaces) rather than specific implementations. This makes it easier to replace dependencies without modifying the dependent classes, promoting flexibility and reducing coupling.
+
+**What is the difference between Service Locator and Dependency Injection?**
+
+Service Locator and Dependency Injection (DI) are two different patterns used to manage dependencies in software systems. Both aim to decouple classes from their dependencies, but they differ in how they achieve this.
+
+In Dependency Injection, the framework or external code injects dependencies, keeping the class unaware of how its dependencies are being provided. In contrast, a Service Locator involves the class itself actively looking up its dependencies from a registry or service container. DI promotes better separation of concerns, while Service Locator can result in hidden dependencies and tighter coupling.
+
+**1. Dependency Injection** is a design pattern where dependencies (objects that a class depends on) are provided to the class from the outside, typically through the constructor, properties, or methods. The class does not create its own dependencies but instead relies on an external source (e.g., an IoC container) to inject them.
+
+**How it Works:**
+
+- Inversion of Control (IoC) is applied, where the responsibility for providing dependencies is shifted from the class itself to an external container.
+- Dependencies are passed to the class, making it easier to change or swap them.
+
+**Real-World Example**:
+
+Imagine you’re working on an email notification system where different methods of sending emails (e.g., SMTP or an external API) are needed.
+
+**Code Example (Constructor Injection)**:
+```c#
+public interface IEmailService
+{
+    void SendEmail(string message);
+}
+
+public class SmtpEmailService : IEmailService
+{
+    public void SendEmail(string message)
+    {
+        Console.WriteLine($"Sending email via SMTP: {message}");
+    }
+}
+
+public class NotificationService
+{
+    private readonly IEmailService _emailService;
+
+    // Dependency Injection via constructor
+    public NotificationService(IEmailService emailService)
+    {
+        _emailService = emailService;
+    }
+
+    public void Notify(string message)
+    {
+        _emailService.SendEmail(message);
+    }
+}
+```
+### Explanation:
+- NotificationService does not create its own IEmailService implementation; instead, it's injected via the constructor.
+- This allows you to easily switch from SmtpEmailService to another implementation, like ApiEmailService, without modifying the NotificationService.
+
+**Usage**:
+```c#
+var emailService = new SmtpEmailService();  // Dependency
+var notificationService = new NotificationService(emailService);
+notificationService.Notify("Hello, Dependency Injection!");
+```
+**2. Service Locator**: The Service Locator pattern provides a way to get dependencies by querying a central registry (the locator) that holds the mappings between interfaces and their concrete implementations. The class itself actively requests the dependencies from the service locator.
+
+**How it Works**:
+
+- The class calls a global service locator to get its dependencies, instead of having them injected.
+- The service locator can be seen as a container that provides the required services when requested.
+
+**Real-World Example**:
+
+- Let's use the same email notification system example but apply the Service Locator pattern instead.
+
+**Code Example (Service Locator)**:
+```c#
+public interface IEmailService
+{
+    void SendEmail(string message);
+}
+
+public class SmtpEmailService : IEmailService
+{
+    public void SendEmail(string message)
+    {
+        Console.WriteLine($"Sending email via SMTP: {message}");
+    }
+}
+
+// Service Locator class
+public static class ServiceLocator
+{
+    private static Dictionary<Type, object> _services = new Dictionary<Type, object>();
+
+    public static void Register<T>(T service)
+    {
+        _services[typeof(T)] = service;
+    }
+
+    public static T GetService<T>()
+    {
+        return (T)_services[typeof(T)];
+    }
+}
+
+public class NotificationService
+{
+    public void Notify(string message)
+    {
+        var emailService = ServiceLocator.GetService<IEmailService>();
+        emailService.SendEmail(message);
+    }
+}
+```
+### Explanation:
+- NotificationService now relies on the Service Locator to obtain the IEmailService implementation when needed. It queries the locator for the service at runtime.
+- This reduces the need for injecting the dependency directly but hides the class's dependencies, making the system less transparent.
+
+**Usage**:
+```c#
+ServiceLocator.Register<IEmailService>(new SmtpEmailService());
+var notificationService = new NotificationService();
+notificationService.Notify("Hello, Service Locator!");
+```
+### Key Differences
+**1. Dependency Injection**:
+
+- Responsibilities: The class does not know or control where its dependencies come from. They are provided from the outside (via the constructor, property, or method).
+- Transparency: Dependencies are explicitly listed in the class (e.g., through constructor parameters), making them easier to understand and test.
+- Loose Coupling: The class is fully decoupled from its dependencies.
+- Unit Testing: Dependencies can easily be mocked for unit testing.
+- Example: A notification service receives an email service through its constructor.
+
+**2. Service Locator**:
+
+- Responsibilities: The class actively retrieves its dependencies from a central service locator.
+- Transparency: The dependencies are hidden, making it harder to know what the class depends on just by looking at its interface.
+- Tight Coupling to Locator: The class becomes dependent on the service locator, which can make testing and maintenance harder.
+- Unit Testing: Requires more setup, as the service locator needs to be properly configured or mocked.
+- Example: A notification service queries a service locator to obtain an email service.
+
+**In summary,** while both Service Locator and Dependency Injection decouple object creation from their usage, **Dependency Injection** promotes better transparency, maintainability, and testability. **Service Locator**, on the other hand, can hide dependencies and make testing more difficult, but it can simplify things for smaller projects.
+
+## What is Captive dependency injection?
+
+In **Dependency Injection (DI)**, a **captive dependency** problem arises when a transient dependency is inadvertently captured by a longer-lived object, such as a singleton or scoped service. This can cause unexpected behavior, performance issues, or improper resource management.
+**The Problem**:
+
+When a **singleton** service depends on a **transient** service (directly or indirectly), it causes the transient service to live longer than expected, as it becomes "captured" by the singleton’s long lifetime. This is problematic because transient services are meant to be short-lived and may not perform well if they are kept alive for longer than intended.
+
+**Example of a Captive Dependency Problem in .NET**
+
+Let’s say you have the following service lifetimes:
+- **Singleton**: Created once and lives throughout the application lifetime.
+- **Scoped**: Created once per request or scope.
+- **Transient**: Created each time it is requested.
+Now, consider this setup:
+```c#
+public class MySingletonService
+{
+    private readonly ITransientService _transientService;
+
+    public MySingletonService(ITransientService transientService)
+    {
+        _transientService = transientService;
+    }
+
+    public void PerformOperation()
+    {
+        _transientService.DoWork(); // Calling the transient service
+    }
+}
+
+public interface ITransientService
+{
+    void DoWork();
+}
+
+public class TransientService : ITransientService
+{
+    public void DoWork()
+    {
+        Console.WriteLine("Doing transient work");
+    }
+}
+```
+In the above example:
+
+- MySingletonService is a singleton service.
+- TransientService is a transient service.
+
+Here’s the DI registration:
+```c#
+services.AddSingleton<MySingletonService>();
+services.AddTransient<ITransientService, TransientService>();
+```
+**Why is this a Problem?**
+- **Lifetime Mismatch**: The transient service is supposed to be created every time it’s requested. However, since it is injected into a singleton service, the transient service will only be created once and will live as long as the singleton does. This breaks the transient’s intended lifecycle, leading to:
+  - Resource leakage.
+  - Unexpected side effects (e.g., stale data or incorrect state in the transient service).
+
+**Solution**:
+To avoid the captive dependency problem, you can inject a factory or service provider to ensure that transient services are created properly every time they are needed.
+
+**Solution 1: Injecting a Factory or Func**
+
+You can inject a factory method to create a new instance of the transient service whenever needed.
+```c#
+public class MySingletonService
+{
+    private readonly Func<ITransientService> _transientServiceFactory;
+
+    public MySingletonService(Func<ITransientService> transientServiceFactory)
+    {
+        _transientServiceFactory = transientServiceFactory;
+    }
+
+    public void PerformOperation()
+    {
+        var transientService = _transientServiceFactory(); // Create a new transient instance
+        transientService.DoWork(); 
+    }
+}
+```
+**Registration:**
+```c#
+services.AddSingleton<MySingletonService>();
+services.AddTransient<ITransientService, TransientService>();
+```
+- In this case, the Func<ITransientService> will create a new instance of TransientService every time PerformOperation is called.
+- Func<ITransientService> is a delegate (function pointer) that can be invoked to create a new instance of ITransientService. By storing this delegate, we defer the creation of the transient service until it’s actually needed. This is key to solving the captive dependency problem.
+
+**Solution 2: Injecting IServiceProvider**
+
+Another approach is to inject the IServiceProvider, which allows you to resolve transient services as needed.
+```c#
+public class MySingletonService
+{
+    private readonly IServiceProvider _serviceProvider;
+
+    public MySingletonService(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
+    public void PerformOperation()
+    {
+        var transientService = _serviceProvider.GetRequiredService<ITransientService>();
+        transientService.DoWork(); 
+    }
+}
+```
+**Registration**:
+```c#
+services.AddSingleton<MySingletonService>();
+services.AddTransient<ITransientService, TransientService>();
+```
+Here, the IServiceProvider creates a new instance of TransientService when requested. This avoids the captive dependency problem because the transient service is created with its expected lifecycle every time it’s needed.
+### Summary:
+- The captive dependency problem occurs when a transient or scoped service is "captured" by a singleton or scoped service, causing unintended behavior.
+- To solve this, avoid injecting transient services directly into singletons. Instead, inject a factory (Func) or the IServiceProvider to create transient services as needed, ensuring their proper lifecycle.
+- This ensures that the singleton service can still use transient services without violating their expected lifetimes.
+By following these patterns, you can avoid lifecycle mismatches and maintain proper dependency management in your ASP.NET Core application.
 
 
 
