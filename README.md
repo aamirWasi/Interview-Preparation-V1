@@ -3066,15 +3066,15 @@ In asynchronous programming, particularly when using `async` and `await` in C#, 
 
 A Task can have different states, including:
 
-👉Created: The task is created but not yet running.
+👉**Created**: The task is created but not yet running.
 
-👉Running: The task is currently running.
+👉**Running**: The task is currently running.
 
-👉Completed: The task has finished running.
+👉**Completed**: The task has finished running.
 
-👉Faulted: The task encountered an error.
+👉**Faulted**: The task encountered an error.
 
-👉Canceled: The task was canceled.
+👉**Canceled**: The task was canceled.
 
 **How do you handle exceptions in a method that returns a Task?**
 
@@ -3163,7 +3163,7 @@ Handling exceptions in tasks is crucial for writing robust and error-resistant a
 
 In C#, both async/await and Task.Wait are used for handling asynchronous operations, but they work differently in terms of their behavior and how they should be used in modern asynchronous programming.
 
-**1. async/await**
+**1.🤔 async/await**
 
 👉**Purpose**: async/await is designed to simplify writing asynchronous code. It makes asynchronous code look like synchronous code, making it easier to read and maintain.
 
@@ -3183,7 +3183,7 @@ public async Task FetchDataAsync()
 ```
 In this example, await allows the method to be asynchronous without blocking the calling thread.
 
-**2.🤔🤔🤔 Task.Wait**
+**2.🤔 Task.Wait**
 
 👉**Purpose**: Task.Wait is used in scenarios where you want to block the calling thread until a task completes.
 
@@ -3224,7 +3224,7 @@ In this example, Task.Wait() blocks the thread until the task completes, which c
 
 👉Avoid Task.Wait() in asynchronous code, especially in GUI or web applications, as it blocks the thread and can degrade performance.
 
-**3.🤔🤔🤔 Task.WhenAll**
+**3.🤔 Task.WhenAll**
 
 Processing Multiple Data Fetch Requests Simultaneously
 ```c#
@@ -3637,896 +3637,576 @@ class Program
 
 - Use Task.WaitAll() when you want to block the current thread until all tasks are complete and you do not require asynchronous behavior.
 - Use Task.WhenAll() when you want to run tasks asynchronously and await their completion without blocking the current thread.
+## 🤔🤔🤔Q27. Describe the Entity Framework and its advantages?
+👉**1. Explain the difference between `DbContext` and `DbSet`.**
 
+**DbContext**: This is a class that manages the database connection and is used to configure and interact with the database using EF Core. It is responsible for querying and saving data.
 
-
-
-
-> 13. Describe what LINQ is and give an example of where it might be used.
-
-> 15. How do you manage memory in .NET applications?
-
-> 16. Explain the concept of threading in .NET.
-> 18. Describe the Entity Framework and its advantages.
-
-1.  Explain the difference between `DbContext` and `DbSet`.  
-      
-    **Answer:**
-    
-    *   **DbContext:** This is a class that manages the database connection and is used to configure and interact with the database using EF Core. It is responsible for querying and saving data.
+**DbSet**: This is a class that represents a collection of entities of a specific type that can be queried from the database. Each entity type that you want to include in your model must have a `DbSet` property in your `DbContext` class.
         
-    *   **DbSet:** This is a class that represents a collection of entities of a specific type that can be queried from the database. Each entity type that you want to include in your model must have a `DbSet` property in your `DbContext` class.
-        
-2.  What is the purpose of the `OnModelCreating` method in EF Core?
+👉**2. What is the purpose of the `OnModelCreating` method in EF Core?**
+
+The **OnModelCreating**` method is used to configure the model using the ModelBuilder API. It is where you can define schema details, relationships, table mappings, and more. This method is overridden in your `DbContext` class to configure entity properties and 
+relationships.
     
-    **Answer:**  
-    The `OnModelCreating` method is used to configure the model using the ModelBuilder API. It is where you can define schema details, relationships, table mappings, and more. This method is overridden in your `DbContext` class to configure entity properties and relationships.
+👉**3. How can you configure a many-to-many relationship in EF Core?**
     
-3.  How can you configure a many-to-many relationship in EF Core?
-    
-    **Answer:**  
-    In EF Core, a many-to-many relationship can be configured using a join entity that contains the foreign keys to the two related entities. Here's an example:  
-    
-    using Microsoft.EntityFrameworkCore;
-    
-    public class Student
-    
-    {
-    
+In EF Core, a many-to-many relationship can be configured using a join entity that contains the foreign keys to the two related entities. Here's an example:  
+```c#
+using Microsoft.EntityFrameworkCore;
+
+public class Student
+{
     public int Id { get; set; }
-    
     public string Name { get; set; } = string.Empty;
-    
     public ICollection<StudentCourse> Courses { get; set; }
-    
-    }
-    
-    public class Course
-    
-    {
-    
+}
+
+public class Course
+{
     public int Id { get; set; }
-    
     public string Title { get; set; } = string.Empty;
-    
     public ICollection<StudentCourse> Students { get; set; }
-    
-    }
-    
-    public class StudentCourse
-    
-    {
-    
+}
+
+public class StudentCourse
+{
     public int StudentId { get; set; }
-    
     public Student Student { get; set; }
-    
     public int CourseId { get; set; }
-    
     public Course Course { get; set; }
-    
-    }
-    
-    public class User
-    
-    {
-    
+}
+
+public class User
+{
     public int Id { get; set; }
-    
     public string Name { get; set; }
-    
     public UserProfile UserProfile { get; set; }
-    
-    }
-    
-    public class UserProfile
-    
-    {
-    
+}
+
+public class UserProfile
+{
     public int Id { get; set; }
-    
     public string Bio { get; set; }
-    
     public int UserId { get; set; }
-    
     public User User { get; set; }
-    
-    }
-    
-    public class Blog
-    
-    {
-    
+}
+
+public class Blog
+{
     public int Id { get; set; }
-    
     public string Name { get; set; } = string.Empty;
-    
     public ICollection<Post> Posts { get; set; }
-    
-    }
-    
-    public class Post
-    
-    {
-    
+}
+
+public class Post
+{
     public int Id { get; set; }
-    
     public string Title { get; set; } = string.Empty;
-    
     public string Content { get; set; } = string.Empty;
-    
     public int BlogId { get; set; }
-    
     public Blog Blog { get; set; }
-    
-    }
-    
-    public class ApplicationDbContext : DbContext
-    
-    {
-    
+}
+
+public class ApplicationDbContext : DbContext
+{
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    
     {
-    
+
     }
-    
+
     public DbSet<Student> Students { get; set; }
-    
     public DbSet<Course> Courses { get; set; }
-    
     public DbSet<User> Users { get; set; }
-    
     public DbSet<UserProfile> UserProfiles { get; set; }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    
     {
-    
-    //many to many starts
-    
-    modelBuilder.Entity<StudentCourse>()
-    
-    .HasKey(sc => new { sc.StudentId, sc.CourseId });
-    
-    modelBuilder.Entity<StudentCourse>()
-    
-    .HasOne(sc => sc.Student)
-    
-    .WithMany(sc => sc.Courses)
-    
-    .HasForeignKey(sc => sc.StudentId);
-    
-    modelBuilder.Entity<StudentCourse>()
-    
-    .HasOne(sc => sc.Course)
-    
-    .WithMany(sc => sc.Students)
-    
-    .HasForeignKey(sc => sc.CourseId);
-    
-    //many to many ends
-    
-    //one to one stars
-    
-    modelBuilder.Entity<User>()
-    
-    .HasOne(u => u.UserProfile)
-    
-    .WithOne(up => up.User)
-    
-    .HasForeignKey<UserProfile>(up => up.UserId);
-    
-    //one to one ends
-    
-    //one to many starts
-    
-    modelBuilder.Entity<Blog>()
-    
-    .HasMany(b => b.Posts)
-    
-    .WithOne(p => p.Blog)
-    
-    .HasForeignKey(p => p.BlogId);
-    
-    //one to many ends
-    
+	//many to many starts
+	modelBuilder.Entity<StudentCourse>()
+	.HasKey(sc => new { sc.StudentId, sc.CourseId });
+
+	modelBuilder.Entity<StudentCourse>()
+	.HasOne(sc => sc.Student)
+	.WithMany(sc => sc.Courses)
+	.HasForeignKey(sc => sc.StudentId);
+
+	modelBuilder.Entity<StudentCourse>()
+	.HasOne(sc => sc.Course)
+	.WithMany(sc => sc.Students)
+	.HasForeignKey(sc => sc.CourseId);
+
+	//many to many ends
+
+	//one to one stars
+	modelBuilder.Entity<User>()
+	.HasOne(u => u.UserProfile)
+	.WithOne(up => up.User)
+	.HasForeignKey<UserProfile>(up => up.UserId);
+
+	//one to one ends
+
+	//one to many starts
+	modelBuilder.Entity<Blog>()
+	.HasMany(b => b.Posts)
+	.WithOne(p => p.Blog)
+	.HasForeignKey(p => p.BlogId);
+	//one to many ends
     }
+}
+```
+👉**4. What is the difference between `AsNoTracking` and `AsTracking` in EF Core?**
     
-    }
-    
-4.  What is the difference between `AsNoTracking` and `AsTracking` in EF Core?
-    
-    **Answer:**
-    
-    *   `AsNoTracking`**:** This method returns entities without tracking them in the `DbContext`. This is useful for read-only scenarios where the performance can be improved by not tracking the entities.
+- **AsNoTracking**: This method returns entities without tracking them in the `DbContext`. This is useful for read-only scenarios where the performance can be improved by not tracking the entities.
+
+- **AsTracking**: This is the default behavior. It tracks the entities returned by the query, meaning any changes to these entities are monitored by the `DbContext` and can be persisted to the database during `SaveChanges`.
         
-    *   `AsTracking`**:** This is the default behavior. It tracks the entities returned by the query, meaning any changes to these entities are monitored by the `DbContext` and can be persisted to the database during `SaveChanges`.
-        
-5.  What are global query filters in EF Core?
+👉**5. What are global query filters in EF Core?**
     
-    **Answer:**  
-    Global query filters are filters applied to all queries executed against a particular entity type. These filters are defined in the `OnModelCreating` method and are useful for scenarios like soft deletes or multi-tenancy. Example:  
-    modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
+Global query filters are filters applied to all queries executed against a particular entity type. These filters are defined in the `OnModelCreating` method and are useful for scenarios like soft deletes or multi-tenancy. 
+Example:
+```c#
+modelBuilder
+    .Entity<Product>()
+    .HasQueryFilter(p => !p.IsDeleted);
+```
+👉**6. How do you handle concurrency conflicts in EF Core?**
     
-6.  How do you handle concurrency conflicts in EF Core?
-    
-    **Answer:**  
-    Concurrency conflicts occur when multiple processes try to update the same data at the same time. EF Core provides optimistic concurrency control. You can configure a property to be a concurrency token:  
-      
-    public class Product
-    
-    {
-    
-    public int Id { get; set; }
-    
-    public string Name { get; set; }
-    
-    \[ConcurrencyCheck\]
-    
-    public int Quantity { get; set; }
-    
-    }
-    
-    When a conflict is detected during `SaveChanges`, an exception (`DbUpdateConcurrencyException`) is thrown, which can be handled to resolve the conflict:  
-      
-    try
-    
-    {
-    
+Concurrency conflicts occur when multiple processes try to update the same data at the same time. EF Core provides optimistic concurrency control. You can configure a property to be a concurrency token:  
+```c#
+public class Product
+{
+public int Id { get; set; }
+public string Name { get; set; }
+
+[ConcurrencyCheck]
+public int Quantity { get; set; }
+}
+```
+//When a conflict is detected during `SaveChanges`, an exception (`DbUpdateConcurrencyException`) is thrown, which can be handled to resolve the conflict:  
+```c#
+try
+{
     context.SaveChanges();
-    
-    }
-    
-    catch (DbUpdateConcurrencyException ex)
-    
-    {
-    
+}
+catch (DbUpdateConcurrencyException ex)
+{
     // Handle the concurrency conflict
+}
+```
+👉**7. What is the difference between `Include` and `ThenInclude` in EF Core?**
+
+`Include`**:** This method is used to include related entities in the query results. It is used for eager loading.
+```c#
+var orders = context.Orders.Include(o => o.Customer).ToList();
+```
+`ThenInclude`**:** This method is used to include related entities after the first level of inclusion. It is used for further levels of eager loading.  
+```c#
+var orders = context.Orders
+.Include(o => o.Customer)
+.ThenInclude(c => c.Address)
+.ToList();
+```
+👉**7.1. Describe a scenario where you need to use `Include` and `ThenInclude` for eager loading with nested relationships.**
     
-    }  
+Consider a scenario with entities `Order`, `Customer`, and `Address`, where an order has a customer and a customer has an address. To eagerly load the orders along with their customers and the customers' addresses:  
+```c#
+var orders = context.Orders
+.Include(o => o.Customer)
+.ThenInclude(c => c.Address)
+.ToList();
+```
+👉**8. How do you handle transactions in EF Core?**
     
-7.  What is the difference between `Include` and `ThenInclude` in EF Core?  
-    `Include`**:** This method is used to include related entities in the query results. It is used for eager loading.  
-      
-    var orders = context.Orders.Include(o => o.Customer).ToList();
-    
-      
-    `ThenInclude`**:** This method is used to include related entities after the first level of inclusion. It is used for further levels of eager loading.  
-      
-    var orders = context.Orders
-    
-    .Include(o => o.Customer)
-    
-    .ThenInclude(c => c.Address)
-    
-    .ToList();
-    
-8.  Describe a scenario where you need to use `Include` and `ThenInclude` for eager loading with nested relationships.
-    
-    **Answer:**  
-    Consider a scenario with entities `Order`, `Customer`, and `Address`, where an order has a customer and a customer has an address. To eagerly load the orders along with their customers and the customers' addresses:  
-      
-    var orders = context.Orders
-    
-    .Include(o => o.Customer)
-    
-    .ThenInclude(c => c.Address)
-    
-    .ToList();
-    
-9.  How do you handle transactions in EF Core?
-    
-    **Answer:**  
-    EF Core supports transactions implicitly when `SaveChanges` is called. For more complex scenarios requiring explicit transaction control, you can use `DbContext.Database.BeginTransaction`, `Commit`, and `Rollback`:  
-      
-    using (var transaction = context.Database.BeginTransaction())
-    
-    {
-    
+EF Core supports transactions implicitly when `SaveChanges` is called. For more complex scenarios requiring explicit transaction control, you can use `DbContext.Database.BeginTransaction`, `Commit`, and `Rollback`:
+```c#
+using (var transaction = context.Database.BeginTransaction())
+{
     try
-    
     {
-    
-    // Perform multiple operations
-    
-    context.SaveChanges();
-    
-    // Another set of operations
-    
-    context.SaveChanges();
-    
-    transaction.Commit();
-    
+	// Perform multiple operations
+	context.SaveChanges();
+	// Another set of operations
+	context.SaveChanges();
+	transaction.Commit();
     }
-    
     catch (Exception)
-    
     {
-    
-    transaction.Rollback();
-    
-    throw;
-    
+	transaction.Rollback();
+	throw;
     }
-    
-      
-    }
-    
-10.  How can you optimize performance with EF Core?  
-    **Answer:**
-    
-    *   **Use** `AsNoTracking` **for read-only queries:** This avoids the overhead of change tracking.
-        
-    *   **Batch commands:** Reduce the number of database round-trips by batching multiple commands.
-        
-    *   **Use compiled queries:** For queries that are executed frequently, use compiled queries to avoid query recompilation
-        
-    *   **Avoid lazy loading:** Prefer eager or explicit loading to avoid the "N+1 query problem."
-        
-    *   **Use projections:** Retrieve only the required fields using `Select`  
-        
-11.  How do you handle complex querying scenarios using raw SQL in EF Core?  
-    **Answer:**  
-    For complex queries that cannot be expressed using LINQ, use raw SQL queries:  
-      
-    var customers = context.Customers.FromSqlRaw("SELECT \* FROM Customers WHERE IsActive = 1").ToList();
-    
-    You can also use raw SQL for non-query commands:  
-      
-    context.Database.ExecuteSqlRaw("UPDATE Customers SET IsActive = 0 WHERE Id = {0}", customerId);
-
-> 19. What are extension methods and where would you use them?
-
-1.  `words[i][0]`: This accesses the **first character** of the word at index `i`. For example, if `words[i]` is `"hello"`, `words[i][0]` would be `'h'`.
-    
-2.    
-    public class Product
-    
-    {
-    
-    public string Name { get; set; }
-    
-    public decimal Price { get; set; }
-    
-    }
-    
-    ### Adding Extension Method
-    
-    Here's an extension method for the `Product` class to calculate a discount:  
-      
-    public static class ProductExtensions
-    
-    {
-    
-    // This method calculates the price after applying the discount.
-    
-    public static decimal CalculateDiscount(this Product product, decimal discountPercentage)
-    
-    {
-    
-    if (discountPercentage < 0 || discountPercentage > 100)
-    
-    throw new ArgumentOutOfRangeException("Discount percentage must be between 0 and 100.");
-    
-    return product.Price - (product.Price \* (discountPercentage / 100));
-    
-    }
-    
-    }
-    
-    Product product = new Product { Name = "Laptop", Price = 1000 };
-    
-    decimal discountedPrice = product.CalculateDiscount(10); // 10% discount
-    
-    Console.WriteLine($"Discounted price: {discountedPrice}");
-    
-      
-    Why Use Extension Methods Here?
-    
-    *   **Cleaner Syntax**: Instead of creating a separate `DiscountCalculator` class or utility function, you can invoke `CalculateDiscount` directly on the `Product` object.
-        
-    *   **Encapsulation**: The method logic is encapsulated, and the `Product` class remains untouched. You don't have to modify or inherit from `Product` to add this functionality.
-
-> 20. How do you handle exceptions in a method that returns a Task?
-
-1.  Task: In C#, a `Task` represents an asynchronous operation. It's part of the **Task-based Asynchronous Pattern (TAP)** and is used to handle asynchronous programming, allowing code to execute without blocking the main thread.  
-      
-    Key Task Types
-    
-    *   `Task`: Represents an asynchronous operation that **does not return a value**. It is analogous to `void` in synchronous methods.
-        
-    *   `Task<TResult>`: Represents an asynchronous operation that **returns a result** (of type `TResult`). It is analogous to `TResult` return types in synchronous methods.
-        
-    
-    ### Why Use `Task`?
-    
-    1.  **Avoid Blocking the UI**: In applications with a UI (e.g., WPF or Windows Forms), using `Task` ensures the UI thread remains responsive while long-running tasks (like file I/O or database queries) execute.
-        
-    2.  **Scalability**: In server applications, `Task` helps in creating more scalable systems by enabling asynchronous I/O operations (e.g., handling multiple HTTP requests simultaneously without blocking threads).  
-        
-2.  Task States
-    
-    A `Task` can have different states, including:
-    
-    *   **Created**: The task is created but not yet running.
-        
-    *   **Running**: The task is currently running.
-        
-    *   **Completed**: The task has finished running.
-        
-    *   **Faulted**: The task encountered an error.
-        
-    *   **Canceled**: The task was canceled.
-
-> 21. What is reflection in .NET and how would you use it?
-
-> 22. Can you explain the concept of middleware in ASP.NET Core?
-
-1.  Each middleware component can:
-    
-    1.  **Process incoming requests**.
-        
-    2.  **Modify the request or response**.
-        
-    3.  **Call the next middleware in the pipeline**, or short-circuit the pipeline to return a response immediately.
-        
-        If a middleware component short-circuits, it prevents further middleware from executing (e.g., if authentication fails, you might return an error immediately).
-        
-2.  Real-World Example: Logging Incoming Requests
-    
-    Imagine you're building an **e-commerce application**. You want to log every incoming request to the system so that you can monitor traffic or debug issues.
-    
-    You can create a custom middleware to handle this.
-    
-    ### Step-by-Step: Implementing a Custom Middleware
-    
-    #### 1\. Creating the Middleware  
-      
-    public class RequestLoggingMiddleware
-    
-    {
-    
-    private readonly RequestDelegate \_next;
-    
-    public RequestLoggingMiddleware(RequestDelegate next)
-    
-    {
-    
-    \_next = next;
-    
-    }
-    
-    public async Task InvokeAsync(HttpContext context)
-    
-    {
-    
-    // Log the incoming request
-    
-    Console.WriteLine($"Incoming Request: {context.Request.Method} {context.Request.Path}");
-    
-    // Call the next middleware in the pipeline
-    
-    await \_next(context);
-    
-    // Log after the request has been handled
-    
-    Console.WriteLine($"Response Status Code: {context.Response.StatusCode}");
-    
-    }
-    
-    }
-    
-    2\. Registering the Middleware in the Pipeline  
-      
-    app.UseMiddleware<RequestLoggingMiddleware>(); // Register custom logging middleware app.UseRouting(); // Sets up routing app.UseAuthentication(); // Handles authentication app.UseEndpoints(endpoints => { endpoints.MapControllers(); // Maps API controllers });
-    
-    #### 3\. Testing the Middleware
-    
-    Now, whenever you make an HTTP request (e.g., to `/api/products`), you’ll see the following output in your console:  
-      
-    Incoming Request: GET /api/products
-    
-    Response Status Code: 200
-    
-3.    
-    **Middleware Order**
-    
-    The order of middleware in the pipeline is critical. For example, authentication middleware must run before authorization middleware because a user must be authenticated before checking if they have the right permissions.  
-      
-    app.UseAuthentication(); // Authenticate the user
-    
-    app.UseAuthorization(); // Check if the user is allowed to access the resource
-    
-      
-    
-4.  **Short-Circut**: In **ASP.NET Core**, **short-circuiting** refers to a scenario where a middleware in the request pipeline **stops the flow** and prevents further middleware components from executing. This can occur deliberately (by design) or unintentionally.  
-      
-    **🤔🤔🤔When Does Short-Circuiting Happen?**
-    
-    **👉Short-circuiting can happen when**:
-    
-    1.  **A middleware decides to handle the request completely** without calling the next middleware in the pipeline (by **not** calling `await _next(context);`).
-        
-    2.  **A condition is met** that causes a middleware to return a response immediately, such as an authentication failure or a validation error.
-        
-    
-    ### Example of Short-Circuiting
-    
-    Consider the following middleware pipeline:
-    ```c#
-    public class Startup
-	{
-	    public void Configure(IApplicationBuilder app)
-	    {
-	        app.UseMiddleware<RequestLoggingMiddleware>();
-	        app.UseAuthentication();
-	        app.UseAuthorization();
-	        app.UseRouting();
-	        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-	    }
-	}
-	```
-	**Scenario 1: Short-circuiting with Authentication**
-	
-	If a request comes in and the user is not authenticated, `app.UseAuthentication()` middleware might **short-circuit** the pipeline by returning an unauthorized (401) response, without passing the request further down the pipeline (e.g., `app.UseAuthorization()` or `app.UseEndpoints()` won’t execute).
-	
-	Here's an example where authentication middleware might short-circuit:  
-	```c#
- 	public class AuthenticationMiddleware
-	{
-	    private readonly RequestDelegate _next;
-	    public AuthenticationMiddleware(RequestDelegate next)
-	    {
-	        _next = next;
-	    }
-	
-	    public async Task InvokeAsync(HttpContext context)
-	    {
-	        // Simulate an authentication check
-	        bool isAuthenticated = false;
-	        if (!isAuthenticated)
-	        {
-	            // Short-circuit the pipeline by returning a 401 Unauthorized response
-	            context.Response.StatusCode = 401;
-	            await context.Response.WriteAsync("Unauthorized");
-	            return; // No call to _next(context), so no further middleware is invoked
-	        }
-	
-	        await _next(context); // Pass the request to the next middleware
-	    }
-	}
-	 ```  
-	In this case:
-	
-	*   If the user is not authenticated, the pipeline is **short-circuited**. The middleware returns a 401 response and **does not call** `_next(context)`, preventing further middleware (like routing, authorization, etc.) from running.
-		
-	*   If the user is authenticated, it proceeds to the next middleware by calling `_next(context)`.
-	
-
-#### Scenario 2: Short-circuiting with Custom Middleware
-
-Let’s take another example where a custom logging middleware short-circuits the pipeline for certain requests:  
-  
-public class RequestLoggingMiddleware
-
-{
-
-private readonly RequestDelegate \_next;
-
-public RequestLoggingMiddleware(RequestDelegate next)
-
-{
-
-\_next = next;
-
 }
+``` 
+👉**9. How can you optimize performance with EF Core?**
 
-public async Task InvokeAsync(HttpContext context)
+- **Use** `AsNoTracking` **for read-only queries:** This avoids the overhead of change tracking.
 
-{
+- **Batch commands:** Reduce the number of database round-trips by batching multiple commands.
 
-// Check for a special condition (e.g., a certain request path)
+- **Use compiled queries:** For queries that are executed frequently, use compiled queries to avoid query recompilation
 
-if (context.Request.Path == "/forbidden")
+- **Avoid lazy loading:** Prefer eager or explicit loading to avoid the "N+1 query problem."
 
-{
-
-// Short-circuit the pipeline by returning a 403 Forbidden response
-
-context.Response.StatusCode = 403;
-
-await context.Response.WriteAsync("Forbidden path");
-
-return; // Prevent further middleware from executing
-
-}
-
-await \_next(context); // Otherwise, pass the request to the next middleware
-
-}
-
-}  
-      
-    
-6.  **What is CORS (Cross-Origin Resource Sharing)?**
-    
-    CORS (Cross-Origin Resource Sharing) is a security feature implemented by web browsers that **controls how web applications interact with resources from different origins** (domains).  
-      
-    CORS (Cross-Origin Resource Sharing) is a security feature implemented by browsers to prevent unauthorized cross-origin requests. It is important for security purposes, ensuring that web applications can't freely access resources from different origins without permission.
-    
-      
-    // Define a CORS policy  
-    services.AddCors(options => { options.AddPolicy("AllowSpecificOrigins", builder => { builder.WithOrigins("http://example.com") .AllowAnyHeader() .AllowAnyMethod(); }); });  
-      
-    // Apply the CORS policy globally app.UseCors("AllowSpecificOrigins");
-
-> 23. Describe the Dependency Injection (DI) pattern and how it's implemented in .NET Core.
-
-### **1. Dependency Inversion Principle (DIP)**
-
-#### **What is DIP?**
-
-The **Dependency Inversion Principle (DIP)** is a design principle in the **SOLID** principles that says:
-
-*   **High-level modules** (business logic) should not depend on **low-level modules** (details). Both should depend on **abstractions**.
-    
-*   **Abstractions should not depend on details**. Details (implementations) should depend on abstractions.
-    
-
-### **How is DIP applied in your code?**
-
-#### **High-Level Module**:  
-  
-public class NotificationService
-
-{
-
-private readonly INotificationSender \_notificationSender;
-
-public NotificationService(INotificationSender notificationSender)
-
-{
-
-\_notificationSender = notificationSender;
-
-}
-
-public void Notify(string message)
-
-{
-
-\_notificationSender.Send(message);
-
-}
-
-}
-
-*   `NotificationService` is the **high-level module**. It’s responsible for notifying users with messages.
-    
-*   Instead of depending directly on low-level modules (like `EmailNotificationSender` or `SMSNotificationSender`), it depends on an **abstraction** (`INotificationSender`).
-    
-
-#### **Low-Level Modules**:  
-  
-public class EmailNotificationSender : INotificationSender
-
-{
-
-public void Send(string message)
-
-{
-
-Console.WriteLine($"Sending Email: {message}");
-
-}
-
-}
-
-public class SMSNotificationSender : INotificationSender
-
-{
-
-public void Send(string message)
-
-{
-
-Console.WriteLine($"Sending SMS: {message}");
-
-}
-
-}
-
-*   `EmailNotificationSender` and `SMSNotificationSender` are **low-level modules** that implement the `INotificationSender` abstraction.
-    
-*   The **abstraction (**`INotificationSender`**) does not depend on the details** of how emails or SMS are sent. Instead, these implementations depend on the abstraction.
-    
-
-### **2\. Dependency Injection (DI)**
-
-#### **What is DI?**
-
-**Dependency Injection (DI)** is a design pattern where an object’s dependencies are provided to it from the outside, rather than the object creating its own dependencies. This makes the code more flexible, testable, and easier to maintain. This promotes loose coupling. The three types of DI are:
-
-1.  **Constructor Injection**: Dependencies are provided through a class's constructor.
-    
-2.  **Property (Setter) Injection**: Dependencies are assigned via public properties.
-    
-3.  **Method Injection**: Dependencies are passed through a method when needed.
-    
-
-### **How is DI applied in your code?**
-
-Look at the constructor in the **NotificationService** class:  
-  
-public NotificationService(INotificationSender notificationSender)
-
-{
-
-\_notificationSender = notificationSender;
-
-}
-
-  
-  
-Here, `NotificationService` **does not create an instance** of `EmailNotificationSender` or `SMSNotificationSender` by itself. Instead, **it receives an instance** (injected) from the outside.
-
-#### **Usage Example**:  
-  
-var emailSender = new EmailNotificationSender(); // Create the dependency
-
-var notificationService = new NotificationService(emailSender); // Inject the dependency
-
-notificationService.Notify("Your order has been shipped.");
-
-*   In this example, the `NotificationService` **receives** `emailSender` as a dependency when it’s created. This is **constructor-based dependency injection**.
-    
-*   You could easily swap out the dependency with an `SMSNotificationSender` instead of `EmailNotificationSender` without changing the `NotificationService` logic.
-    
-
-3.  **What is Inversion of Control (IoC), and how is it related to Dependency Injection?**
-    
-    *   **Answer**: IoC is a broader principle that says the control of object creation and the flow of a program should be inverted from traditional procedural code. Rather than a class controlling its dependencies, external code controls them. **Dependency Injection** is one specific way to implement IoC, by injecting dependencies into classes rather than allowing them to create their own.
+- **Use projections:** Retrieve only the required fields using `Select`  
         
-4.  **Can you give a real-life example of IoC?**
-    
-    *   **Example**: In a web application, the framework (like ASP.NET Core) manages the lifecycle of controllers and services. You don't manually instantiate these components; instead, the framework injects them where needed using DI containers, inverting the control of object creation.
-        
-5.  **What is an IoC container, and why is it useful?**
-    
-    *   **Answer**: An IoC container is a framework that manages object creation and lifetime. It resolves dependencies automatically and injects them where needed. Examples include ASP.NET Core's built-in DI container, Autofac, and Ninject.
-        
-        *   **Why it's useful**: It simplifies dependency management by handling object creation, lifecycle management (e.g., singleton, scoped), and dependency resolution, making your code cleaner and easier to maintain.
-            
-6.  **What are the different types of lifetimes in IoC containers, and how do they affect object creation?**
-    
-    *   **Answer**: Common lifetimes in IoC containers include:
-        
-        1.  **Transient**: A new instance is created every time it's requested.
-            
-        2.  **Scoped**: A new instance is created per request (or scope), making it useful for web applications.
-            
-        3.  **Singleton**: A single instance is created and shared throughout the application’s lifetime.
+👉**10. How do you handle complex querying scenarios using raw SQL in EF Core?**  
 
-> 24. What is the purpose of the .NET Standard?
-
+For complex queries that cannot be expressed using LINQ, use raw SQL queries:  
+```c#
+var customers = context.Customers.FromSqlRaw("SELECT \* FROM Customers WHERE IsActive = 1").ToList();
+```
+You can also use raw SQL for non-query commands:  
+```c#
+context.Database.ExecuteSqlRaw("UPDATE Customers SET IsActive = 0 WHERE Id = {0}", customerId);
+```
+## 🤔🤔🤔Q28. What is .NET?
+.NET is a comprehensive development platform used for building a wide variety of applications, including web, mobile, desktop, and gaming. It supports multiple programming languages, such as C#, F#, and Visual Basic. .NET provides a large class library called Framework Class Library (FCL) and runs on a Common Language Runtime (CLR) which offers services like memory management, security, and exception handling.
+## 🤔🤔🤔Q29. What is the purpose of the .NET Standard?
 1.  The purpose of **.NET Standard** is to create a **common set of APIs** that can be used across different .NET platforms (like .NET Core, .NET Framework, Xamarin, and others). It ensures **code compatibility** between these platforms, so you can write libraries that work everywhere without needing to rewrite code for each platform.  
-      
-    In essence, it helps **unify** the .NET ecosystem and makes code **more portable**.
+    - In essence, it helps **unify** the .NET ecosystem and makes code **more portable**.
+## 🤔🤔🤔Q30. Explain the differences between .NET Core, .NET Framework, and Xamarin.
+.NET Core, .NET Framework, and Xamarin are all part of the .NET ecosystem, but they serve different purposes and are used in different types of projects. Understanding the differences between them can help you choose the right technology for your specific needs.
 
-> 25. Explain the differences between .NET Core, .NET Framework, and Xamarin.
+**.NET Framework**:
 
-> 30. How would you secure a web application in ASP.NET Core?
+The original .NET implementation, launched in 2002.
+Primarily runs on Windows and is used for developing Windows desktop applications and ASP.NET web applications.
+Provides a vast library of pre-built functionality, including Windows Forms, WPF (Windows Presentation Foundation) for desktop applications, and ASP.NET for web applications.
+Moving forward, it will receive only critical security updates and bug fixes.
 
-> 27. What are attributes in C# and how can they be used?
+**.NET Core**:
 
-1.  Attributes don’t change the functionality of your code directly but can be used to modify how the code behaves at **runtime** or during **compile-time**.
+A cross-platform, open-source reimplementation of .NET that runs on Windows, macOS, and Linux.
+Designed to be modular and lightweight, making it suitable for web applications, microservices, and cloud applications.
+Supports development of console applications, ASP.NET Core web applications, and libraries.
+With the release of .NET 5 and beyond, .NET Core has evolved into simply ".NET," unifying the .NET platform and serving as the future of the .NET ecosystem.
 
-> What is MVC (Model-View-Controller)?
+**Xamarin**:
 
-> How do you perform validations in ASP.NET Core?
+A .NET platform for building mobile applications that can run on iOS, Android, and Windows devices.
+Allows developers to write mobile applications using C# and .NET libraries while providing native performance and look-and-feel on each platform.
+Integrates with Visual Studio, providing a rich development environment.
+Xamarin.Forms allows for the creation of UIs from a single, shared codebase, while Xamarin.iOS and Xamarin.Android provide access to platform-specific APIs.
+## 🤔🤔🤔Q31. Can you explain the Common Language Runtime (CLR)?
+The CLR is a virtual machine component of the .NET framework that manages the execution of .NET programs. It provides important services such as memory management, type safety, exception handling, garbage collection, and thread management. The CLR converts Intermediate Language (IL) code into native machine code through a process called Just-In-Time (JIT) compilation. This ensures that .NET applications can run on any device or platform that supports the .NET framework.
+## 🤔🤔🤔Q32. What is the difference between managed and unmanaged code?
+Managed code is executed by the CLR, which provides services like garbage collection, exception handling, and type checking. It's called "managed" because the CLR manages a lot of the functionalities that developers would otherwise need to implement themselves. Unmanaged code, on the other hand, is executed directly by the operating system, and all memory allocation, type safety, and security must be handled by the programmer. Examples of unmanaged code include applications written in C or C++.
+## 🤔🤔🤔Q33. Explain the basic structure of a C# program.
+A basic C# program consists of the following elements:
 
-> How do you implement Web API versioning in ASP.NET Core?
+**Namespace declaration**: A way to organize code and control the scope of classes and methods in larger projects.
 
-> How do you mock dependencies in unit tests using .NET?
+**Class declaration**: Defines a new type with data members (fields, properties) and function members (methods, constructors).
 
-> Can you explain SOLID principles?
+**Main method**: The entry point for the program where execution begins and ends.
 
-> What is Continuous Integration/Continuous Deployment (CI/CD) and how does it apply to .NET development?
-
-> How do you ensure your C# code is secure?
-
-> What are some common performance issues in .NET applications and how do you address them?
-
-> Describe the Repository pattern and its benefits.
-
-> How do you handle database migrations in Entity Framework?
-
-> In C#, both abstract classes and interfaces are types that enable polymorphism, allowing objects of different classes to be treated as objects of a common super class. However, they serve different purposes and have different rules:
-
-
-Answer:
-Partial updates can introduce complexity in terms of validation and conflict resolution. With PATCH, the server needs to handle merging the changes into the existing resource, which can lead to issues like conflicting changes or data inconsistency.
-Also, using PATCH requires more attention to how changes are applied, especially in concurrent environments where multiple users may update the resource at the same time.
-
-# What is the difference between ThreadPool.QueueWorkItem and new Thread().Start()?
-
-## Answer:
-The ThreadPool.QueueUserWorkItem and new Thread().Start() methods in .NET are both used to create and manage threads, but they have different purposes, behaviors, and use cases.
-- ThreadPool.QueueUserWorkItem: Adds work to a shared ThreadPool of pre-existing threads. Best for short-lived, frequent tasks that don’t need a dedicated thread (e.g., handling requests in a web server).
-    ThreadPool.QueueUserWorkItem assigns the task to a thread from the shared pool.
-    When the task finishes, the thread returns to the pool, ready for the next task
-
-## Using ThreadPool.QueueUserWorkItem
+**Statements and expressions**: Perform actions with variables, calling methods, looping through collections, etc.
 ```c#
 using System;
-using System.Threading;
-class Program
+
+namespace HelloWorld
 {
-    static void Main()
+    class Program
     {
-        ThreadPool.QueueUserWorkItem(DoWork);
-        Console.WriteLine("Task queued on thread pool.");
-        Console.ReadLine();
-    }
-    static void DoWork(object state)
-    {
-        Console.WriteLine("Working on thread: " + Thread.CurrentThread.ManagedThreadId);
-        Thread.Sleep(2000); // Simulating work
-        Console.WriteLine("Work completed.");
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello World!");
+        }
     }
 }
 ```
-- new Thread().Start(): Creates a dedicated thread for each task. Useful for long-running tasks where more control over the thread’s lifecycle is needed (e.g., background data analysis).
+## 🤔🤔🤔Q34. What is garbage collection in .NET?
+**Garbage collection (GC)** in .NET is an automatic memory management feature that frees up memory used by objects that are no longer accessible in the program. It eliminates the need for developers to manually release memory, thereby reducing memory leaks and other memory-related errors. The GC operates on a separate thread and works in three phases: marking, relocating, and compacting. During the marking phase, it identifies which objects in the heap are still in use. During the relocating phase, it updates the references to objects that will be compacted. Finally, during the compacting phase, it reclaims the space occupied by the garbage objects and compacts the remaining objects to make memory allocation more efficient.
 
-## Using new Thread().Start()
+1. **Finalize** is a method which is automatically called by the garbage collector to dispose the no longer needed objects
+
+2. **FINALLY** The finally block is used to execute a given set of statements, whether an exception occur or not. Finally block is mostly used to dispose the unwanted objects when they are no more required. This is good for performance, otherwise you have to wait for garbage collector to dispose them.
+## 🤔🤔🤔Q35. Explain the concept of exception handling in C#?
+Exception handling in C# is a mechanism to handle runtime errors, allowing a program to continue running or fail gracefully instead of crashing. It is done using the try, catch, and finally blocks. The try block contains code that might throw an exception, while catch blocks are used to handle the exception. The finally block contains code that is executed whether an exception is thrown or not, often for cleanup purposes.
+```c#
+try {
+    // Code that may cause an exception
+    int divide = 10 / 0;
+}
+catch (DivideByZeroException ex) {
+    // Code to handle the exception
+    Console.WriteLine("Cannot divide by zero. Please try again.");
+}
+finally {
+    // Code that executes after try/catch, regardless of an exception
+    Console.WriteLine("Operation completed.");
+}
+```
+## 🤔🤔🤔Q36. Can you describe what a namespace is and how it is used in C#?
+A namespace in C# is used to organize code into a hierarchical structure. It allows the grouping of logically related classes, structs, interfaces, enums, and delegates. Namespaces help avoid naming conflicts by qualifying the uniqueness of each type. For example, the System namespace in .NET includes classes for basic system operations, such as console input/output, file reading/writing, and data manipulation.
 ```c#
 using System;
-using System.Threading;
-class Program
+
+namespace MyApplication
 {
-    static void Main()
+    class Program
     {
-        Thread workerThread = new Thread(DoWork);
-        workerThread.Start();
-        Console.WriteLine("Started new thread.");
-        Console.ReadLine();
-    }
-    static void DoWork()
-    {
-        Console.WriteLine("Working on thread: " + Thread.CurrentThread.ManagedThreadId);
-        Thread.Sleep(2000); // Simulating work
-        Console.WriteLine("Work completed.");
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello, World!");
+        }
     }
 }
 ```
-## Real-World Example:
+## 🤔🤔🤔Q37. Describe what LINQ is and give an example of where it might be used.
+**LINQ (Language Integrated Query)** is a powerful feature in C# that allows developers to write expressive, readable code to query and manipulate data. It provides a uniform way to query various data sources, such as collections in memory, databases (via LINQ to SQL, LINQ to Entities), XML documents (LINQ to XML), and more. LINQ queries offer three main benefits: they are strongly typed, offer compile-time checking, and support IntelliSense, which enhances developer productivity and code maintainability.
 
-- ThreadPool.QueueUserWorkItem: A web server processing incoming HTTP requests quickly without the overhead of creating/destroying threads.
+LINQ can be used in a variety of scenarios, including filtering, sorting, and grouping data. It supports both method syntax and query syntax, providing flexibility in how queries are expressed.
 
-- new Thread().Start(): A long-running task that performs real-time data processing, where you may want to control priority or manage its shutdown.
-
-## Thread Management
-
-- ThreadPool.QueueUserWorkItem: Managed by the .NET runtime. Threads are reused for efficiency, so creating/destroying threads isn't required.
-
-- new Thread().Start(): Manual control over threads, which are created and destroyed as needed. Higher overhead and less efficient for frequent, short tasks.
-
-## Example:
+Here is a simple example demonstrating LINQ with a list of integers:
 ```c#
-// ThreadPool - efficient for short tasks
-ThreadPool.QueueUserWorkItem(_ => Console.WriteLine("Processing HTTP request"));
-// new Thread - better for a dedicated, ongoing task
-new Thread(() => Console.WriteLine("Long background task running")).Start();
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+        // Use LINQ to find all even numbers
+        var evenNumbers = from num in numbers
+                          where num % 2 == 0
+                          select num;
+
+        Console.WriteLine("Even numbers:");
+        foreach (var num in evenNumbers)
+        {
+            Console.WriteLine(num);
+        }
+    }
+}
 ```
-## Performance & Overhead
+## 🤔🤔🤔Q38. How do you manage memory in .NET applications?
+**Memory management** in .NET applications is primarily handled automatically by the Garbage Collector (GC), which provides a high-level abstraction for memory allocation and deallocation, ensuring that developers do not need to manually free memory. However, understanding and cooperating with the GC can help improve your application's performance and memory usage. Here are key aspects of memory management in .NET:
 
-- ThreadPool.QueueUserWorkItem: Lower overhead, as thread creation/destruction is avoided. Ideal for scalable applications.
+- **Garbage Collection**: Automatically reclaims memory occupied by unreachable objects, freeing developers from manually deallocating memory and helping to avoid memory leaks.
 
-- new Thread().Start(): Higher overhead as each thread is individually created and cleaned up. Use only when task requires dedicated, long-term attention.
+- **Dispose Pattern**: Implementing the IDisposable interface and the Dispose method allows for the cleanup of unmanaged resources (such as file handles, database connections, etc.) that the GC cannot reclaim automatically.
 
-## Example:
+- **Finalizers**: Can be defined in classes to perform cleanup operations before the object is collected by the GC. However, overuse of finalizers can negatively impact performance, as it makes objects live longer than necessary.
 
-- ThreadPool: A bank’s server handling many user transactions quickly.
+- **Using Statements**: A syntactic sugar for calling Dispose on IDisposable objects, ensuring that resources are freed as soon as they are no longer needed, even if exceptions are thrown.
 
-- new Thread: An analysis tool processing large datasets for hours.
+- **Large Object Heap (LOH) Management**: Large objects are allocated on a separate heap, and knowing how to manage large object allocations can help reduce memory fragmentation and improve performance.
+
+Here is an example demonstrating the use of the IDisposable interface and using statement for resource management:
+## 🤔🤔🤔Q39. Explain the concept of threading in .NET.
+**Threading** in .NET allows for the execution of multiple operations simultaneously within the same process. It enables applications to perform background tasks, UI responsiveness, and parallel computations, improving overall application performance and efficiency. The .NET framework provides several ways to create and manage threads:
+
+**System.Threading.Thread**: A low-level approach to create and manage threads directly. This class offers fine-grained control over thread behavior.
+
+**ThreadPool**: A collection of worker threads maintained by the .NET runtime, offering efficient execution of short-lived background tasks without the overhead of creating individual threads for each task.
+
+**Task Parallel Library (TPL)**: Provides a higher-level abstraction over threading, using tasks that represent asynchronous operations. TPL uses the ThreadPool internally and supports features like task chaining, cancellation, and continuation.
+
+**async and await**: Keywords that simplify asynchronous programming, making it easier to write asynchronous code that's as straightforward as synchronous code.
+## 🤔🤔🤔Q40. What is reflection in .NET and how would you use it?
+**Reflection** in .NET is a powerful feature that allows runtime inspection of assemblies, types, and their members (such as methods, fields, properties, and events). It enables creating instances of types, invoking methods, and accessing fields and properties dynamically, without knowing the types at compile time. Reflection is used for various purposes, including building type browsers, dynamically invoking methods, and reading custom attributes.
+
+Reflection can be particularly useful in scenarios such as:
+
+- Dynamically loading and using assemblies.
+- Implementing object browsers or debuggers.
+- Creating instances of types for dependency injection frameworks.
+- Accessing and manipulating metadata for assemblies and types.
+Here's a simple example demonstrating how to use reflection to inspect and invoke methods of a class dynamically:
+```c#
+using System;
+using System.Reflection;
+
+public class MyClass
+{
+    public void MethodToInvoke()
+    {
+        Console.WriteLine("Method Invoked.");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Obtaining the Type object for MyClass
+        Type myClassType = typeof(MyClass);
+        
+        // Creating an instance of MyClass
+        object myClassInstance = Activator.CreateInstance(myClassType);
+        
+        // Getting the MethodInfo object for MethodToInvoke
+        MethodInfo methodInfo = myClassType.GetMethod("MethodToInvoke");
+        
+        // Invoking the method on the instance
+        methodInfo.Invoke(myClassInstance, null);
+    }
+}
+```
+In this example, reflection is used to obtain the Type object for MyClass, create an instance of MyClass, and then retrieve and invoke the MethodToInvoke method. This demonstrates how reflection allows for dynamic type inspection and invocation, providing flexibility and power in how code interacts with objects.
+
+Using reflection comes with a performance cost, so it should be used judiciously, especially in performance-critical paths of an application.
+## 🤔🤔🤔Q41. Can you describe the process of code compilation in .NET?
+The process of code compilation in .NET involves converting high-level code (such as C#) into a platform-independent Intermediate Language (IL) and then into platform-specific machine code. This process is facilitated by the .NET Compiler Platform ("Roslyn" for C# and Visual Basic) and the Common Language Runtime (CLR). Here's an overview of the steps involved:
+
+1. **Source Code to Intermediate Language (IL)**:
+
+When you compile a .NET application, the .NET compiler for your language (e.g., csc.exe for C#) compiles the source code into Intermediate Language (IL). IL is a CPU-independent set of instructions that can be efficiently converted into native machine code.
+Along with IL, metadata is generated, which includes information about the types, members, references, and other data that the IL code uses.
+
+2. **IL to Native Code**:
+
+At runtime, the .NET application is executed by the CLR. The CLR's Just-In-Time (JIT) compiler converts the IL code into native machine code specific to the architecture of the target machine.
+This conversion happens on a need-to-run basis; that is, each method's IL is converted to native code the first time the method is called. The native code is then cached, so subsequent calls to the same method do not require re-compilation.
+
+3. **Execution**:
+
+The native code is executed directly by the hardware of the target machine, leading to the execution of the .NET application.
+
+**Aspects of .NET Compilation**:
+
+- **Assembly**: The compiled code and resources are packed into assemblies (.dll or .exe files), which are the units of deployment and versioning in .NET. Assemblies contain the IL code and metadata.
+
+- **Metadata**: Metadata describes the assembly itself and the types defined within the assembly, including their methods and properties. This information is used by the CLR during execution and supports features like reflection.
+
+- **Strong Naming and GAC**: Assemblies can be strong-named to ensure their uniqueness and integrity. Strong-named assemblies can be placed in the Global Assembly Cache (GAC) for shared use by multiple applications.
+
+**Optimizations and NGEN**:
+
+- The JIT compiler applies various optimizations while converting IL to native code to improve runtime performance. Additionally, developers can use the Native Image Generator (NGEN) to pre-compile assemblies into native images at install time, reducing JIT compilation time at runtime but at the cost of losing some JIT optimizations specific to the end-user's machine.
+```c#
+// Example C# code
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Console.WriteLine("Hello, World!");
+    }
+}
+```
+This simple program is compiled to IL when built and then JIT-compiled to native code by the CLR when executed. Understanding the compilation process in .NET is crucial for grasping how .NET applications are built, deployed, and executed across different environments and platforms.
+## 🤔🤔🤔Q42. What is the main difference between DateTime and DateTimeOffset?
+1. **DateTime**
+
+- **Represents**: A point in time (date and time) without explicitly accounting for time zone information.
+
+- **Time Zones**: DateTime can represent either local time or UTC (Coordinated Universal Time), but it doesn’t store time zone information.
+
+- **Kind Property**: It has a Kind property which can be Unspecified, Utc, or Local, but this doesn’t automatically adjust the time when converting between different time zones.
+```c#
+DateTime localTime = DateTime.Now;      // Local system time
+DateTime utcTime = DateTime.UtcNow;     // UTC time
+
+Console.WriteLine(localTime);           // Example: 2024-10-19 13:45:00 (local)
+Console.WriteLine(utcTime);             // Example: 2024-10-19 18:45:00 (UTC)
+```
+**When to Use DateTime**:
+
+- When working purely with local or UTC times and you don’t care about time zones or offsets.
+- For simple date-related calculations like birthdays, scheduling, or timestamps within a single time zone.
+
+**Common Problem with DateTime**:
+
+If you store DateTime.Now in a database as local time and move your server to another time zone, the timestamps might no longer reflect the original time correctly. This is where DateTimeOffset can help.
+
+2. **DateTimeOffset**
+
+- **Represents**: A point in time with an explicit offset (the difference between the time and UTC).
+
+- **Time Zones**: DateTimeOffset explicitly includes the UTC offset (e.g., +02:00 for Eastern European Summer Time), meaning it retains time zone information even when storing or transmitting the value.
+
+- **Offset Property**: The offset ensures that the value is always correct regardless of where it’s used.
+```c#
+DateTimeOffset localTimeOffset = DateTimeOffset.Now;       // Local time with offset
+DateTimeOffset utcTimeOffset = DateTimeOffset.UtcNow;      // UTC time with offset
+
+Console.WriteLine(localTimeOffset);                        // Example: 2024-10-19 13:45:00 +02:00
+Console.WriteLine(utcTimeOffset);                          // Example: 2024-10-19 11:45:00 +00:00 (UTC)
+```
+**When to Use DateTimeOffset**:
+
+- When you need to account for different time zones or store times that are globally relevant (e.g., scheduling across time zones, international event logging).
+- For systems where time is passed between different time zones or where historical time zone information must be preserved.
+
+**Real-World Example**:
+
+Imagine you're building a calendar app that allows users to set reminders or schedule meetings.
+
+- DateTime Use Case: If all your users are within the same time zone, you can use DateTime to store and manipulate event times.
+
+- DateTimeOffset Use Case: If users across different time zones are scheduling meetings, you'd use DateTimeOffset to ensure that everyone sees the correct time for their specific location. For instance, a meeting set for 10:00 AM EST (+05:00) will still be 10:00 AM in that zone even if another user views it from UTC or PST.
+
+**Summary**:
+- Use DateTime for simple date/time representations where time zone context is not critical.
+- Use DateTimeOffset when time zone or UTC offset information is important, especially for globally distributed applications.
+## 🤔🤔🤔Q43. Class vs Record in C#?
+**Class**
+
+A class in C# is a reference type that can encapsulate data (fields) and behavior (methods). Classes allow you to define objects that contain data and behavior in the form of properties and methods.
+
+**Key Characteristics of a Class**:
+
+- **Mutable**: Class instances can have their values changed after they are created.
+
+- **Reference type**: Class objects are stored on the heap, and variables hold references (or pointers) to the memory location of the object.
+
+- **Inheritance**: Supports inheritance and polymorphism, allowing you to create hierarchies of related objects.
+
+- **Encapsulation**: Supports hiding the internal state through access modifiers (like private and protected).
+```c#
+public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+    
+    public Person(string name, int age)
+    {
+        Name = name;
+        Age = age;
+    }
+}
+```
+**Record**
+
+A record in C# is a reference type introduced in C# 9, primarily designed for immutable data and for value equality rather than reference equality. It’s used to represent data-centric classes with a focus on immutability and equality based on the values of its properties.
+
+**Key Characteristics of a Record**:
+
+- **Immutable by default**: Record properties are immutable (can only be set during initialization), though they can be made mutable if needed.
+
+- **Value equality**: Unlike classes, records compare objects based on their values (property values), not their reference (memory location).
+
+- **Concise syntax**: Record types have a shorthand syntax for declaring properties, making the code more concise.
+
+- **Positional records**: Records can be defined using a shorthand positional syntax.
+```c#
+public record Person(string Name, int Age);
+```
+**👉What are the differences between a class and a record in C#?**
+
+- Focus on key differences like mutability, equality, and use cases. Mention that records offer value equality and are designed for immutability, whereas classes focus on mutable state and reference equality.
+
+**👉When would you choose a class over a record in C#?**
+
+- Emphasize the need for mutable state, complex behavior, and inheritance when choosing a class over a record.
+
+**👉How does value equality in records differ from reference equality in classes?**
+
+- Explain that with classes, equality compares object references (memory locations), while records compare the actual values of the properties to determine equality.
+
+**👉Can records be mutable in C#?**
+
+- Yes, although records are designed to be immutable by default, you can create mutable records by using the init keyword or explicitly making properties settable.
+
+**👉Can you explain positional records and their advantages?**
+
+- Positional records allow for a concise syntax for declaring records, especially useful for simple data structures.
+## 🤔🤔🤔Q44. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q45. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q46. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q47. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q48. Can you explain the Common Language Runtime (CLR)?
