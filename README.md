@@ -4486,6 +4486,106 @@ Original Profile After Cloning:
 
 Username: JohnDoe, Role: Admin, IsTemporary: False
 ```
-## 🤔🤔🤔Q46. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q46. Can you explain the Abstract Factory Pattern using a User Authentication System that supports different providers (e.g., Google, Facebook)?
+The **Abstract Factory** Pattern provides an interface to create a family of related or dependent objects without specifying their concrete classes. In an authentication system, you may want to support multiple login providers like Google, Facebook, etc., with each provider having its own login and user profile mechanisms.
+
+**Code Example**:
+```c#
+// Step 1: Abstract product interfaces (Login and Profile)
+public interface ILoginProvider
+{
+    void Authenticate();
+}
+
+public interface IUserProfile
+{
+    void FetchProfile();
+}
+
+// Step 2: Concrete products for Google
+public class GoogleLogin : ILoginProvider
+{
+    public void Authenticate()
+    {
+        Console.WriteLine("Authenticating with Google");
+    }
+}
+
+public class GoogleUserProfile : IUserProfile
+{
+    public void FetchProfile()
+    {
+        Console.WriteLine("Fetching Google user profile");
+    }
+}
+
+// Step 3: Concrete products for Facebook
+public class FacebookLogin : ILoginProvider
+{
+    public void Authenticate()
+    {
+        Console.WriteLine("Authenticating with Facebook");
+    }
+}
+
+public class FacebookUserProfile : IUserProfile
+{
+    public void FetchProfile()
+    {
+        Console.WriteLine("Fetching Facebook user profile");
+    }
+}
+
+// Step 4: Abstract factory interface
+public interface IAuthProviderFactory
+{
+    ILoginProvider CreateLoginProvider();
+    IUserProfile CreateUserProfile();
+}
+
+// Step 5: Concrete factories for Google and Facebook
+public class GoogleAuthProviderFactory : IAuthProviderFactory
+{
+    public ILoginProvider CreateLoginProvider() => new GoogleLogin();
+    public IUserProfile CreateUserProfile() => new GoogleUserProfile();
+}
+
+public class FacebookAuthProviderFactory : IAuthProviderFactory
+{
+    public ILoginProvider CreateLoginProvider() => new FacebookLogin();
+    public IUserProfile CreateUserProfile() => new FacebookUserProfile();
+}
+
+// Step 6: Client code using the abstract factory
+public class Client
+{
+    public static void Main()
+    {
+        IAuthProviderFactory googleFactory = new GoogleAuthProviderFactory();
+        ILoginProvider googleLogin = googleFactory.CreateLoginProvider();
+        IUserProfile googleProfile = googleFactory.CreateUserProfile();
+        googleLogin.Authenticate();
+        googleProfile.FetchProfile();
+
+        IAuthProviderFactory facebookFactory = new FacebookAuthProviderFactory();
+        ILoginProvider facebookLogin = facebookFactory.CreateLoginProvider();
+        IUserProfile facebookProfile = facebookFactory.CreateUserProfile();
+        facebookLogin.Authenticate();
+        facebookProfile.FetchProfile();
+    }
+}
+```
+**Line-by-Line Explanation**:
+1. ILoginProvider and IUserProfile are abstract products defining login and profile-fetching behaviors.
+2. GoogleLogin and GoogleUserProfile are concrete implementations for Google.
+3. FacebookLogin and FacebookUserProfile are concrete implementations for Facebook.
+4. IAuthProviderFactory is the abstract factory interface for creating related products (login and profile).
+5. GoogleAuthProviderFactory and FacebookAuthProviderFactory are concrete factories that create Google and Facebook-related products, respectively.
+6. Client code uses the factory to switch between different providers.
+
+**Visualization:**
+
+Imagine an app that supports login with both Google and Facebook. The user selects one provider, and the app uses the correct login and profile-fetching mechanism for the chosen provider without the need to modify the core logic.
+
 ## 🤔🤔🤔Q47. Can you explain the Common Language Runtime (CLR)?
 ## 🤔🤔🤔Q48. Can you explain the Common Language Runtime (CLR)?
