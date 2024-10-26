@@ -4892,4 +4892,82 @@ public class Client
 **Visualization**:
 
 Imagine going to a store that accepts both cash and cards. Depending on what you choose (strategy), the cashier processes your payment differently, but the result is the same—you pay for your items.
-## 🤔🤔🤔Q48. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q48. Can you explain the Observer Pattern with a real-world example of notifying multiple components when a user updates their profile in a .NET application?
+The **Observer Pattern** defines a one-to-many dependency between objects so that when one object (subject) changes state, all its dependents (observers) are notified. In a .NET application, this could be used to notify multiple systems (e.g., logging, analytics) when a user updates their profile.
+
+**Code Example**:
+```c#
+// Step 1: Define the Observer interface
+public interface IObserver
+{
+    void Update(string message);
+}
+
+// Step 2: Concrete Observers
+public class AnalyticsService : IObserver
+{
+    public void Update(string message)
+    {
+        Console.WriteLine("Analytics updated: " + message);
+    }
+}
+
+public class LoggingService : IObserver
+{
+    public void Update(string message)
+    {
+        Console.WriteLine("Log entry created: " + message);
+    }
+}
+
+// Step 3: Subject class
+public class UserProfile
+{
+    private List<IObserver> _observers = new List<IObserver>();
+    // Method to attach observers
+    public void Attach(IObserver observer)
+    {
+        _observers.Add(observer);
+    }
+    
+    // Method to notify observers
+    private void Notify(string message)
+    {
+        foreach (var observer in _observers)
+        {
+            observer.Update(message);
+        }
+    }
+
+    // Simulating a profile update
+    public void UpdateProfile(string userName)
+    {
+        Console.WriteLine($"User {userName}'s profile updated.");
+        Notify($"Profile updated for {userName}");
+    }
+}
+
+// Client code
+public class Client
+{
+    public static void Main()
+    {
+        UserProfile profile = new UserProfile();
+        profile.Attach(new AnalyticsService());
+        profile.Attach(new LoggingService());
+        profile.UpdateProfile("JohnDoe");
+    }
+}
+```
+**Line - by - Line Explanation**:
+
+- IObserver defines the Update method, which will be implemented by all observers.
+- AnalyticsService and LoggingService are concrete observers that react when the subject (profile) changes.
+- UserProfile (the subject) maintains a list of observers. When the profile is updated, all observers are notified.
+- Client code attaches multiple observers (analytics and logging) and triggers a profile update, which notifies all attached observers.
+
+**Visualization**:
+Think of a YouTube channel. When a new video is uploaded(profile update), all subscribers(observers) are notified.
+## 🤔🤔🤔Q49. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q50. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q51. Can you explain the Common Language Runtime (CLR)?
