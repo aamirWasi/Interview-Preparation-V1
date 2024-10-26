@@ -4763,7 +4763,64 @@ As a Customer (client), you simply place your order from the menu, and the right
 
 - **Factory Method**: Deciding whether to send an email, SMS, or push notification at runtime.
 - **Abstract Factory**: Ensuring that all the UI components in your application (buttons, checkboxes) are compatible with the platform (Windows, macOS).
+## 🤔🤔🤔Q48.  Explain the Singleton Pattern. How would you implement it in .NET to manage a database connection pool?
+The **Singleton Pattern** ensures that a class has only one instance and provides a global point of access to it. In .NET, this is useful for managing shared resources like a database connection pool where you need to ensure that only one instance of the connection pool is used throughout the application.
 
-## 🤔🤔🤔Q48. Can you explain the Common Language Runtime (CLR)?
+**Code Example:**
+```c#
+public class DbConnectionPool
+{
+    // Step 1: Private static instance of the class (single instance)
+    private static DbConnectionPool _instance;
+    // Step 2: Private constructor to prevent instantiation
+    private DbConnectionPool()
+    {
+        Console.WriteLine("Connection pool created.");
+    }
+    
+    // Step 3: Public static method to provide access to the instance
+    public static DbConnectionPool GetInstance()
+    {
+        if (_instance == null)
+        {
+            _instance = new DbConnectionPool();
+        }
+
+        return _instance;
+    }
+
+    // Simulate fetching a connection from the pool
+    public void GetConnection()
+    {
+        Console.WriteLine("Fetching a connection from the pool...");
+    }
+}
+
+// Client code to test Singleton pattern
+public class Client
+{
+    public static void Main()
+    {
+        DbConnectionPool pool1 = DbConnectionPool.GetInstance();
+        pool1.GetConnection();
+
+        DbConnectionPool pool2 = DbConnectionPool.GetInstance();
+        pool2.GetConnection();
+
+        // Both pool1 and pool2 refer to the same instance
+        Console.WriteLine(pool1 == pool2); // Output: True
+    }
+}
+```
+**Line - by - Line Explanation**:
+
+- DbConnectionPool class has a private static field _instance which holds the single instance of the class.
+- Private constructor ensures that the class cannot be instantiated from outside.
+- GetInstance method returns the single instance of DbConnectionPool, creating it if it doesn’t exist.
+- Client code demonstrates how multiple calls to GetInstance() return the same instance.
+
+**Visualization**:
+
+Imagine a customer service desk at a store. There's only one desk and one representative (the Singleton). No matter how many times you visit the desk, you’ll always talk to the same person.
 ## 🤔🤔🤔Q48. Can you explain the Common Language Runtime (CLR)?
 ## 🤔🤔🤔Q48. Can you explain the Common Language Runtime (CLR)?
