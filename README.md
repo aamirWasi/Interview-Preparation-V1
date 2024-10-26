@@ -975,7 +975,7 @@ class Program
 ```
 ### Explanation:
 Manager class inherits from Employee (multilevel inheritance) and also implements IReportable interface. This is a mix of inheritance and interface implementation (hybrid inheritance).
-### What is the difference between single and multilevel inheritance?
+### 🤔🤔🤔What is the difference between single and multilevel inheritance?
 #### Single Inheritance: A class derives from only one base class.
 #### Multilevel Inheritance: A class derives from a derived class, forming a chain.
 **Single Inheritance Example**:
@@ -1014,7 +1014,7 @@ public class Manager : Employee
     }
 }
 ```
-## Q17: What are access modifiers in C#? How do they relate to encapsulation?
+## 🤔🤔🤔Q17: What are access modifiers in C#? How do they relate to encapsulation?
 Access modifiers in C# (like public, private, protected, internal) control the visibility of class members, supporting encapsulation by allowing you to hide certain details from external access.
 
 **Real-Life Example**: A Bank Account
@@ -1035,7 +1035,7 @@ public class BankAccount
 }
 ```
 **Interview Tip**: Explain how access modifiers help encapsulate the data, ensuring only the required parts are accessible from outside the class.
-## Q18: In a real-life e-commerce application, you have a class called OrderManager responsible for creating, updating, and deleting orders as well as sending confirmation emails and updating inventory. How would you refactor this class to follow the Single Responsibility Principle?
+## 🤔🤔🤔Q18: In a real-life e-commerce application, you have a class called OrderManager responsible for creating, updating, and deleting orders as well as sending confirmation emails and updating inventory. How would you refactor this class to follow the Single Responsibility Principle?
 **What is the Single Responsibility Principle? Can you give a real-life example?**
 
 **S — Single Responsibility Principle (SRP)**: The Single Responsibility Principle states that a class should have only one reason to change, meaning it should have only one responsibility or purpose.
@@ -1198,7 +1198,7 @@ This line **awaits all tasks to complete**, but only at this point does the meth
 Using Task.WhenAll here provides a more optimized solution if each service can safely execute without waiting for another.
 ### Summary
 By not using await immediately, we’ve started all three tasks without waiting. The tasks run asynchronously and concurrently, which makes it possible to fetch all three sets of data simultaneously rather than sequentially. Only when we reach await Task.WhenAll(...) does the method wait for all tasks to complete, making the process highly efficient.
-## Q19: Imagine you’re working on a payment processing system with multiple payment methods, such as credit card, PayPal, and bank transfer. How would you design it to be easily extendable for adding new payment methods without modifying existing code?
+## 🤔🤔🤔Q19: Imagine you’re working on a payment processing system with multiple payment methods, such as credit card, PayPal, and bank transfer. How would you design it to be easily extendable for adding new payment methods without modifying existing code?
 **What is the Open/Closed Principle? Can you provide a real-life example?**
 
 **O — Open/Closed Principle (OCP)**: The Open/Closed Principle means that classes should be open for extension but closed for modification. You should be able to add new functionality without changing existing code.
@@ -1258,7 +1258,7 @@ public class PaymentService
 }
 ```
 **Interview Tip**: Demonstrate how adding new functionality (like a new payment method) involves creating a new class (PayPalPayment) rather than modifying the existing PaymentProcessor or CreditCardPayment class. This makes the system easier to maintain and extend.
-## Q19: Imagine you have a payment processing system that handles different types of payment methods (e.g., credit card, PayPal, or bank transfer). You have a base class PaymentProcessor that defines common behavior for all payment types, and specific processors like CreditCardProcessor and PayPalProcessor inherit from this base class.
+## 🤔🤔🤔Q19: Imagine you have a payment processing system that handles different types of payment methods (e.g., credit card, PayPal, or bank transfer). You have a base class PaymentProcessor that defines common behavior for all payment types, and specific processors like CreditCardProcessor and PayPalProcessor inherit from this base class.
 **What is the Liskov Substitution Principle (LSP)? Can you provide a real-life example?**
 
 **L — Liskov Substitution Principle (LSP)**: The Liskov Substitution Principle (LSP) is one of the five SOLID principles. It states that objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program. In other words, a subclass should be able to stand in for its parent class without breaking the behavior expected from the parent class.
@@ -1356,7 +1356,7 @@ public class NotificationService
 }
 ```
 You can pass either EmailSender or SmsSender to the Notify method, and it will work without issues, thanks to LSP. Each sender behaves according to its own type but maintains the contract defined by the NotificationSender base class.
-## Q20:  You have an IEmployee interface with methods like Work, AttendMeeting, TakeBreak, and ProcessPayroll. Why does this violate ISP, and how can you refactor it?
+## 🤔🤔🤔Q20:  You have an IEmployee interface with methods like Work, AttendMeeting, TakeBreak, and ProcessPayroll. Why does this violate ISP, and how can you refactor it?
 **What is the Interface Segregation Principle? How would you apply it in a real-life situation?**
 
 **I — Interface Segregation Principle (ISP)**: The Interface Segregation Principle states that no client should be forced to implement methods it does not use. Instead of having large, general-purpose interfaces, it's better to have smaller, specific ones.
@@ -1410,7 +1410,7 @@ public class RegularUser : IRegularUser
 }
 ```
 **Interview Tip**: Discuss how splitting the interface into smaller, more specific interfaces (like IAdminUser, IReportViewer, IRegularUser) ensures that clients (classes) only implement what they need. This reduces unnecessary code and makes the system more modular.
-## Q21:  In a notification system, you have a NotificationService that sends emails and SMS messages directly by instantiating EmailSender and SmsSender classes within it. How can you refactor this to follow the Dependency Inversion Principle?
+## 🤔🤔🤔Q21:  In a notification system, you have a NotificationService that sends emails and SMS messages directly by instantiating EmailSender and SmsSender classes within it. How can you refactor this to follow the Dependency Inversion Principle?
 **What is the Dependency Inversion Principle? Can you explain with a real-world example?**
 
 **D — Dependency Inversion Principle (DIP)**: The Dependency Inversion Principle states that high-level modules should not depend on low-level modules; both should depend on abstractions. Also, abstractions should not depend on details; details should depend on abstractions.
@@ -1489,9 +1489,9 @@ public class SMSNotificationSender : INotificationSender
 }
 ```
 **Interview Tip**: Emphasize that the NotificationService depends on the INotificationSender interface (abstraction), not on specific implementations like EmailNotificationSender or SMSNotificationSender. This makes the system flexible—changing the notification method doesn’t affect the high-level module.
-## Q22:  How do SOLID principles help in writing better code?
+## 🤔🤔🤔Q22:  How do SOLID principles help in writing better code?
 Adhering to SOLID principles, especially DIP, makes it easier to mock dependencies in unit tests. For instance, if a service depends on an interface instead of a concrete implementation, you can easily inject a mock or stub to test different scenarios without touching the actual implementation.
-## Q22: What is the Dependency Inversion Principle (DIP), and how does it differ from Dependency Injection?
+## 🤔🤔🤔Q22: What is the Dependency Inversion Principle (DIP), and how does it differ from Dependency Injection?
 **DIP**: The Dependency Inversion Principle (DIP) is a design principle in the SOLID principles that says:
 1. High-level modules (business logic) should not depend on low-level modules (details). Both should depend on abstractions. Abstractions should not depend on details. Details (implementations) should depend on abstractions.
 2. DIP is one of the SOLID principles and states that high-level modules should not depend on low-level modules. Both should depend on abstractions (interfaces or abstract classes). This decouples classes and makes the system more flexible and maintainable. Dependency Injection is a technique used to implement DIP by injecting dependencies (like services) rather than hardcoding them inside classes.
@@ -1839,7 +1839,7 @@ Here, the IServiceProvider creates a new instance of TransientService when reque
 - To solve this, avoid injecting transient services directly into singletons. Instead, inject a factory (Func) or the IServiceProvider to create transient services as needed, ensuring their proper lifecycle.
 - This ensures that the singleton service can still use transient services without violating their expected lifetimes.
 By following these patterns, you can avoid lifecycle mismatches and maintain proper dependency management in your ASP.NET Core application.
-## Q23: What are extension methods and where would you use them?
+## 🤔🤔🤔Q23: What are extension methods and where would you use them?
 **Extension methods** in C# allow developers to add new methods to existing types without modifying, deriving from, or recompiling the original types. They are static methods defined in a static class, but called as if they were instance methods on the extended type. Extension methods provide a flexible way to extend the functionality of a class or interface.
 
 To use extension methods, the static class containing the extension method must be in scope, which usually requires a using directive for the namespace of the class.
@@ -1920,7 +1920,7 @@ Why Use Extension Methods Here?
 - **Cleaner Syntax**: Instead of creating a separate DiscountCalculator class or utility function, you can invoke CalculateDiscount directly on the Product object.
 - **Encapsulation**: The method logic is encapsulated, and the Product class remains untouched. You don't have to modify or inherit from Product to add this functionality.
 
-### the"𝙩𝙝𝙞𝙨" keyword:
+### 🤔🤔🤔the"𝙩𝙝𝙞𝙨" keyword:
 
 However, this keyword is powerful in creating 𝐞𝐱𝐭𝐞𝐧𝐬𝐢𝐨𝐧 𝐦𝐞𝐭𝐡𝐨𝐝𝐬.
 𝟐𝟎𝟐𝟐 𝐅𝐈𝐅𝐀 𝐖𝐨𝐫𝐥𝐝 𝐂𝐮𝐩 𝐟𝐢𝐧𝐚𝐥 was a football match, Argentina vs France.
@@ -1958,7 +1958,7 @@ builder.Services.AddAuthorization(options =>
     });
 });
 ```
-Why use 𝐞𝐱𝐭𝐞𝐧𝐬𝐢𝐨𝐧 𝐦𝐞𝐭𝐡𝐨𝐝𝐬?
+🤔🤔🤔Why use 𝐞𝐱𝐭𝐞𝐧𝐬𝐢𝐨𝐧 𝐦𝐞𝐭𝐡𝐨𝐝𝐬?
 
 👉Extension methods allow you to add new methods to existing types, including those you don't have control over (like built-in .NET types).
 
@@ -1968,12 +1968,12 @@ Why use 𝐞𝐱𝐭𝐞𝐧𝐬𝐢𝐨𝐧 𝐦𝐞𝐭𝐡𝐨𝐝𝐬?
 
 👉Instead of creating utility classes with static methods, you can use extension methods for a more object-oriented feel.
 
-## Q24: What are Value Types and Reference Types in C#?
+## 🤔🤔🤔Q24: What are Value Types and Reference Types in C#?
 In C#, data types are divided into two categories: Value Types and Reference Types. This distinction affects how values are stored and manipulated within memory.
 
-**Value Types**: Store data directly and are allocated on the stack. This means that when you assign one value type to another, a direct copy of the value is created. Basic data types (int, double, bool, etc.) and structs are examples of value types. Operations on value types are generally faster due to stack allocation.
+👉**Value Types**: Store data directly and are allocated on the stack. This means that when you assign one value type to another, a direct copy of the value is created. Basic data types (int, double, bool, etc.) and structs are examples of value types. Operations on value types are generally faster due to stack allocation.
 
-**Reference Types**: Store a reference (or pointer) to the actual data, which is allocated on the heap. When you assign one reference type to another, both refer to the same object in memory; changes made through one reference are reflected in the other. Classes, arrays, delegates, and strings are examples of reference types.
+👉**Reference Types**: Store a reference (or pointer) to the actual data, which is allocated on the heap. When you assign one reference type to another, both refer to the same object in memory; changes made through one reference are reflected in the other. Classes, arrays, delegates, and strings are examples of reference types.
 
 Here's a simple example to illustrate the difference:
 ```c#
@@ -2013,7 +2013,7 @@ int i = (int)arrayList[0]; //Unboxing
 ### Summary
 - it is recommended to use boxing and unboxing when it is necessary only.
 - Converting from one type to another type is not good from a performance point of view.
-## Q24: What are delegates and how are they used in C#?
+## 🤔🤔🤔Q24: What are delegates and how are they used in C#?
 **Delegates** in C# are type-safe function pointers or references to methods with a specific parameter list and return type. They allow methods to be passed as parameters, stored in variables, and returned by other methods, which enables flexible and extensible programming designs such as event handling and callback methods. Delegates are particularly useful in implementing the observer pattern and designing frameworks or components that need to notify other objects about events or changes without knowing the specifics of those objects.
 
 There are three main types of delegates in C#:
@@ -2127,7 +2127,7 @@ public class OrderProcessor
     }
 }
 ```   
-**Without violating OCP**  
+👉**Without violating OCP**  
 ```c#
 INotify smsNotifier = new SmsNotifier();
 INotify emailNotifier = new EmailNotifier();
@@ -2223,7 +2223,7 @@ public class EmailMessage : Message
     public string Attachment { get; set; } = string.Empty;
 }
 ```
-2. **Event Handling**: Delegates are used to define event signatures, and events allow methods to subscribe to notifications when specific actions occur (e.g., button clicks, download start).  
+👉2. **Event Handling**: Delegates are used to define event signatures, and events allow methods to subscribe to notifications when specific actions occur (e.g., button clicks, download start).  
 ```c#
 public class Program
 {
@@ -2251,7 +2251,7 @@ public class Program
     }
 }
 ```
-4. **Callback Methods**: Delegates allow methods to be passed as parameters to handle tasks (e.g., download completion) asynchronously.  
+👉4. **Callback Methods**: Delegates allow methods to be passed as parameters to handle tasks (e.g., download completion) asynchronously.  
 ```c#  
 public class Program
 {
@@ -2297,7 +2297,7 @@ public class FileDownloader
 
 public delegate void DownloadCompletedCallback(string message);
 ```
-## Q25: Can you explain the concept of middleware in ASP.NET Core?
+## 🤔🤔🤔Q25: Can you explain the concept of middleware in ASP.NET Core?
  Middleware in ASP.NET Core is software that's assembled into an application pipeline to handle requests and responses. Each component in the middleware pipeline is responsible for invoking the next component in the sequence or short-circuiting the chain if necessary. Middleware components can perform a variety of tasks, such as authentication, routing, session management, and logging.
  
 Middleware enables you to customize the request pipeline in ways that are most suited to your application's needs. They are executed in the order they are added to the pipeline, allowing for precise control over how requests are processed and how responses are constructed.
@@ -2443,7 +2443,7 @@ public class RequestLoggingMiddleware
     }
 }
 ```
-## Q26: What is CORS(Cross - Origin Resource Sharing) ?
+## 🤔🤔🤔Q26: What is CORS(Cross - Origin Resource Sharing) ?
 **CORS(Cross - Origin Resource Sharing)** is a security feature implemented by web browsers that controls how web applications interact with resources from different origins (domains). 
 
 **CORS (Cross-Origin Resource Sharing)** is a security feature implemented by browsers to prevent unauthorized cross-origin requests. It is important for security purposes, ensuring that web applications can't freely access resources from different origins without permission.
@@ -2464,7 +2464,7 @@ builder
 // Apply the CORS policy globally
 app.UseCors("AllowSpecificOrigins");
 ```
-## Q27. What are attributes in C# and how can they be used?
+## 🤔🤔🤔Q27. What are attributes in C# and how can they be used?
 **Attributes** in C# are a powerful way to add declarative information to your code. They are used to add metadata, such as compiler instructions, annotations, or custom information, to program elements (classes, methods, properties, etc.). Attributes can influence the behavior of certain components at runtime or compile time, and they can be queried through reflection.
 
 **Attributes** don’t change the functionality of your code directly but can be used to modify how the code behaves at runtime or during compile-time.
@@ -2519,7 +2519,7 @@ public class MyClass
     public void MyMethod() { }
 }
 ```
-### Q28. **What is a race condition, and how can it occur in a multi-threaded .NET application?**
+### 🤔🤔🤔Q28. **What is a race condition, and how can it occur in a multi-threaded .NET application?**
 *   **Follow-up**: Imagine you are building an e-commerce application where multiple users can update the stock of products. How would a race condition manifest in this scenario, and how can you avoid it?  
       
     **Answer Guide**:
@@ -2648,7 +2648,7 @@ User 2 updates stock to: 80
 
 Final stock: 80
             
-### **2. What is a deadlock, and how can it occur in a .NET application?**
+### 🤔🤔🤔**2. What is a deadlock, and how can it occur in a .NET application?**
 **Follow-up**: Suppose you are developing a banking application where transfers between accounts can happen in parallel. How might a deadlock occur during a funds transfer between two accounts, and how can you prevent it?  
   
 **Answer Guide**:
@@ -2907,7 +2907,7 @@ Both threads have completed.
       
     
 
-### **3. How would you avoid deadlocks when using** `async` **and** `await` **in .NET?**
+### 🤔🤔🤔**3. How would you avoid deadlocks when using** `async` **and** `await` **in .NET?**
 
 *   **Follow-up**: In an order processing system, you have asynchronous calls to an external payment gateway followed by calls to update the order status in the database. How would you structure your code to avoid deadlocks?
     
@@ -2929,14 +2929,14 @@ Both threads have completed.
 *   For a financial application, you might prefer `Monitor.TryEnter` with a timeout to avoid deadlocks and provide better control over how long the system waits for a lock.
     
 
-5. **Mutex (Mutual Exclusion)**
+5. **🤔🤔🤔 Mutex (Mutual Exclusion)**
 
 *   A **mutex** is a locking mechanism that ensures that only one thread can access a shared resource at a time. It is like having a key to a door: only one person (thread) can hold the key (mutex) and access the room (shared resource) at any given time. The key must be released (unlocked) for others to use it.  
       
     Imagine a single bathroom key that two people (threads) are trying to use. Only one person can enter the bathroom at a time (mutual exclusion). The second person waits until the first person finishes and hands over the key (releases the mutex).  
     
 
-6. **Semaphore**
+6. **🤔🤔🤔 Semaphore**
 
 *   **Semaphore** is used to allow multiple threads to access a limited number of resources concurrently, making it suitable for scenarios where multiple instances of a resource can be shared up to a certain capacity.
     
@@ -2950,7 +2950,7 @@ Both threads have completed.
     
     *   Think of a parking lot with only 3 spaces (semaphore capacity = 3). As soon as all spots are taken, new cars must wait for one of the cars to leave before parking. Each car that enters reduces the available spaces, and when a car leaves, a new spot opens up for another car.
 
-## Q29. What is async/await and how does it work?
+## 🤔🤔🤔Q29. What is async/await and how does it work?
 👉1. **async**: The method is marked as asynchronous, which tells the compiler to generate a state machine.
 👉2. **await**: Awaits the result of an asynchronous method without blocking the calling thread.
 
@@ -3017,7 +3017,7 @@ In asynchronous programming with C#, when a method returns a **Task** or **Task<
 
 There are several approaches to handle exceptions in tasks:
 
-1. **Inside the Asynchronous Method**: Use a try-catch block inside the async method to catch exceptions directly.
+👉1. **Inside the Asynchronous Method**: Use a try-catch block inside the async method to catch exceptions directly.
 ```c#
 public async Task PerformOperationAsync()
 {
@@ -3031,7 +3031,7 @@ public async Task PerformOperationAsync()
     }
 }
 ```
-2. **When Awaiting the Task**: Await the task inside a try-catch block to catch exceptions when the task is awaited.
+👉2. **When Awaiting the Task**: Await the task inside a try-catch block to catch exceptions when the task is awaited.
 ```c#
 try
 {
@@ -3042,7 +3042,7 @@ catch (Exception ex)
     // Handle exception
 }
 ```
-3. **Using Task.ContinueWith**: Use the ContinueWith method to attach a continuation task that can handle exceptions.
+👉3. **Using Task.ContinueWith**: Use the ContinueWith method to attach a continuation task that can handle exceptions.
 ```c#
 PerformOperationAsync().ContinueWith(task =>
 {
@@ -3053,7 +3053,7 @@ PerformOperationAsync().ContinueWith(task =>
     }
 }, TaskContinuationOptions.OnlyOnFaulted);
 ```
-4. **Using Task.WhenAny**: Useful for handling exceptions from multiple tasks.
+👉4. **Using Task.WhenAny**: Useful for handling exceptions from multiple tasks.
 ```c#
 var task = PerformOperationAsync();
 await Task.WhenAny(task); // Wait for task to complete
@@ -3094,7 +3094,7 @@ In this example, DivideAsync performs a division operation asynchronously and ma
 
 Handling exceptions in tasks is crucial for writing robust and error-resistant asynchronous C# applications, ensuring that your application can gracefully recover from errors encountered during asynchronous operations.
 
-**async/await and Task.Wait**:
+**🤔🤔🤔async/await and Task.Wait**:
 
 In C#, both async/await and Task.Wait are used for handling asynchronous operations, but they work differently in terms of their behavior and how they should be used in modern asynchronous programming.
 
@@ -3118,7 +3118,7 @@ public async Task FetchDataAsync()
 ```
 In this example, await allows the method to be asynchronous without blocking the calling thread.
 
-**2. Task.Wait**
+**2.🤔🤔🤔 Task.Wait**
 
 👉**Purpose**: Task.Wait is used in scenarios where you want to block the calling thread until a task completes.
 
@@ -3159,7 +3159,7 @@ In this example, Task.Wait() blocks the thread until the task completes, which c
 
 👉Avoid Task.Wait() in asynchronous code, especially in GUI or web applications, as it blocks the thread and can degrade performance.
 
-**3. Task.WhenAll**
+**3.🤔🤔🤔 Task.WhenAll**
 
 Processing Multiple Data Fetch Requests Simultaneously
 ```c#
