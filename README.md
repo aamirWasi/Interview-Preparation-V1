@@ -4368,7 +4368,124 @@ public class Client
     }
 }
 ```
-## 🤔🤔🤔Q45. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q45. How would you use the Prototype Pattern in a user authentication system where user profiles need to be cloned and modified for temporary sessions?
+The **Prototype Pattern** is used when the cost of creating a new object is expensive or complex. Instead of creating a new object from scratch, you can clone an existing object and make modifications.
+
+**Visualization**:
+
+Think of the Prototype Pattern like making a photocopy of a document:
+
+- The original document remains unchanged.
+- The photocopy can be modified (e.g., you can write or highlight on it) without affecting the original. In this case, you clone a user profile for temporary use, modify the clone for that session, and the original user profile stays untouched.
+
+**Why Use the Prototype Pattern in User Authentication?**
+1. **Efficient Object Creation**: Cloning a profile is faster than creating a new user profile from scratch, especially when multiple properties need to be copied.
+2. **Maintaining Original Data**: You can preserve the integrity of the original user profile while modifying the cloned profile for temporary or session-based operations.
+3. **Flexibility**: This allows for flexibility in handling temporary access or guest sessions without altering the user’s core data, making the system more scalable and easier to maintain.
+
+Code Example:
+```c#
+// Step 1: User class implementing ICloneable (Prototype)
+public class User : ICloneable
+{
+    public string Name { get; set; }
+    public string Role { get; set; }
+    // Cloning method
+    public object Clone()
+    {
+        return this.MemberwiseClone(); // Shallow copy
+    }
+
+    public override string ToString()
+    {
+        return $"User: {Name}, Role: {Role}";
+    }
+}
+
+// Step 2: Client code to demonstrate prototype usage
+
+public class Client
+{
+    public static void Main()
+    {
+        // Original user (admin profile)
+        User adminUser = new User { Name = "Alice", Role = "Admin" };
+        // Cloning the admin profile for a temporary session
+        User tempUser = (User)adminUser.Clone();
+        tempUser.Name = "Temporary User"; // Modify the name
+        // Both users have different names but share the same role
+        Console.WriteLine(adminUser); // Output: User: Alice, Role: Admin
+        Console.WriteLine(tempUser); // Output: User: Temporary User, Role: Admin
+    }
+}
+```
+**Another Example**:
+```c#
+// Step 1: Define the prototype interface (ICloneable for simplicity)
+public abstract class UserProfile
+{
+    public string Username { get; set; }
+    public string Role { get; set; }
+    public bool IsTemporary { get; set; }
+    // Clone method to be implemented by concrete classes
+    public abstract UserProfile Clone();
+    public override string ToString()
+    {
+        return $"Username: {Username}, Role: {Role}, IsTemporary: {IsTemporary}";
+    }
+}
+
+// Step 2: Concrete implementation of UserProfile
+public class ConcreteUserProfile : UserProfile
+{
+    public override UserProfile Clone()
+    {
+        // Creating a shallow copy using MemberwiseClone
+        return (UserProfile)this.MemberwiseClone();
+    }
+}
+
+// Step 3: Client code that clones and modifies user profiles
+public class Client
+{
+    public static void Main()
+    {
+        // Original user profile
+        UserProfile originalProfile = new ConcreteUserProfile
+        {
+            Username = "JohnDoe",
+            Role = "Admin",
+            IsTemporary = false
+        };
+
+        Console.WriteLine("Original Profile:");
+        Console.WriteLine(originalProfile);
+        // Cloning the profile for a temporary session
+        UserProfile temporaryProfile = originalProfile.Clone();
+        temporaryProfile.IsTemporary = true; // Marking the cloned profile as temporary
+        temporaryProfile.Role = "Guest"; // Changing the role to a guest for the session
+        Console.WriteLine("\nTemporary Profile:");
+        Console.WriteLine(temporaryProfile);
+        // Original profile remains unchanged
+        Console.WriteLine("\nOriginal Profile After Cloning:");
+        Console.WriteLine(originalProfile);
+    }
+}
+```
+**Output**:
+```c#
+Original Profile:
+
+Username: JohnDoe, Role: Admin, IsTemporary: False
+
+Temporary Profile:
+
+Username: JohnDoe, Role: Guest, IsTemporary: True
+
+Original Profile After Cloning:
+
+Username: JohnDoe, Role: Admin, IsTemporary: False
+```
 ## 🤔🤔🤔Q46. Can you explain the Common Language Runtime (CLR)?
 ## 🤔🤔🤔Q47. Can you explain the Common Language Runtime (CLR)?
 ## 🤔🤔🤔Q48. Can you explain the Common Language Runtime (CLR)?
