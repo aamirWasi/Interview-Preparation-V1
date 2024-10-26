@@ -2251,7 +2251,7 @@ public class Program
     }
 }
 ```
-👉4. **Callback Methods**: Delegates allow methods to be passed as parameters to handle tasks (e.g., download completion) asynchronously.  
+👉3. **Callback Methods**: Delegates allow methods to be passed as parameters to handle tasks (e.g., download completion) asynchronously.  
 ```c#  
 public class Program
 {
