@@ -5202,5 +5202,124 @@ public class Client
 **Visualization**:
 
 Imagine a basic cake. Now, you add icing (decorator). Then, you add sprinkles on top of the icing (another decorator). The cake is still the same, but it now has extra layers of functionality.
-## 🤔🤔🤔Q50. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q50. ref vs out vs in?
+**ref Keyword**:
+
+Purpose: Allows passing parameters by reference, enabling the method to read and modify the caller's variable directly.
+
+Initialization: The variable must be initialized before passing it to the method.
+
+Use Case: Ideal when the method needs to both read and modify a value.
+```c#
+public class Bank
+{
+    public void ApplyDiscount(ref decimal balance, decimal discount)
+    {
+        balance -= discount; // Modify the original balance
+    }
+}
+
+// Usage
+decimal accountBalance = 1000m;
+
+decimal discount = 100m;
+
+var bank = new Bank();
+
+bank.ApplyDiscount(ref accountBalance, discount);
+// accountBalance is now 900m
+```
+**out Keyword**:
+
+Purpose: Similar to ref, but used for scenarios where the method only assigns a value to the variable.
+
+Initialization: The variable does not need to be initialized before passing it to the method; however, it must be assigned a value inside the method.
+
+Use Case: Useful when a method needs to return multiple values.
+```c#
+public class AuthService
+{
+    public bool TryLogin(string username, string password, out string authToken)
+    {
+        // Simulate login logic
+        if (username == "user123" && password == "pass123")
+        {
+            authToken = "ABC123TOKEN"; // Assign a value
+            return true;
+        }
+
+        authToken = string.Empty; // Must assign before return
+
+        return false;
+    }
+}
+
+// Usage
+string token;
+var authService = new AuthService();
+if (authService.TryLogin("user123", "pass123", out token))
+{
+    // token contains "ABC123TOKEN"
+}
+```
+**Usage of in Keyword**:
+
+The in keyword in C# is primarily used to define a parameter that is passed by reference but is intended to be read-only. It allows you to pass large structs to methods without copying them, thereby improving performance, while ensuring that the method cannot modify the data.
+
+Example:
+
+Here’s a simple example demonstrating the use of in with a struct:
+```c#
+public struct Point
+{
+    public int X { get; }
+    public int Y { get; }
+    public Point(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+}
+
+public class Geometry
+{
+    public double CalculateDistance(in Point p1, in Point p2)
+    {
+        return Math.Sqrt(Math.Pow(p2.X - p1.X, 2) + Math.Pow(p2.Y - p1.Y, 2));
+    }
+}
+
+// Usage
+class Program
+{
+    static void Main()
+    {
+        var point1 = new Point(1, 2);
+        var point2 = new Point(4, 6);
+        var geometry = new Geometry();
+        double distance = geometry.CalculateDistance(in point1, in point2);
+        Console.WriteLine($"Distance: {distance}");
+    }
+}
+```
+Is It Beneficial to Use in for Reference Types?
+
+Using the in keyword with reference types does not provide significant benefits because reference types are already passed by reference. When you pass a reference type to a method, you are passing a reference to the object, not the object itself.
+
+However, you can still use in with reference types to signal intent that the method will not modify the reference itself or the object it points to:
+```c#
+public class User
+{
+    public string Name { get; set; }
+}
+
+public class UserService
+{
+    public void PrintUser(in User user)
+    {
+        Console.WriteLine(user.Name);
+        // Cannot modify user.Name or reassign user to a new User object.
+    }
+}
+```
 ## 🤔🤔🤔Q51. Can you explain the Common Language Runtime (CLR)?
