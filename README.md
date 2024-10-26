@@ -1,12 +1,17 @@
 # Interview-Preparation-V1
-## Q1: What is the main difference between the HTTP PUT and PATCH methods?
+## 🤔🤔🤔Q1: What is the main difference between the HTTP PUT and PATCH methods?
 1. PUT is used to update a resource by replacing the entire resource with a new version. It usually requires sending the full resource in the request.
 2. PATCH is used to partially update a resource. It allows you to send only the fields that need to be updated, rather than the entire resource.
-### 1. PUT Method:
+
+**1. PUT Method**:
+
 - Idempotency rule: PUT is idempotent. Making the same PUT request multiple times will always result in the same state on the server.
-### Explanation:
+
+**Explanation**:
+
 - PUT is used to update or replace a resource on the server. The key point is that it either creates or fully updates the resource in a way that every time you send the same data, the result will be the same.
-### Example: Let's say you're updating a user's profile information with PUT:
+
+**Example**: Let's say you're updating a user's profile information with PUT:
 ```c#
 PUT /users/123
 {
@@ -18,11 +23,16 @@ The first time you send this request, it updates or creates the user profile for
 If you send the exact same request again, nothing will change. The server will see that the resource is already in that state (the name is still "John Doe" and the email is still "john@example.com"), so it won’t do anything different.
 
 Result: No matter how many times you repeat the request, the final state will be the same.
-### 2. POST Method:
+
+**2. POST Method**:
+
 - Idempotency rule: POST is NOT idempotent. Making the same POST request multiple times may result in multiple resources being created or multiple actions being taken.
-### Explanation:
+
+**Explanation**:
+
 - POST is used to create a new resource or perform an action. When you send a POST request, it typically creates a new resource, and sending the same request again may create a duplicate or trigger an additional action.
-### Example: Let's say you're submitting a form to create a new user:
+
+**Example**: Let's say you're submitting a form to create a new user:
 ```c#
 POST /users
 {
@@ -35,11 +45,15 @@ If you send the same request again, it will create another user with the same da
 
 Result: Repeating the request leads to different outcomes—each POST creates a new resource.
 
-### 3. PATCH Method:
+**3. PATCH Method**:
+
 - Idempotency rule: PATCH is idempotent if the same request is applied multiple times. However, the change depends on how you use it.
-### Explanation:
+
+**Explanation**:
+
 - PATCH is used to partially update a resource. It modifies only the specified fields. Sending the same PATCH request multiple times should lead to the same result as sending it once (if the request doesn’t conflict with the resource's current state).
-### Example: Let's say you're updating just the email of a user:
+
+**Example**: Let's say you're updating just the email of a user:
  ```c#   
 PATCH /users/123
 {
@@ -50,7 +64,8 @@ The first time you send this request, it updates only the email field of user 12
 If you send the same request again, the server will still update the email to "newemail@example.com", but since it’s already the same, the state won’t change.
 
 Result: If the request is structured properly, sending the same PATCH request multiple times won’t change anything after the first one. The result is idempotent because the resource is left in the same state.
-#### PATCH: Generally Idempotent. Repeating the same request leads to the same outcome, assuming the state doesn’t conflict.
+
+**PATCH**: Generally Idempotent. Repeating the same request leads to the same outcome, assuming the state doesn’t conflict.
 
 ## Q2: When would you choose to use PUT instead of PATCH?
 1. Use PUT when you want to completely replace the resource. If you don’t send the full resource with a PUT request, any fields you omit might be reset or lost.
@@ -74,15 +89,23 @@ PATCH is typically not used for creating new resources, as it is primarily for m
 *   **All members must be static** (methods, fields, properties, etc.).
 *   It's sealed, meaning it cannot be inherited.
 Static classes are often used to hold utility methods, such as mathematical calculations, logging, or configuration helpers.
-### Static constructor: "Static constructor is called once when the class is first used."
-### Sealed Class
+
+**Static constructor**: "Static constructor is called once when the class is first used."
+
+**Sealed Class**
+
 1. Sealed Class: In most cases, we never intend this class to be able to be inherited by other classes, we'll get a significant performance boost by adding sealed keyword in a class not inherited by other classes. By sealing the class, the JIT compiler can directly know the object's actual data type. Meanwhile, for unsealed classes, JIT needs to check whether the class has subclasses or not.
-### Abstract Classes  
+
+**Abstract Classes**
+
 1. Provide a base class with some implementation and abstract methods that derived classes must implement.
 2. Use an **abstract class** when there is shared behavior among subclasses, but use an **interface** when different classes need to follow the same contract, without enforcing shared behavior.
-### Partial classes
+
+**Partial classes**
+
 1. Allow the splitting of a class definition across multiple files.
-### Generic classes
+
+**Generic classes**
 1. Allow the definition of classes with placeholders for the type of its fields, methods, parameters, etc.
 ## Q7: Can Abstract class be Sealed or Static in C#?
 1. NO. Abstract class are used for inheritance, but sealed and static both will not allow the class to be inherited.
@@ -212,20 +235,24 @@ public class SMSNotification : INotification
     }
 }
 ```
-### Abstract Class:
+**Abstract Class**:
+
 1. Can contain implementation of methods, properties, fields, or events.
 2. Can have access modifiers (public, protected, etc.).
 3. A class can inherit from only one abstract class (single inheritance).
 4. Can contain constructors.
 5. Used when different implementations of objects have common methods or properties that can share a common implementation.
-### Interface:
+
+**Interface**:
+
 1. Cannot contain implementations, only declarations of methods, properties, events, or indexers.
 2. Members of an interface are implicitly public.
 3. A class or struct can implement multiple interfaces (multiple inheritance).
 4. Cannot contain fields or constructors.
 5. Used to define a contract for classes without imposing inheritance hierarchies.
 ## Q10: What is an encapsulation?
-### Encapsulation:
+**Encapsulation**:
+
 1. Encapsulation is the concept of restricting direct access to the internal state (fields) of an object and only exposing the necessary methods to interact with it. This ensures controlled access to the data and better security.
 2. This is typically achieved through the use of access modifiers such as private, public, protected, and internal. 
 ```c#
@@ -265,7 +292,8 @@ class Program
 ```
 In a real-world bank account, you can't just take money out of the vault or look at the books yourself. You need to interact with the bank via ATMs or customer service, which controls access to your account.
 ## Q11: Explain polymorphism and its types in C#.?
-### Polymorphism:
+**Polymorphism**:
+
 1. Polymorphism is a core concept in object-oriented programming (OOP) that allows objects to be treated as instances of their parent class rather than their actual derived class.  
 **Polymorphism** means "many forms." It allows a method or function to behave differently based on the object it is acting upon. It can be **compile-time** (method overloading) or **runtime** (method overriding).  
 ```c#
@@ -310,7 +338,8 @@ class Program
 **How does method overriding support polymorphism in C#?**
 1. Method overriding allows a derived class to provide a specific implementation of a method that is already defined in the base class. This is a key feature of runtime polymorphism.
 ## Q12: Can you explain the difference between method overloading and method overriding with examples?
-### Method Overloading: 
+**Method Overloading**:
+
 1. Same method name but different parameters (compile-time polymorphism).
 ```c#
 public class Calculator
@@ -319,7 +348,8 @@ public class Calculator
     public int Add(int a, int b, int c) => a + b + c;
 }
 ```
-### Method Overriding: 
+**Method Overriding**:
+
 1. Same method name, and signature, but different implementations in derived classes (runtime polymorphism).
 ```c#
 public class BaseClass
@@ -339,7 +369,8 @@ public class DerivedClass : BaseClass
 }
 ```
 ## Q13: What is the default behavior of C# language in term of dispatching??
-### Static Dispatch
+**Static Dispatch**
+
 In C#, the default behavior for dispatching (method/property invocation) follows early binding or static dispatch. This means that, by default, C# uses the compile-time type of an object to determine which method or property to call. This is known as static (or early) binding because the decision of which method to call is made at compile time.
 ```c#
 public class Animal
@@ -360,12 +391,15 @@ public class Dog : Animal
 Animal animal = new Dog();
 animal.Speak(); // Output: "Animal speaks."
 ```
-### Explanation:
+**Explanation**:
+
 Compile-Time Binding: In this example, even though animal holds a Dog object, the method Speak() from the Animal class is invoked. This happens because the declared type of animal is Animal, and the method Speak() is not virtual. Therefore, static dispatch is used, and the decision to call the Animal.Speak() method is made at compile time.
 
-### Virtual Methods (Dynamic Dispatch)
+**Virtual Methods (Dynamic Dispatch)**
+
 To enable dynamic dispatch (also known as late binding or runtime polymorphism), you need to mark the method in the base class as virtual and override it in the derived class using the override keyword. This instructs the C# runtime to make method dispatch decisions based on the runtime type of the object, rather than its compile-time type.
-#### Example of Dynamic Dispatch (Late Binding)
+
+**Example of Dynamic Dispatch (Late Binding)**
 ```c#
 public class Animal
 {
@@ -385,9 +419,11 @@ public class Dog : Animal
 Animal animal = new Dog();
 animal.Speak(); // Output: "Dog barks."
 ```
-### Explanation:
+**Explanation**:
+
 Runtime Binding: In this example, the Speak() method is marked as virtual in the Animal class and overridden in the Dog class. When animal.Speak() is called, the decision is made at runtime, based on the actual type of the object (Dog in this case), not the declared type. This is known as dynamic dispatch or late binding.
-##### In short, the default behavior in C# is static dispatch, and to enable dynamic dispatch, you use virtual methods.
+
+**In short, the default behavior in C# is static dispatch, and to enable dynamic dispatch, you use virtual methods.**
 ## Q14: Imagine two classes with inheritence hierarchy below.
 ```c#
 public class BaseClass
@@ -421,7 +457,8 @@ what will happen if we construct the ChildClass like below?
 ```c#
 var child = new ChildClass();
 ```
-### Explanation:
+**Explanation**:
+
 Gives Exception.
 
 1. When you create an instance of ChildClass, the constructor of the base class (BaseClass) is called first, because the constructor of the base class is always called before the constructor of the derived class in C#.
@@ -494,7 +531,9 @@ public class ChildClass : BaseClass
 **o/p**: From Child Class
 
 **note**: if i called Initilaize() from constructor in also throw exception
-### Explanation of Why It Causes Issues
+
+**Explanation of Why It Causes Issues**
+
 Object Construction Process:
 - When you create an instance of a derived class, the base class constructor executes first.
 - At this point, the derived class has not yet completed its constructor, meaning that any fields or properties in the derived class may not be initialized.
@@ -516,11 +555,14 @@ public class Customer : User
 User user = new Customer();
 Console.WriteLine(user.UserName); //Output?
 ```
-### Explanation
+**Explanation**
+
 It will print "Base User Name"
 The Problem here is that we are violating liskov principle and base class will hide the child class implementation.
 In the code provided, you're defining the UserName property in both the base class User and the derived class Customer. This violates the Liskov Substitution Principle (LSP) because the base class User and the derived class Customer don't behave consistently when substituted for one another. Additionally, the derived class's property is hiding the base class property instead of overriding it. This can lead to confusion and unexpected behavior.
-### Key Concepts
+
+**Key Concepts**
+
 **Liskov Substitution Principle (LSP)**: The Liskov Substitution Principle states that objects of a derived class must be able to replace objects of the base class without affecting the correctness of the program. In other words, a subclass should behave in a way that is consistent with the expectations from the base class.
 Liskov Substitution Principle (LSP), which says that a derived class (Customer) should be able to replace its base class (User) without breaking the behavior.
 
@@ -559,7 +601,8 @@ public class Customer : User
 
 Now, when you create a Customer object and reference it as a User, the overridden UserName property from the Customer class will be used, and the output will be "Customer User Name".
 ## Q16: Can you explain OOPS & C# - Inheritance, Abstraction, Encapsulation & Polymorphism?
-### Inheritance
+**Inheritance**
+
 1. In C#, inheritance allows a class (called a derived class) to inherit members (fields, methods, properties) from another class (called a base class). This enables code reuse and polymorphism.
 
 **Real-Life Example**: Employee and Manager
@@ -596,7 +639,9 @@ class Program
 }
 ```
 Think of an "Employee" as a general role. A "Manager" is a specialized role, which can do everything an employee does but also has added responsibilities, like managing a team.
-### Abstraction
+
+**Abstraction**
+
 1. Abstraction allows hiding the complexity of a system by exposing only the necessary parts. This is typically achieved using abstract classes or interfaces.
 
 **Real-Life Example**: Payment System
@@ -638,7 +683,9 @@ class Program
 }
 ```
 Consider the concept of "Payment." Whether you pay using a credit card or PayPal, the user only needs to know how much to pay, not the underlying process. The complexities of how each payment method works are abstracted away.
-### Encapsulation
+
+**Encapsulation**
+
 1. Encapsulation is the concept of restricting direct access to the internal state (fields) of an object and only exposing the necessary methods to interact with it. This ensures controlled access to the data and better security.
 2. This is typically achieved through the use of access modifiers such as private, public, protected, and internal. 
 
@@ -681,7 +728,9 @@ class Program
 }
 ```
 In a real-world bank account, you can't just take money out of the vault or look at the books yourself. You need to interact with the bank via ATMs or customer service, which controls access to your account.
-### Polymorphism:
+
+**Polymorphism**:
+
 1. Polymorphism is a core concept in object-oriented programming (OOP) that allows objects to be treated as instances of their parent class rather than their actual derived class.  
 **Polymorphism** means "many forms." It allows a method or function to behave differently based on the object it is acting upon. It can be **compile-time** (method overloading) or **runtime** (method overriding).
 
@@ -724,9 +773,12 @@ class Program
 ```
 Consider a notification system. Whether the notification is an email, SMS, or push notification, the system knows how to "send" the message based on the type of notification, even though the method called is the same (Send()).
 ## Q16: What are the different types of Inheritance?
-### Inheritance
+**Inheritance**
+
 1. In C#, inheritance allows a class (called a derived class) to inherit members (fields, methods, properties) from another class (called a base class). This enables code reuse and polymorphism.
-### 1. Single Inheritance
+
+**1. Single Inheritance**
+
 In single inheritance, a class derives from only one base class. This is the simplest and most common form of inheritance.
 
 **Real-World Example**: Employee and Manager
@@ -762,9 +814,12 @@ class Program
     }
 }
 ```
-### Explanation:
+**Explanation**:
+
 Manager class inherits from Employee. Manager can access Work() method from Employee without redefining it.
-### 2. Multilevel Inheritance
+
+**2. Multilevel Inheritance**
+
 In multilevel inheritance, a class derives from another derived class, forming a chain of inheritance.
 
 **Real-World Example**: Person → Employee → Manager
@@ -811,9 +866,12 @@ class Program
     }
 }
 ```
-### Explanation:
+**Explanation**:
+
 Manager inherits from Employee, and Employee inherits from Person. Manager can access members from both Employee and Person.
-### 3. Hierarchical Inheritance
+
+**3. Hierarchical Inheritance**
+
 In hierarchical inheritance, multiple classes inherit from a single base class.
 
 **Real-World Example**: Employee, Contractor, and Intern inherit from Person
@@ -881,9 +939,12 @@ class Program
     }
 }
 ```
-### Explanation:
+**Explanation**:
+
 Multiple derived classes (Employee, Contractor, Intern) inherit from the single base class Person. Each subclass can have its own methods but still share common functionality (like Introduce() from Person).
-### 4. Multiple Inheritance (Not Supported Directly in C#)
+
+**4. Multiple Inheritance (Not Supported Directly in C#)**
+
 C# does not support multiple inheritance (where a class can inherit from more than one base class) directly. However, multiple inheritance can be achieved using interfaces.
 
 **Real-World Example**: IWorker and IManager
@@ -924,9 +985,12 @@ class Program
     }
 }
 ```
-### Explanation:
+**Explanation**:
+
 Employee implements both IWorker and IManager interfaces, achieving the effect of multiple inheritance by inheriting behavior from both.
-### 5. Hybrid Inheritance
+
+**5. Hybrid Inheritance**
+
 Hybrid inheritance is a combination of two or more types of inheritance. This typically involves a mix of single, multilevel, hierarchical, or interface-based inheritance. Since C# does not directly support multiple inheritance for classes, hybrid inheritance often relies on interfaces.
 
 **Real-World Example**: Combining Interface and Multilevel Inheritance
@@ -973,7 +1037,8 @@ class Program
     }
 }
 ```
-### Explanation:
+**Explanation**:
+
 Manager class inherits from Employee (multilevel inheritance) and also implements IReportable interface. This is a mix of inheritance and interface implementation (hybrid inheritance).
 ### 🤔🤔🤔What is the difference between single and multilevel inheritance?
 #### Single Inheritance: A class derives from only one base class.
