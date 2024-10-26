@@ -4968,6 +4968,239 @@ public class Client
 
 **Visualization**:
 Think of a YouTube channel. When a new video is uploaded(profile update), all subscribers(observers) are notified.
-## 🤔🤔🤔Q49. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q49. What is the Decorator Pattern, and how can it be used to extend the functionality of a logging service in .NET?
+The **Decorator Pattern** allows you to add additional behavior or functionality to an object dynamically without modifying its core structure. To visualize this in a simple real-world example, let’s imagine a Messaging App where you can send basic messages, but you can decorate them with additional features like encryption or adding emojis, based on the user’s preferences.
+
+**Real-World Example: Messaging App**
+
+In a messaging app, when you send a message, you might want to:
+1. Send a plain message.
+2. Encrypt the message for security.
+3. Add Emojis to make it more expressive.
+4. Do both: Encrypt and Add Emojis.
+
+You can use the **Decorator Pattern** to dynamically “decorate” the basic message with these additional features, like encryption or emojis.
+
+**Visualization Using a Messaging App Example**:
+
+1. **Basic Message (Component)**
+
+Let’s assume you have a simple message that can be sent as plain text.
+```c#
+// Base message interface
+public interface IMessage
+{
+    string Send();
+}
+
+// Plain message class (Concrete Component)
+public class PlainMessage : IMessage
+{
+    private string _content;
+    public PlainMessage(string content)
+    {
+        _content = content;
+    }
+
+    public string Send()
+    {
+        return _content;
+    }
+}
+```
+Here, the IMessage interface defines a Send method, and PlainMessage sends a basic plain text message.
+
+2. **Message Decorator (Base Decorator)**
+
+Now, we define a base decorator class that implements the IMessage interface and holds a reference to an IMessage object.
+```c#
+// Base decorator class
+public class MessageDecorator : IMessage
+{
+    protected IMessage _message;
+    public MessageDecorator(IMessage message)
+    {
+        _message = message;
+    }
+
+    public virtual string Send()
+    {
+        return _message.Send();
+    }
+}
+```
+The MessageDecorator class doesn’t change the original message behavior but allows additional features to be added by extending it.
+
+3. **Encryption Decorator (Concrete Decorator)**
+
+Let’s add encryption to the message. This decorator will wrap the basic message and encrypt it.
+```c#
+// Encryption decorator
+public class EncryptedMessageDecorator : MessageDecorator
+{
+    public EncryptedMessageDecorator(IMessage message) : base(message) { }
+    public override string Send()
+    {
+        // Simulate encryption by reversing the string
+        string encryptedMessage = Reverse(_message.Send());
+        return $"[Encrypted] {encryptedMessage}";
+    }
+
+    private string Reverse(string input)
+    {
+        char[] chars = input.ToCharArray();
+        Array.Reverse(chars);
+        return new string(chars);
+    }
+}
+```
+The EncryptedMessageDecorator encrypts the message by reversing the string (a simple simulation of encryption) and adds an “[Encrypted]” label.
+
+4. **Emoji Decorator (Concrete Decorator)**
+
+Let’s add an emoji to the message.
+```c#
+// Emoji decorator
+public class EmojiMessageDecorator : MessageDecorator
+{
+    public EmojiMessageDecorator(IMessage message) : base(message) { }
+    public override string Send()
+    {
+        return _message.Send() + " 😊"; // Add a smiley emoji to the message
+    }
+}
+```
+The EmojiMessageDecorator adds an emoji to the end of the message.
+
+5. **Client Code: Using the Decorators**
+
+Now, let’s see how the client can use these decorators to add different features to the message dynamically.
+```c#
+// Client code
+public class Client
+{
+    public static void Main()
+    {
+        // Basic plain message
+        IMessage message = new PlainMessage("Hello, world!");
+        // Decorate with encryption
+        message = new EncryptedMessageDecorator(message);
+        Console.WriteLine(message.Send()); // Output: [Encrypted] !dlrow ,olleH
+        // Decorate with both encryption and emoji
+        message = new EmojiMessageDecorator(message);
+        Console.WriteLine(message.Send()); // Output: [Encrypted] !dlrow ,olleH 😊
+    }
+}
+```
+**Output**:
+```c#
+Encrypted Message:
+[Encrypted] !dlrow ,olleH
+
+Encrypted Message with Emoji:
+[Encrypted] !dlrow ,olleH 😊
+```
+**Explanation**:
+
+- Plain Message: You start with a basic message (e.g., “Hello, world!”).
+- Add Encryption: The EncryptedMessageDecorator wraps the message and adds encryption (in this case, reversing the message text for simplicity).
+- Add Emoji: The EmojiMessageDecorator further decorates the encrypted message by adding an emoji at the end.
+
+**Visualization in Simpler Words**:
+
+- Think of it like sending a text message:
+- Plain Message: You send a regular message.
+- Encrypt Message: You want to secure the message before sending, so you add encryption (like putting it in a locked envelope).
+- Add Emoji: You want to make the message more expressive, so you add a smiley emoji after the message.
+
+Each new feature (encryption, emoji) doesn’t modify the original message system; instead, it wraps the original message with additional functionality. You can combine multiple decorators to achieve the final result.
+
+**Advantages of Using the Decorator Pattern**:
+- **Extensibility**: You can easily add new features (like emojis or encryption) without modifying the original message class.
+- **Flexibility**: You can add features dynamically at runtime, depending on the user’s preferences.
+- **Separation of Concerns**: Each decorator focuses on a specific functionality, making your code easier to maintain.
+
+**Summary**:
+
+The **Decorator Pattern** allows you to dynamically add features like encryption or emojis to a messaging system without changing the core message logic. You can stack or combine decorators to modify the behavior of an object step by step, making your system more flexible and extensible.
+
+The **Decorator Pattern** allows behavior to be added to an individual object, dynamically, without affecting the behavior of other objects from the same class. In .NET, this can be used to add additional functionality to a logging service, such as logging to a file or logging to a database, without modifying the base logging class.
+
+**Another Code Example**:
+```c#
+// Step 1: Define a base component (ILogger)
+public interface ILogger
+{
+    void Log(string message);
+}
+
+// Step 2: Concrete component implementing base component
+public class SimpleLogger : ILogger
+{
+    public void Log(string message)
+    {
+        Console.WriteLine("Log: " + message);
+    }
+}
+
+// Step 3: Decorator abstract class implementing the base component
+public abstract class LoggerDecorator : ILogger
+{
+    protected ILogger _logger;
+    public LoggerDecorator(ILogger logger)
+    {
+        _logger = logger;
+    }
+
+    public virtual void Log(string message)
+    {
+        _logger.Log(message);
+    }
+}
+
+// Step 4: Concrete decorators that extend functionality
+public class FileLogger : LoggerDecorator
+{
+    public FileLogger(ILogger logger) : base(logger) {}
+    public override void Log(string message)
+    {
+        base.Log(message);
+        Console.WriteLine("Log written to file: " + message);
+    }
+}
+
+public class DatabaseLogger : LoggerDecorator
+{
+    public DatabaseLogger(ILogger logger) : base(logger) {}
+    public override void Log(string message)
+    {
+        base.Log(message);
+        Console.WriteLine("Log saved to database: " + message);
+    }
+}
+
+// Client code
+public class Client
+{
+    public static void Main()
+    {
+        ILogger logger = new SimpleLogger();
+        ILogger fileLogger = new FileLogger(logger);
+        ILogger dbLogger = new DatabaseLogger(fileLogger);
+        dbLogger.Log("This is a log message");
+    }
+}
+```
+**Line-by-Line Explanation**:
+
+- ILogger is the base component, which defines the Log method.
+- SimpleLogger is the concrete implementation of ILogger that logs a message to the console.
+- LoggerDecorator is an abstract class that implements ILogger and holds a reference to an instance of ILogger. It acts as a wrapper.
+- FileLogger and DatabaseLogger are concrete decorators that add additional logging functionality (to a file or database).
+- Client code demonstrates chaining decorators to log a message to both a file and a database.
+
+**Visualization**:
+
+Imagine a basic cake. Now, you add icing (decorator). Then, you add sprinkles on top of the icing (another decorator). The cake is still the same, but it now has extra layers of functionality.
 ## 🤔🤔🤔Q50. Can you explain the Common Language Runtime (CLR)?
 ## 🤔🤔🤔Q51. Can you explain the Common Language Runtime (CLR)?
