@@ -1444,6 +1444,11 @@ public class NotificationService
 
 In a notification system, high-level modules (like a service sending notifications) should depend on abstractions (interfaces), not on concrete implementations (like email, SMS, etc.).
 ```c#
+// Usage
+var emailSender = new EmailNotificationSender();
+var notificationService = new NotificationService(emailSender);
+notificationService.Notify("Your order has been shipped.");
+
 // High-level module
 public class NotificationService
 {
@@ -1482,11 +1487,6 @@ public class SMSNotificationSender : INotificationSender
         Console.WriteLine($"Sending SMS: {message}");
     }
 }
-
-// Usage
-var emailSender = new EmailNotificationSender();
-var notificationService = new NotificationService(emailSender);
-notificationService.Notify("Your order has been shipped.");
 ```
 **Interview Tip**: Emphasize that the NotificationService depends on the INotificationSender interface (abstraction), not on specific implementations like EmailNotificationSender or SMSNotificationSender. This makes the system flexible—changing the notification method doesn’t affect the high-level module.
 ## Q22:  How do SOLID principles help in writing better code?
@@ -2540,7 +2540,7 @@ using System.Threading;
 class Program
 {
     static int stock = 100;
-    static void Main(string\[\] args)
+    static void Main()
     {
         Thread user1 = new Thread(new ThreadStart(UpdateStock));
         Thread user2 = new Thread(new ThreadStart(UpdateStock));
@@ -2951,8 +2951,8 @@ Both threads have completed.
     *   Think of a parking lot with only 3 spaces (semaphore capacity = 3). As soon as all spots are taken, new cars must wait for one of the cars to leave before parking. Each car that enters reduces the available spaces, and when a car leaves, a new spot opens up for another car.
 
 ## Q29. What is async/await and how does it work?
-1. **async**: The method is marked as asynchronous, which tells the compiler to generate a state machine.
-2. **await**: Awaits the result of an asynchronous method without blocking the calling thread.
+👉1. **async**: The method is marked as asynchronous, which tells the compiler to generate a state machine.
+👉2. **await**: Awaits the result of an asynchronous method without blocking the calling thread.
 
 In real-world applications, await is used for tasks that take time but don't need to block other parts of the system while they’re running. Here are a few examples showing how await allows asynchronous processing without blocking the calling thread:
     
@@ -2979,9 +2979,602 @@ public async Task ServeMultipleCustomersAsync()
 ```
 In this example, **two customers** order coffee at the same time. The `Task.WhenAll` ensures both orders are processed concurrently. No one customer waits for the other to finish. Similarly, in a real-world coffee shop, multiple orders can be handled in parallel, without one customer blocking another’s order.
         
-3. **State Machine**: A state machine is automatically created when you write asynchronous code using `async` and `await`. It controls how the method moves between different "states" of execution.  
-      
+👉3. **State Machine**: A state machine is automatically created when you write asynchronous code using `async` and `await`. It controls how the method moves between different "states" of execution.  
+
 In asynchronous programming, particularly when using `async` and `await` in C#, the compiler transforms the code into a **state machine**. A state machine is a programming construct that controls the flow of execution through a series of states. Each state represents a particular point in the execution of the method, and the state machine keeps track of where to continue when a task resumes after an `await`.
+
+👉4. **Task**: In C#, a Task represents an asynchronous operation. It's part of the Task-based Asynchronous Pattern (TAP) and is used to handle asynchronous programming, allowing code to execute without blocking the main thread.
+
+**Key Task Types**
+
+- **Task**: Represents an asynchronous operation that does not return a value. It is analogous to void in synchronous methods.
+
+- **Task<TResult>**: Represents an asynchronous operation that returns a result (of type TResult). It is analogous to TResult return types in synchronous methods.
+
+**Why Use Task?**
+
+1. **Avoid Blocking the UI**: In applications with a UI (e.g., WPF or Windows Forms), using Task ensures the UI thread remains responsive while long-running tasks (like file I/O or database queries) execute.
+
+2. **Scalability**: In server applications, Task helps in creating more scalable systems by enabling asynchronous I/O operations (e.g., handling multiple HTTP requests simultaneously without blocking threads).
+
+**Task States**
+
+A Task can have different states, including:
+
+👉Created: The task is created but not yet running.
+
+👉Running: The task is currently running.
+
+👉Completed: The task has finished running.
+
+👉Faulted: The task encountered an error.
+
+👉Canceled: The task was canceled.
+
+**How do you handle exceptions in a method that returns a Task?**
+
+In asynchronous programming with C#, when a method returns a **Task** or **Task<T>**, exceptions should be handled within the task to avoid unhandled exceptions that can crash the application. Exceptions thrown in a task are captured and placed on the returned task object. To handle these exceptions, you can use a try-catch block within the asynchronous method, or you can inspect the task after it has completed for any exceptions.
+
+There are several approaches to handle exceptions in tasks:
+
+1. **Inside the Asynchronous Method**: Use a try-catch block inside the async method to catch exceptions directly.
+```c#
+public async Task PerformOperationAsync()
+{
+    try
+    {
+        // Async operation that may throw an exception
+    }
+    catch (Exception ex)
+    {
+        // Handle exception
+    }
+}
+```
+2. **When Awaiting the Task**: Await the task inside a try-catch block to catch exceptions when the task is awaited.
+```c#
+try
+{
+    await PerformOperationAsync();
+}
+catch (Exception ex)
+{
+    // Handle exception
+}
+```
+3. **Using Task.ContinueWith**: Use the ContinueWith method to attach a continuation task that can handle exceptions.
+```c#
+PerformOperationAsync().ContinueWith(task =>
+{
+    if (task.Exception != null)
+    {
+        // Handle exception
+        var exception = task.Exception.InnerException;
+    }
+}, TaskContinuationOptions.OnlyOnFaulted);
+```
+4. **Using Task.WhenAny**: Useful for handling exceptions from multiple tasks.
+```c#
+var task = PerformOperationAsync();
+await Task.WhenAny(task); // Wait for task to complete
+
+if (task.IsFaulted)
+{
+    // Handle exception
+    var exception = task.Exception.InnerException;
+}
+```
+Here is an example demonstrating handling exceptions for a method that returns a Task:
+```c#
+public async Task<int> DivideAsync(int numerator, int denominator)
+{
+    return await Task.Run(() =>
+    {
+        if (denominator == 0)
+            throw new DivideByZeroException("Denominator cannot be zero.");
+
+        return numerator / denominator;
+    });
+}
+
+public async Task ExecuteAsync()
+{
+    try
+    {
+        int result = await DivideAsync(10, 0);
+        Console.WriteLine($"Result: {result}");
+    }
+    catch (DivideByZeroException ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+    }
+}
+```
+In this example, DivideAsync performs a division operation asynchronously and may throw a DivideByZeroException. The exception is handled in the ExecuteAsync method, demonstrating how to properly handle exceptions for tasks in asynchronous methods.
+
+Handling exceptions in tasks is crucial for writing robust and error-resistant asynchronous C# applications, ensuring that your application can gracefully recover from errors encountered during asynchronous operations.
+
+**async/await and Task.Wait**:
+
+In C#, both async/await and Task.Wait are used for handling asynchronous operations, but they work differently in terms of their behavior and how they should be used in modern asynchronous programming.
+
+**1. async/await**
+
+👉**Purpose**: async/await is designed to simplify writing asynchronous code. It makes asynchronous code look like synchronous code, making it easier to read and maintain.
+
+👉**Usage**: await pauses the execution of the method until the awaited task completes. It allows the current thread to continue doing other work while waiting.
+
+👉**Non-blocking**: When you use await, it doesn't block the thread; it frees up the thread to do other work and resumes execution when the awaited operation completes.
+
+👉**Scenarios**: Ideal for I/O-bound operations (e.g., calling APIs, reading files, database operations).
+
+**Example**:
+```c#
+public async Task FetchDataAsync()
+{
+    var data = await GetDataFromApiAsync();
+    ProcessData(data);
+}
+```
+In this example, await allows the method to be asynchronous without blocking the calling thread.
+
+**2. Task.Wait**
+
+👉**Purpose**: Task.Wait is used in scenarios where you want to block the calling thread until a task completes.
+
+👉**Usage**: When you call Task.Wait(), it synchronously blocks the current thread until the task is completed.
+
+👉**Blocking**: Unlike await, Task.Wait() blocks the thread, which can lead to thread starvation and reduce performance in asynchronous operations.
+
+👉**Scenarios**: Usually used in console applications or specific scenarios where you need to block until a task is completed. However, it's not recommended for async code because it blocks the calling thread.
+
+**Example**:
+```c#
+public void FetchData()
+{
+    Task task = GetDataFromApiAsync();
+    task.Wait();  // Blocks the thread until the task completes
+    ProcessData(task.Result);
+}
+```
+In this example, Task.Wait() blocks the thread until the task completes, which can be inefficient in UI or web applications because it prevents other tasks from executing.
+
+**Key Differences**:
+
+**Blocking**:
+
+👉async/await is non-blocking and allows the thread to perform other work while waiting.
+
+👉Task.Wait() is blocking and waits for the task to finish before proceeding.
+
+**Error Handling**:
+
+👉With await, exceptions are captured and thrown as part of the task flow, which makes it easier to handle in an async method.
+
+👉With Task.Wait(), exceptions are wrapped in an AggregateException, requiring more effort to unwrap and handle them.
+
+**Best Practice**:
+
+👉Use async/await for asynchronous code because it is non-blocking and helps maintain responsiveness in your applications (especially in UI and web apps).
+
+👉Avoid Task.Wait() in asynchronous code, especially in GUI or web applications, as it blocks the thread and can degrade performance.
+
+**3. Task.WhenAll**
+
+Processing Multiple Data Fetch Requests Simultaneously
+```c#
+public async Task<DashboardData> GetDashboardDataAsync()
+{
+    // Start each data fetch but don't await right away
+    var ordersTask = FetchOrdersAsync();
+    var inventoryTask = FetchInventoryAsync();
+    var customersTask = FetchCustomersAsync();
+
+    // While waiting for the above tasks, the thread can do other work or handle requests
+
+    // Await all tasks to complete before returning the result
+    await Task.WhenAll(ordersTask, inventoryTask, customersTask);
+    // Combine all results once they complete
+
+    return new DashboardData
+    {
+        Orders = await ordersTask,
+        Inventory = await inventoryTask,
+        Customers = await customersTask
+    };
+}
+```
+It’s understandable why this might look like a synchronous call, but Each of these lines looks like they’re being executed sequentially, but in reality, they’re **starting each task asynchronously** without blocking the execution flow.
+```c#
+var ordersTask = FetchOrdersAsync();
+```
+- **What’s Happening**: This line calls the asynchronous method FetchOrdersAsync() and immediately assigns the resulting Task to ordersTask.
+
+- **Behind the Scenes**: The FetchOrdersAsync method might, for instance, start an HTTP request or database call and return a Task representing this ongoing work. However, because there’s no await here, the method doesn’t wait for the request to complete. Instead, it immediately moves on to the next line.
+
+- **Real-World Parallel**: Imagine asking a colleague to go fetch order data for you, and without waiting for them to return, you turn to another colleague and ask them for inventory data
+
+**Why It’s Asynchronous, Not Synchronous**
+
+- **No await Means No Waiting**: By not using await immediately, you’re not pausing or blocking execution to wait for each task to complete. Each call to FetchOrdersAsync, FetchInventoryAsync, and FetchCustomersAsync returns a Task that represents the ongoing work, but the method moves on without waiting.
+
+- **All Tasks Run in Parallel**: The Task objects (ordersTask, inventoryTask, and customersTask) represent operations that are all happening in parallel. They’re “promises” of future results but are not awaited yet, so the application doesn’t stop to wait for any of them at this stage.
+
+**When Does the Method Actually Wait?**
+
+The waiting occurs later with:
+```c#
+await Task.WhenAll(ordersTask, inventoryTask, customersTask);
+```
+**Explanation**: This line uses await with Task.WhenAll, which waits for all three tasks to complete but only pauses here. While waiting, the server thread is freed up to handle other requests.
+
+This line awaits all tasks to complete, but only at this point does the method pause. Up until this line, each task started running asynchronously and concurrently, allowing other work to be done or other requests to be handled while they’re in progress.
+
+**Summary**
+
+By not using await immediately, we’ve started all three tasks **without waiting**. The tasks run asynchronously and concurrently, which makes it possible to fetch all three sets of data simultaneously rather than sequentially. Only when we reach await Task.WhenAll(...) does the method wait for all tasks to complete, making the process highly efficient.
+
+### 🤔🤔🤔What if you add await before each of these method calls, like this:
+```c#
+var orders = await FetchOrdersAsync();
+var inventory = await FetchInventoryAsync();
+var customers = await FetchCustomersAsync();
+```
+and remove **Task.WhenAll()**, it changes the behavior to a **sequential, synchronous-like execution**. Here’s what happens line by line:
+
+1. **First**
+	```c#
+	await FetchOrdersAsync();
+	```
+	Completes Before Moving On:
+	
+	- When you await the result of **FetchOrdersAsync()**, the **method pauses** and **waits for this task to complete** before moving to the next line.
+	
+	- **Effect**: The program now **waits for FetchOrdersAsync() to finish**, **blocking any further execution** in this method until the order data is fully fetched.
+
+2. **Next** await FetchInventoryAsync() **Waits for Inventory Fetch**:
+
+	- Once **FetchOrdersAsync() completes**, FetchInventoryAsync() is called, and await pauses the method again until inventory data is fetched.
+	
+	- **Effect**: Now the method is waiting on FetchInventoryAsync(), so nothing else proceeds until inventory data is ready.
+
+3. **Finally**, await FetchCustomersAsync() **Blocks Until Complete**:
+
+	- Once the inventory data is fetched, FetchCustomersAsync() is called. Again, the await keyword blocks the method until this task completes.
+	
+	- **Effect**: The method waits for customer data, meaning only after this third fetch completes does the method proceed to return data.
+
+**Comparison with Task.WhenAll**
+
+When using await Task.WhenAll(ordersTask, inventoryTask, customersTask);, all three tasks start immediately and run concurrently, making it much faster than sequential awaits.
+
+**Real-World Difference**
+
+- **Sequential Execution with Await per Line**: Each data fetch happens one after another. If each task takes, say, 1 second, the total time to get all data would be approximately 3 seconds (1 second for orders, 1 for inventory, and 1 for customers).
+
+- **Parallel Execution with Task.WhenAll**: All tasks start at the same time and complete independently. Here, if each fetch still takes 1 second, the total time to get all data is approximately 1 second (since they’re all running concurrently).
+
+**Summary**
+
+Using await on each task line by line results in sequential execution (like traditional synchronous programming), making it less efficient for multiple independent asynchronous tasks. Using Task.WhenAll allows them to run concurrently, providing much faster overall performance.
+
+### 🤔🤔🤔Does Task.Run() creates new thread everytime?
+
+No, **Task.Run()** does not necessarily create a new thread every time it is called. Instead, it utilizes the ThreadPool to execute the task, which means it can reuse existing threads from the pool. Here's how it works:
+
+**Understanding Task.Run()**
+
+1. **Thread Pool Usage**:
+
+- **Task.Run()** schedules the provided work (a delegate) to run on a thread pool thread. The .NET ThreadPool manages a pool of worker threads, which can be reused for different tasks.
+- If there are idle threads available in the pool, **Task.Run()** will use one of those threads to execute the task, rather than creating a new one.
+
+2. **Thread Creation Logic**:
+
+- If there are no available threads in the pool (because all threads are busy with other tasks), the ThreadPool can create additional threads, but it will do so only up to a certain limit defined by the system configuration. This is done to optimize resource usage and minimize the overhead of thread creation.
+
+3. **Efficiency**:
+
+- Using **Task.Run()** is generally more efficient than **creating a new thread manually with new Thread() for short-lived operations**. The **overhead of creating and destroying threads** is reduced because threads can be reused.
+
+- This makes **Task.Run()** a good choice for offloading work to the background while keeping the main thread responsive.
+
+**Example of Task.Run()**
+
+Here’s a simple example of using Task.Run():
+```c#
+using System;
+using System.Threading.Tasks;
+
+class Program
+{
+    static void Main()
+    {
+        Task task = Task.Run(() => DoWork());
+        Console.WriteLine("Task started.");
+        
+        task.Wait(); // Wait for the task to complete
+        Console.WriteLine("Task completed.");
+    }
+
+    static void DoWork()
+    {
+        Console.WriteLine("Working on thread: " + System.Threading.Thread.CurrentThread.ManagedThreadId);
+        System.Threading.Thread.Sleep(2000); // Simulating work
+        Console.WriteLine("Work done.");
+    }
+}
+```
+**Key Points**
+
+👉**Reuse of Threads**: Task.Run() is designed to reuse existing threads in the ThreadPool when possible, which improves performance.
+
+👉**Thread Management**: The ThreadPool dynamically manages threads based on workload and system capacity, so you don't have to worry about the underlying thread management details.
+
+👉**Thread Limits**: There are limits to how many threads the ThreadPool can create and manage simultaneously. If your application consistently requires more threads than the pool can provide, you might need to adjust the ThreadPool settings or review the design of your concurrent tasks.
+
+**Summary**
+
+In summary, while Task.Run() may create new threads when necessary, it primarily relies on reusing existing threads from the ThreadPool, making it an efficient way to run tasks asynchronously without the overhead of manual thread management.
+
+### 🤔🤔🤔What is the diffrence between ThreadPool.QueueWorkItem and new Thread().Start()?
+The ThreadPool.QueueUserWorkItem and new Thread().Start() methods in .NET are both used to create and manage threads, but they have different purposes, behaviors, and use cases.
+
+👉**ThreadPool.QueueUserWorkItem**: Adds work to a shared ThreadPool of pre-existing threads. Best for short-lived, frequent tasks that don’t need a dedicated thread (e.g., handling requests in a web server).
+
+ThreadPool.QueueUserWorkItem assigns the task to a thread from the shared pool. When the task finishes, the thread returns to the pool, ready for the next task
+```c#
+using ThreadPool.QueueUserWorkItem;
+using System;
+using System.Threading;
+
+class Program
+{
+    static void Main()
+    {
+        ThreadPool.QueueUserWorkItem(DoWork);
+        Console.WriteLine("Task queued on thread pool.");
+        Console.ReadLine();
+    }
+
+    static void DoWork(object state)
+    {
+        Console.WriteLine("Working on thread: " + Thread.CurrentThread.ManagedThreadId);
+        Thread.Sleep(2000); // Simulating work
+        Console.WriteLine("Work completed.");
+    }
+}
+```
+👉**new Thread().Start()**: Creates a dedicated thread for each task. Useful for long-running tasks where more control over the thread’s lifecycle is needed (e.g., background data analysis).
+```c#
+using new Thread().Start()
+using System;
+using System.Threading;
+
+class Program
+{
+    static void Main()
+    {
+        Thread workerThread = new Thread(DoWork);
+        workerThread.Start();
+        Console.WriteLine("Started new thread.");
+        Console.ReadLine();
+    }
+
+    static void DoWork()
+    {
+        Console.WriteLine("Working on thread: " + Thread.CurrentThread.ManagedThreadId);
+        Thread.Sleep(2000); // Simulating work
+        Console.WriteLine("Work completed.");
+    }
+}
+```
+**👉Real-World Example**:
+
+- **ThreadPool.QueueUserWorkItem**: A web server processing incoming HTTP requests quickly without the overhead of creating/destroying threads.
+
+- **new Thread().Start()**: A long-running task that performs real-time data processing, where you may want to control priority or manage its shutdown.
+
+**👉Thread Management**
+
+- **ThreadPool.QueueUserWorkItem**: Managed by the .NET runtime. Threads are reused for efficiency, so creating/destroying threads isn't required.
+
+- **new Thread().Start()**: Manual control over threads, which are created and destroyed as needed. Higher overhead and less efficient for frequent, short tasks.
+
+**👉Example**:
+
+```c#
+// ThreadPool - efficient for short tasks
+ThreadPool.QueueUserWorkItem(_ => Console.WriteLine("Processing HTTP request"));
+```
+```c#
+// new Thread - better for a dedicated, ongoing task
+new Thread(() => Console.WriteLine("Long background task running")).Start();
+```
+**👉Performance & Overhead**
+
+- **ThreadPool.QueueUserWorkItem**: Lower overhead, as thread creation/destruction is avoided. Ideal for scalable applications.
+
+- **new Thread().Start()**: Higher overhead as each thread is individually created and cleaned up. Use only when task requires dedicated, long-term attention.
+
+**👉Example:**
+
+- **ThreadPool**: A bank’s server handling many user transactions quickly.
+
+- **new Thread**: An analysis tool processing large datasets for hours.
+### 🤔🤔🤔What is the purpose of ConfigureAwait(false) method in Task class?
+The ConfigureAwait(false) method is used in asynchronous programming in .NET to control how the continuation of an asynchronous task is executed. Here's a detailed explanation of its purpose and benefits:
+
+**Purpose of ConfigureAwait(false)**
+
+1. **Control Context**:
+
+	- By default, when you await a task, the continuation (the code that follows the await) resumes on the original synchronization context. This is particularly important in UI applications (like WPF or WinForms) where you want to update the UI from the main thread.
+	Using ConfigureAwait(false) tells the task to continue on any available thread rather than trying to marshal back to the original synchronization context.
+
+2. **Performance Improvement**:
+
+	- When you use ConfigureAwait(false), it can reduce the overhead of context switching, especially in library code or in scenarios where the original context (like a UI thread) is not necessary.
+	- This can improve performance by allowing the task to complete without waiting for the original context to be free, reducing latency in your application.
+
+3. **Avoid Deadlocks**:
+
+	- In some scenarios, particularly with deadlocks caused by synchronously waiting on asynchronous code (using .Result or .Wait()), ConfigureAwait(false) can help prevent these issues by not attempting to marshal back to the original context.
+
+**🤔When to Use ConfigureAwait(false)**
+
+- Library Code: When you are writing a library or reusable code, it’s often a good practice to use ConfigureAwait(false) because the calling context might not be relevant, and it prevents the library from unintentionally causing deadlocks or UI thread blocking.
+
+- Non-UI Applications: In console applications or background services, where the original context isn’t needed, using ConfigureAwait(false) is typically advisable.
+
+**Example**
+
+Here’s an example illustrating the use of ConfigureAwait(false):
+```c#
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task Main()
+    {
+        string result = await FetchDataAsync().ConfigureAwait(false);
+        Console.WriteLine(result);
+    }
+
+    static async Task<string> FetchDataAsync()
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            // Simulate an asynchronous operation
+            string data = await client.GetStringAsync("https://jsonplaceholder.typicode.com/posts/1").ConfigureAwait(false);
+            return data;
+        }
+    }
+}
+```
+**👉Summary**
+
+ - Use ConfigureAwait(false) when you don't need to return to the original synchronization context, especially in library code or non-UI applications.
+	
+ - It can improve performance, reduce deadlocks, and provide more flexible control over task continuations.
+
+By applying ConfigureAwait(false) thoughtfully, you can write more efficient and robust asynchronous code.
+### 🤔🤔🤔What is the difference between Task.WaitAll() and Task.WhenAll()?
+Task.WaitAll() and Task.WhenAll() are both methods used to handle multiple tasks in .NET, but they have different behaviors and use cases.
+
+**1. Method Type**
+
+- Task.WaitAll()
+
+	- Type: Synchronous
+	- Behavior: Blocks the calling thread until all the specified tasks have completed execution. If any of the tasks fail, it throws an AggregateException.
+	- Usage: Typically used when you need to ensure that all tasks have completed before continuing execution in the current thread.
+
+- Task.WhenAll()
+
+	- Type: Asynchronous
+	- Behavior: Returns a Task that represents the completion of all the specified tasks without blocking the calling thread. It allows the calling code to continue executing while the tasks are running.
+	- Usage: Useful when you want to await the completion of multiple tasks without blocking the thread. It can be awaited using the await keyword.
+
+**2. Return Value**
+
+- Task.WaitAll()
+
+	- **Return Value**: Does not return a value. It’s a void method that only indicates when all tasks have completed.
+
+- Task.WhenAll()
+
+	- **Return Value**: Returns a Task, which can be awaited. If the tasks return values (e.g., Task<int>), WhenAll() returns a Task<T[]> containing the results of the completed tasks.
+
+**3. Exception Handling**
+
+- Task.WaitAll()
+
+	- **Exception Handling**: If one or more tasks throw exceptions, WaitAll will throw an AggregateException containing all the exceptions thrown by the individual tasks. The calling thread will be blocked until all tasks are completed.
+
+- Task.WhenAll()
+
+	- **Exception Handling**: If any of the tasks fail, the resulting task will also fail and throw an AggregateException when awaited. However, the calling thread is not blocked, allowing other operations to continue until the awaited task completes.
+
+**4. Example Usage**
+
+Here’s a comparison with example code for both methods:
+
+**Using Task.WaitAll()**
+```c#
+using System;
+using System.Threading.Tasks;
+
+class Program
+{
+    static void Main()
+    {
+        Task task1 = Task.Run(() => SimulateWork(1));
+        Task task2 = Task.Run(() => SimulateWork(2));
+        
+        try
+        {
+            Task.WaitAll(task1, task2); // Blocks the main thread until both tasks complete
+            Console.WriteLine("All tasks completed.");
+        }
+        catch (AggregateException ae)
+        {
+            foreach (var ex in ae.InnerExceptions)
+            {
+                Console.WriteLine($"Task failed with exception: {ex.Message}");
+            }
+        }
+    }
+
+    static void SimulateWork(int id)
+    {
+        if (id == 2) throw new Exception("Error in task 2");
+        Console.WriteLine($"Task {id} completed.");
+    }
+}
+```
+Using Task.WhenAll()
+```c#
+using System;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task Main()
+    {
+        Task task1 = Task.Run(() => SimulateWork(1));
+        Task task2 = Task.Run(() => SimulateWork(2));
+        
+        try
+        {
+            await Task.WhenAll(task1, task2); // Does not block; continues executing
+            Console.WriteLine("All tasks completed.");
+        }
+        catch (AggregateException ae)
+        {
+            foreach (var ex in ae.InnerExceptions)
+            {
+                Console.WriteLine($"Task failed with exception: {ex.Message}");
+            }
+        }
+    }
+
+    static void SimulateWork(int id)
+    {
+        if (id == 2) throw new Exception("Error in task 2");
+        Console.WriteLine($"Task {id} completed.");
+    }
+}
+```
+**👉Summary**
+
+- Use Task.WaitAll() when you want to block the current thread until all tasks are complete and you do not require asynchronous behavior.
+- Use Task.WhenAll() when you want to run tasks asynchronously and await their completion without blocking the current thread.
+
+
+
 
 
 > 13. Describe what LINQ is and give an example of where it might be used.
@@ -3472,7 +4065,7 @@ In asynchronous programming, particularly when using `async` and `await` in C#, 
     Response Status Code: 200
     
 3.    
-    Middleware Order
+    **Middleware Order**
     
     The order of middleware in the pipeline is critical. For example, authentication middleware must run before authorization middleware because a user must be authenticated before checking if they have the right permissions.  
       
@@ -3482,11 +4075,11 @@ In asynchronous programming, particularly when using `async` and `await` in C#, 
     
       
     
-4.  Sgort-Circut: In **ASP.NET Core**, **short-circuiting** refers to a scenario where a middleware in the request pipeline **stops the flow** and prevents further middleware components from executing. This can occur deliberately (by design) or unintentionally.  
+4.  **Short-Circut**: In **ASP.NET Core**, **short-circuiting** refers to a scenario where a middleware in the request pipeline **stops the flow** and prevents further middleware components from executing. This can occur deliberately (by design) or unintentionally.  
       
-    When Does Short-Circuiting Happen?
+    **🤔🤔🤔When Does Short-Circuiting Happen?**
     
-    Short-circuiting can happen when:
+    **👉Short-circuiting can happen when**:
     
     1.  **A middleware decides to handle the request completely** without calling the next middleware in the pipeline (by **not** calling `await _next(context);`).
         
@@ -3495,133 +4088,103 @@ In asynchronous programming, particularly when using `async` and `await` in C#, 
     
     ### Example of Short-Circuiting
     
-    Consider the following middleware pipeline:  
-      
+    Consider the following middleware pipeline:
+    ```c#
     public class Startup
-    
-    {
-    
-    public void Configure(IApplicationBuilder app)
-    
-    {
-    
-    app.UseMiddleware<RequestLoggingMiddleware>();
-    
-    app.UseAuthentication();
-    
-    app.UseAuthorization();
-    
-    app.UseRouting();
-    
-    app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-    
-    }
-    
-    }
-    
-      
-    Scenario 1: Short-circuiting with Authentication
-    
-    If a request comes in and the user is not authenticated, `app.UseAuthentication()` middleware might **short-circuit** the pipeline by returning an unauthorized (401) response, without passing the request further down the pipeline (e.g., `app.UseAuthorization()` or `app.UseEndpoints()` won’t execute).
-    
-    Here's an example where authentication middleware might short-circuit:  
-      
-    public class AuthenticationMiddleware
-    
-    {
-    
-    private readonly RequestDelegate \_next;
-    
-    public AuthenticationMiddleware(RequestDelegate next)
-    
-    {
-    
-    \_next = next;
-    
-    }
-    
-    public async Task InvokeAsync(HttpContext context)
-    
-    {
-    
-    // Simulate an authentication check
-    
-    bool isAuthenticated = false;
-    
-    if (!isAuthenticated)
-    
-    {
-    
-    // Short-circuit the pipeline by returning a 401 Unauthorized response
-    
-    context.Response.StatusCode = 401;
-    
-    await context.Response.WriteAsync("Unauthorized");
-    
-    return; // No call to \_next(context), so no further middleware is invoked
-    
-    }
-    
-    await \_next(context); // Pass the request to the next middleware
-    
-    }
-    
-    }
-    
-      
-    In this case:
-    
-    *   If the user is not authenticated, the pipeline is **short-circuited**. The middleware returns a 401 response and **does not call** `_next(context)`, preventing further middleware (like routing, authorization, etc.) from running.
-        
-    *   If the user is authenticated, it proceeds to the next middleware by calling `_next(context)`.
-        
-    
-    #### Scenario 2: Short-circuiting with Custom Middleware
-    
-    Let’s take another example where a custom logging middleware short-circuits the pipeline for certain requests:  
-      
-    public class RequestLoggingMiddleware
-    
-    {
-    
-    private readonly RequestDelegate \_next;
-    
-    public RequestLoggingMiddleware(RequestDelegate next)
-    
-    {
-    
-    \_next = next;
-    
-    }
-    
-    public async Task InvokeAsync(HttpContext context)
-    
-    {
-    
-    // Check for a special condition (e.g., a certain request path)
-    
-    if (context.Request.Path == "/forbidden")
-    
-    {
-    
-    // Short-circuit the pipeline by returning a 403 Forbidden response
-    
-    context.Response.StatusCode = 403;
-    
-    await context.Response.WriteAsync("Forbidden path");
-    
-    return; // Prevent further middleware from executing
-    
-    }
-    
-    await \_next(context); // Otherwise, pass the request to the next middleware
-    
-    }
-    
-    }  
+	{
+	    public void Configure(IApplicationBuilder app)
+	    {
+	        app.UseMiddleware<RequestLoggingMiddleware>();
+	        app.UseAuthentication();
+	        app.UseAuthorization();
+	        app.UseRouting();
+	        app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+	    }
+	}
+	```
+	**Scenario 1: Short-circuiting with Authentication**
+	
+	If a request comes in and the user is not authenticated, `app.UseAuthentication()` middleware might **short-circuit** the pipeline by returning an unauthorized (401) response, without passing the request further down the pipeline (e.g., `app.UseAuthorization()` or `app.UseEndpoints()` won’t execute).
+	
+	Here's an example where authentication middleware might short-circuit:  
+	```c#
+ 	public class AuthenticationMiddleware
+	{
+	    private readonly RequestDelegate _next;
+	    public AuthenticationMiddleware(RequestDelegate next)
+	    {
+	        _next = next;
+	    }
+	
+	    public async Task InvokeAsync(HttpContext context)
+	    {
+	        // Simulate an authentication check
+	        bool isAuthenticated = false;
+	        if (!isAuthenticated)
+	        {
+	            // Short-circuit the pipeline by returning a 401 Unauthorized response
+	            context.Response.StatusCode = 401;
+	            await context.Response.WriteAsync("Unauthorized");
+	            return; // No call to _next(context), so no further middleware is invoked
+	        }
+	
+	        await _next(context); // Pass the request to the next middleware
+	    }
+	}
+	 ```  
+	In this case:
+	
+	*   If the user is not authenticated, the pipeline is **short-circuited**. The middleware returns a 401 response and **does not call** `_next(context)`, preventing further middleware (like routing, authorization, etc.) from running.
+		
+	*   If the user is authenticated, it proceeds to the next middleware by calling `_next(context)`.
+	
+
+#### Scenario 2: Short-circuiting with Custom Middleware
+
+Let’s take another example where a custom logging middleware short-circuits the pipeline for certain requests:  
+  
+public class RequestLoggingMiddleware
+
+{
+
+private readonly RequestDelegate \_next;
+
+public RequestLoggingMiddleware(RequestDelegate next)
+
+{
+
+\_next = next;
+
+}
+
+public async Task InvokeAsync(HttpContext context)
+
+{
+
+// Check for a special condition (e.g., a certain request path)
+
+if (context.Request.Path == "/forbidden")
+
+{
+
+// Short-circuit the pipeline by returning a 403 Forbidden response
+
+context.Response.StatusCode = 403;
+
+await context.Response.WriteAsync("Forbidden path");
+
+return; // Prevent further middleware from executing
+
+}
+
+await \_next(context); // Otherwise, pass the request to the next middleware
+
+}
+
+}  
       
     
-5.  **What is CORS (Cross-Origin Resource Sharing)?**
+6.  **What is CORS (Cross-Origin Resource Sharing)?**
     
     CORS (Cross-Origin Resource Sharing) is a security feature implemented by web browsers that **controls how web applications interact with resources from different origins** (domains).  
       
@@ -3635,7 +4198,7 @@ In asynchronous programming, particularly when using `async` and `await` in C#, 
 
 > 23. Describe the Dependency Injection (DI) pattern and how it's implemented in .NET Core.
 
-### **1\. Dependency Inversion Principle (DIP)**
+### **1. Dependency Inversion Principle (DIP)**
 
 #### **What is DIP?**
 
