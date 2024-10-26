@@ -2423,7 +2423,7 @@ The order of middleware in the pipeline is critical. For example, authentication
 app.UseAuthentication(); // Authenticate the user
 app.UseAuthorization(); // Check if the user is allowed to access the resource
 ```
-**Sgort-Circut**: In ASP.NET Core, short-circuiting refers to a scenario where a middleware in the request pipeline stops the flow and prevents further middleware components from executing. This can occur deliberately (by design) or unintentionally.
+**Short-Circut**: In ASP.NET Core, short-circuiting refers to a scenario where a middleware in the request pipeline stops the flow and prevents further middleware components from executing. This can occur deliberately (by design) or unintentionally.
 
 **When Does Short-Circuiting Happen?**
 
