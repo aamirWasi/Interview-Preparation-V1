@@ -4822,5 +4822,74 @@ public class Client
 **Visualization**:
 
 Imagine a customer service desk at a store. There's only one desk and one representative (the Singleton). No matter how many times you visit the desk, you’ll always talk to the same person.
-## 🤔🤔🤔Q48. Can you explain the Common Language Runtime (CLR)?
+## 🤔🤔🤔Q48. How would you use the Strategy Pattern to implement a payment system with multiple payment methods (Credit Card, PayPal) in .NET?
+The **Strategy Pattern** allows you to define a family of algorithms, encapsulate each one, and make them interchangeable. In a payment system, the strategy pattern allows you to switch between different payment methods (credit card, PayPal) at runtime.
+
+**Code Example:**
+```c#
+// Step 1: Define the Strategy interface
+public interface IPaymentStrategy
+{
+    void Pay(decimal amount);
+}
+
+// Step 2: Concrete Strategies
+public class CreditCardPayment : IPaymentStrategy
+{
+    public void Pay(decimal amount)
+    {
+        Console.WriteLine($"Paid {amount} using Credit Card");
+    }
+}
+
+public class PayPalPayment : IPaymentStrategy
+{
+    public void Pay(decimal amount)
+    {
+        Console.WriteLine($"Paid {amount} using PayPal");
+    }
+}
+
+// Step 3: Context class
+public class PaymentContext
+{
+    private IPaymentStrategy _paymentStrategy;
+    // Constructor to set payment strategy
+    public PaymentContext(IPaymentStrategy paymentStrategy)
+    {
+        _paymentStrategy = paymentStrategy;
+    }
+
+    public void ProcessPayment(decimal amount)
+    {
+        _paymentStrategy.Pay(amount);
+    }
+}
+
+// Client code
+public class Client
+{
+    public static void Main()
+    {
+        PaymentContext paymentContext;
+        // Using credit card strategy
+        paymentContext = new PaymentContext(new CreditCardPayment());
+        paymentContext.ProcessPayment(100);
+
+        // Switching to PayPal strategy
+        paymentContext = new PaymentContext(new PayPalPayment());
+        paymentContext.ProcessPayment(200);
+    }
+}
+```
+**Line - by - Line Explanation**:
+
+- IPaymentStrategy defines the Pay method, which all payment methods must implement.
+- CreditCardPayment and PayPalPayment are concrete strategies that implement the payment logic.
+- PaymentContext is the context that interacts with a payment strategy to process payments.
+- Client code demonstrates switching between credit card and PayPal payment methods at runtime.
+
+**Visualization**:
+
+Imagine going to a store that accepts both cash and cards. Depending on what you choose (strategy), the cashier processes your payment differently, but the result is the same—you pay for your items.
 ## 🤔🤔🤔Q48. Can you explain the Common Language Runtime (CLR)?
