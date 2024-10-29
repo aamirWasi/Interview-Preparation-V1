@@ -423,7 +423,61 @@ animal.Speak(); // Output: "Dog barks."
 
 Runtime Binding: In this example, the Speak() method is marked as virtual in the Animal class and overridden in the Dog class. When animal.Speak() is called, the decision is made at runtime, based on the actual type of the object (Dog in this case), not the declared type. This is known as dynamic dispatch or late binding.
 
-**In short, the default behavior in C# is static dispatch, and to enable dynamic dispatch, you use virtual methods.**
+**👉Another example:**
+```c#
+// Base Class
+public class SupportPersonnel
+{
+    // Virtual method that can be overridden by derived classes
+    public virtual void HandleRequest(string request)
+    {
+        Console.WriteLine("Support personnel is handling a general request.");
+    }
+}
+
+// Derived class for general support
+public class GeneralSupport : SupportPersonnel
+{
+    // Override to provide a specific implementation for general support
+    public override void HandleRequest(string request)
+    {
+        Console.WriteLine("General Support: Handling a customer inquiry.");
+    }
+}
+
+// Derived class for technical support
+public class TechnicalSupport : SupportPersonnel
+{
+    // Override to provide a specific implementation for technical support
+    public override void HandleRequest(string request)
+    {
+        Console.WriteLine("Technical Support: Resolving a technical issue.");
+    }
+}
+
+// Usage with Dynamic Dispatch
+SupportPersonnel support = new TechnicalSupport(); // Upcast to base class type
+support.HandleRequest("Internet connectivity issue");
+
+support = new GeneralSupport(); // Changing the reference to another derived class
+support.HandleRequest("Billing inquiry");
+```
+**👉Output:**
+```c#
+Technical Support: Resolving a technical issue.
+General Support: Handling a customer inquiry.
+```
+**👉Benefits of Dynamic Dispatch**
+
+**👉Flexibility**: Different classes can provide unique implementations, allowing different behaviors to be triggered based on the actual type.
+
+**👉Extensibility**: New support types (like VIPSupport) can be added without changing the calling code that expects a SupportPersonnel reference.
+
+**👉Runtime Binding**: The method is determined at runtime, meaning code doesn’t need to know the specifics of all possible SupportPersonnel types in advance.
+
+This use of dynamic dispatch or late binding enables the Open/Closed Principle in OOP, where code is open for extension but closed for modification, as we can introduce new SupportPersonnel types without changing the base class or calling code.
+
+**👉**In short, the default behavior in C# is static dispatch, and to enable dynamic dispatch, you use virtual methods.**
 ## Q14: Imagine two classes with inheritence hierarchy below.
 ```c#
 public class BaseClass
