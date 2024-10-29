@@ -373,7 +373,7 @@ public class DerivedClass : BaseClass
 }
 ```
 ## 🤔Q13: What is the default behavior of C# language in term of dispatching??
-**Static Dispatch**
+**👉Static Dispatch**
 
 In C#, the default behavior for dispatching (method/property invocation) follows early binding or static dispatch. This means that, by default, C# uses the compile-time type of an object to determine which method or property to call. This is known as static (or early) binding because the decision of which method to call is made at compile time.
 ```c#
@@ -463,11 +463,11 @@ public class Customer : User
 
 Now, when you create a Customer object and reference it as a User, the overridden UserName property from the Customer class will be used, and the output will be "Customer User Name".
 
-**Virtual Methods (Dynamic Dispatch)**
+**👉Virtual Methods (Dynamic Dispatch)**
 
 To enable dynamic dispatch (also known as late binding or runtime polymorphism), you need to mark the method in the base class as virtual and override it in the derived class using the override keyword. This instructs the C# runtime to make method dispatch decisions based on the runtime type of the object, rather than its compile-time type.
 
-**Example of Dynamic Dispatch (Late Binding)**
+**👉Example of Dynamic Dispatch (Late Binding)**
 ```c#
 public class Animal
 {
@@ -487,7 +487,7 @@ public class Dog : Animal
 Animal animal = new Dog();
 animal.Speak(); // Output: "Dog barks."
 ```
-**Explanation**:
+**👉Explanation**:
 
 Runtime Binding: In this example, the Speak() method is marked as virtual in the Animal class and overridden in the Dog class. When animal.Speak() is called, the decision is made at runtime, based on the actual type of the object (Dog in this case), not the declared type. This is known as dynamic dispatch or late binding.
 
@@ -579,12 +579,13 @@ what will happen if we construct the ChildClass like below?
 ```c#
 var child = new ChildClass();
 ```
-**Explanation**:
+**👉Explanation**:
 
 Gives Exception.
 
 1. When you create an instance of ChildClass, the constructor of the base class (BaseClass) is called first, because the constructor of the base class is always called before the constructor of the derived class in C#.
-**BaseClass constructor**:
+**👉BaseClass constructor**:
+
 Inside the BaseClass constructor, the Print() method is called:
 ```c#
 public BaseClass()
@@ -592,10 +593,10 @@ public BaseClass()
   Print(); // Calls the overridden method in ChildClass
 }
 ```
-**Virtual method call:**
+**👉Virtual method call:**
 C# uses dynamic dispatch for virtual methods, meaning the overridden method in ChildClass is called even though it's invoked from the BaseClass constructor. Therefore, Print() in ChildClass is called.
 
-**ChildClass Print() method:**
+**👉ChildClass Print() method:**
 In ChildClass, the Print() method tries to access the _declaration field, but at this point, the ChildClass constructor hasn't been executed yet. The _declaration field is initialized inside the ChildClass constructor:
 ```c#
 public ChildClass()
@@ -605,7 +606,7 @@ public ChildClass()
 ```
 Since the ChildClass constructor hasn't finished running when Print() is called, the _declaration field is still null (its default value for reference types).
 
-**Resulting output:**
+**👉Resulting output:**
 When Print() in ChildClass is called, it tries to execute this line:
 ```c#
 Console.WriteLine(_declaration.ToLower());
@@ -613,7 +614,7 @@ Console.WriteLine(_declaration.ToLower());
 - Since _declaration is null, calling .ToLower() on a null string would result in a NullReferenceException. However, to avoid that, let's update the explanation based on the current code logic:
 - Since the overridden method is called, but the field _declaration has not been initialized yet (because the child class constructor hasn't run), this would throw a NullReferenceException. The final behavior would be that you'd see "From Base Class" printed first, and then an exception would be thrown.
 
-**Fixing the Issue:**
+**👉Fixing the Issue:**
 To avoid this problem, it's generally a **bad practice to call virtual methods from constructors**. The base class should avoid calling virtual methods during construction, because the derived class might not be fully initialized at that point.
 ```c#
 ChildClass childClass = new ChildClass();
@@ -650,17 +651,17 @@ public class ChildClass : BaseClass
     }
 }
 ```
-**o/p**: From Child Class
+**👉Output**: From Child Class
 
 **note**: if i called Initilaize() from constructor in also throw exception
 
-**Explanation of Why It Causes Issues**
+**👉Explanation of Why It Causes Issues**
 
-Object Construction Process:
+**👉Object Construction Process**:
 - When you create an instance of a derived class, the base class constructor executes first.
 - At this point, the derived class has not yet completed its constructor, meaning that any fields or properties in the derived class may not be initialized.
 - If the base class calls a method (even if it's a non-virtual method), and that method uses any members from the derived class, it can lead to a NullReferenceException.
-## Q15: Imagine two classes blew. Customer class is child of User class. What will print in the console output?
+## 🤔Q15: Imagine two classes blew. Customer class is child of User class. What will print in the console output?
 ```c#
 public class User
 {
@@ -677,30 +678,33 @@ public class Customer : User
 User user = new Customer();
 Console.WriteLine(user.UserName); //Output?
 ```
-**Explanation**
+**👉Explanation**
 
-It will print "Base User Name"
-The Problem here is that we are violating liskov principle and base class will hide the child class implementation.
-In the code provided, you're defining the UserName property in both the base class User and the derived class Customer. This violates the Liskov Substitution Principle (LSP) because the base class User and the derived class Customer don't behave consistently when substituted for one another. Additionally, the derived class's property is hiding the base class property instead of overriding it. This can lead to confusion and unexpected behavior.
+👉It will print "Base User Name"
 
-**Key Concepts**
+👉The Problem here is that we are violating liskov principle and base class will hide the child class implementation.
 
-**Liskov Substitution Principle (LSP)**: The Liskov Substitution Principle states that objects of a derived class must be able to replace objects of the base class without affecting the correctness of the program. In other words, a subclass should behave in a way that is consistent with the expectations from the base class.
+👉In the code provided, you're defining the UserName property in both the base class User and the derived class Customer. This violates the Liskov Substitution Principle (LSP) because the base class User and the derived class Customer don't behave consistently when substituted for one another. Additionally, the derived class's property is hiding the base class property instead of overriding it. This can lead to confusion and unexpected behavior.
+
+**👉Key Concepts**
+
+**👉Liskov Substitution Principle (LSP)**: The Liskov Substitution Principle states that objects of a derived class must be able to replace objects of the base class without affecting the correctness of the program. In other words, a subclass should behave in a way that is consistent with the expectations from the base class.
 Liskov Substitution Principle (LSP), which says that a derived class (Customer) should be able to replace its base class (User) without breaking the behavior.
 
-**Inheritance**: The Customer class inherits from the User class, which means it gets all the properties and methods of the User class.
+**👉Inheritance**: The Customer class inherits from the User class, which means it gets all the properties and methods of the User class.
 
-**Property Hiding (Shadowing)**: In the Customer class, the UserName property is redefined using the new keyword (implicitly, since it's not marked virtual in the base class), which means it hides the UserName property from the User class. This is not polymorphism; it’s property hiding or shadowing.
+**👉Property Hiding (Shadowing)**: In the Customer class, the UserName property is redefined using the new keyword (implicitly, since it's not marked virtual in the base class), which means it hides the UserName property from the User class. This is not polymorphism; it’s property hiding or shadowing.
 
 1. Here, the variable user is of type User, but it holds an instance of Customer. This means you are creating an object of Customer, but referring to it as a User.
 2. **Property Access**: When you access user.UserName, you are accessing the UserName property from the User class, not from the Customer class.
     - Why? This is because property hiding (not overriding) is at play here. Since the type of the variable (user) is User, it will access the UserName property defined in the User class, which has the default       value "Base User Name". The Customer's version of UserName is not considered because it’s hidden, not overridden.
 3. **Output**: The value of user.UserName will be "Base User Name", because the UserName property from the User class is accessed.
 
-**Why Not "Customer User Name"?**
+**👉Why Not "Customer User Name"?**
 
 For the Customer's UserName to be used polymorphically, you would need to use inheritance with polymorphism by marking the base property as virtual and the derived property as override. Here’s how you would do that:
-**Using Virtual and Override for Polymorphism**
+
+**👉Using Virtual and Override for Polymorphism**
 
 If you want the Customer class to properly override the UserName property in a polymorphic way, you can use the virtual and override keywords:
 ```c#
@@ -717,7 +721,7 @@ public class Customer : User
     public string UserName { get; set; } = "customer: aamir";
 }
 ```
-**Explanation of the Updated Code:**
+**👉Explanation of the Updated Code:**
 - virtual in the User class: This allows the property to be overridden in derived classes.
 - override in the Customer class: This provides a new implementation of the UserName property in the Customer class.
 
