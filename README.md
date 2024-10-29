@@ -1,5 +1,5 @@
 # Interview-Preparation-V1
-## 🤔🤔🤔Q1: What is the main difference between the HTTP PUT and PATCH methods?
+## 🤔Q1: What is the main difference between the HTTP PUT and PATCH methods?
 1. PUT is used to update a resource by replacing the entire resource with a new version. It usually requires sending the full resource in the request.
 2. PATCH is used to partially update a resource. It allows you to send only the fields that need to be updated, rather than the entire resource.
 
@@ -67,55 +67,58 @@ Result: If the request is structured properly, sending the same PATCH request mu
 
 **PATCH**: Generally Idempotent. Repeating the same request leads to the same outcome, assuming the state doesn’t conflict.
 
-## Q2: When would you choose to use PUT instead of PATCH?
+## 🤔Q2: When would you choose to use PUT instead of PATCH?
 1. Use PUT when you want to completely replace the resource. If you don’t send the full resource with a PUT request, any fields you omit might be reset or lost.
 For example, if you have an object with 5 properties and want to change 1 of them, using PUT means you should send all 5 properties. Any missing properties might be deleted.
 2. Use PATCH when you only need to update part of a resource and want to avoid sending the entire object.
 For example, if you want to update just one field in a large object, PATCH allows you to send a small request with only the modified field(s), which can be more efficient.
-## Q3: Can you use PUT to create a resource?
+## 🤔Q3: Can you use PUT to create a resource?
 Yes, PUT can also be used for creation if the resource does not exist yet. If you send a PUT request to a URI that does not exist, it can create a new resource at that URI.
 PATCH is typically not used for creating new resources, as it is primarily for modifications.
-## Q4: What is FINALLY?
+## 🤔Q4: What is FINALLY?
 1. The finally block is used to execute a given set of statements, whether an exception occur or not.
 2. Finally block is mostly used to dispose the unwanted objects when they are no more required. This is good for performance, otherwise you have to wait for garbage collector to dispose them.
-## Q5: What is Finalize?
+## 🤔Q5: What is Finalize?
 1. Finalize is a method which is automatically called by the garbage collector to dispose the no longer needed objects 
-## Q6: What are the different types of classes in C#?
-### Static class:
+## 🤔Q6: What are the different types of classes in C#?
+**👉Static class**:
+
 1. In C#, a **static class** is a class that cannot be instantiated, meaning you cannot create an object from it. All members of a static class must also be static. It's typically used to group related methods that don’t act on instance data and are shared across the application.
-### Key Characteristics of a Static Class:
+
+**👉Key Characteristics of a Static Class**:
+
 *   It **cannot be instantiated**.
 *   It **cannot have constructors** (except static constructors).
 *   **All members must be static** (methods, fields, properties, etc.).
 *   It's sealed, meaning it cannot be inherited.
 Static classes are often used to hold utility methods, such as mathematical calculations, logging, or configuration helpers.
 
-**Static constructor**: "Static constructor is called once when the class is first used."
+**👉Static constructor**: "Static constructor is called once when the class is first used."
 
-**Sealed Class**
+**👉Sealed Class**
 
 1. Sealed Class: In most cases, we never intend this class to be able to be inherited by other classes, we'll get a significant performance boost by adding sealed keyword in a class not inherited by other classes. By sealing the class, the JIT compiler can directly know the object's actual data type. Meanwhile, for unsealed classes, JIT needs to check whether the class has subclasses or not.
 
-**Abstract Classes**
+**👉Abstract Classes**
 
 1. Provide a base class with some implementation and abstract methods that derived classes must implement.
 2. Use an **abstract class** when there is shared behavior among subclasses, but use an **interface** when different classes need to follow the same contract, without enforcing shared behavior.
 
-**Partial classes**
+**👉Partial classes**
 
 1. Allow the splitting of a class definition across multiple files.
 
-**Generic classes**
+**👉Generic classes**
 1. Allow the definition of classes with placeholders for the type of its fields, methods, parameters, etc.
-## Q7: Can Abstract class be Sealed or Static in C#?
+## 🤔Q7: Can Abstract class be Sealed or Static in C#?
 1. NO. Abstract class are used for inheritance, but sealed and static both will not allow the class to be inherited.
-## Q8: Can you create an instance of an Abstract class or an Interface?
+## 🤔Q8: Can you create an instance of an Abstract class or an Interface?
 1. No. Abstract class and interface purpose is to act as base class via inheritance. Their object creation is not possible.
-## Q9: What is an Interface?
+## 🤔Q9: What is an Interface?
 1. Define a contract that classes must follow but does not provide any implementation.
 2. In C# 8 and later, default methods in interfaces (also known as default interface methods) allow you to provide a default implementation for methods directly in the interface. This was a significant change, as prior to C# 8, interfaces could only contain method signatures (i.e., no implementation).
 
-**Backward Compatibility**: If you want to extend an interface by adding new methods without breaking the existing implementations that already implement the interface.
+**👉Backward Compatibility**: If you want to extend an interface by adding new methods without breaking the existing implementations that already implement the interface.
 ```c#
 public interface IPaymentProcessor
 {
@@ -145,7 +148,8 @@ public class PayPalPayment : IPaymentProcessor
     // This class can also use the default LogPayment implementation
 }
 ```
-**Shared Behavior Across Implementations**: If there is some common functionality that multiple implementations of the interface will share, you can provide that behavior in the default method, avoiding code duplication.
+**👉Shared Behavior Across Implementations**: If there is some common functionality that multiple implementations of the interface will share, you can provide that behavior in the default method, avoiding code duplication.
+
 1. In C# 8 and later, interface default implementations like ApplySeasonalDiscount are not automatically accessible within implementing classes (like HolidayDiscount and RegularDiscount). Default implementations in interfaces are only available directly from the interface itself, not from the implementing classes.(so cast in classes)
 ```c#
 public interface IDiscountCalculator
@@ -176,16 +180,16 @@ public class RegularDiscount : IDiscountCalculator
     }
 }
 ```
-**When to Avoid Default Methods?**
+**👉When to Avoid Default Methods?**
 1. Over-complicating interfaces: If you add too many default methods, interfaces can become bloated and harder to understand.
 2. Increased coupling: Default methods can sometimes introduce coupling between the interface and its implementations, which can make future changes more difficult.
 3. Breaking SOLID principles: If you're not careful, default methods can violate principles like Single Responsibility Principle (SRP) by adding too much behavior to an interface that should focus solely on abstraction.
-## Q9.1: What is the difference between an abstract class and an interface?
+## 🤔Q9.1: What is the difference between an abstract class and an interface?
 In C#, both abstract classes and interfaces are types that enable polymorphism, allowing objects of different classes to be treated as objects of a common super class. However, they serve different purposes and have different rules.
 1. **Abstract Classes**: Provide a base class with some implementation and abstract methods that derived classes must implement.
 2. **Interfaces**: Define a contract that classes must follow but do not provide any implementation.
 
-**Interview Tip**: Use an abstract class when there is shared behavior among subclasses, but use an interface when different classes need to follow the same contract, without enforcing shared behavior.
+**👉Interview Tip**: Use an abstract class when there is shared behavior among subclasses, but use an interface when different classes need to follow the same contract, without enforcing shared behavior.
 ```c#
 public abstract class Payment
 {
@@ -235,7 +239,7 @@ public class SMSNotification : INotification
     }
 }
 ```
-**Abstract Class**:
+**👉Abstract Class**:
 
 1. Can contain implementation of methods, properties, fields, or events.
 2. Can have access modifiers (public, protected, etc.).
@@ -243,15 +247,15 @@ public class SMSNotification : INotification
 4. Can contain constructors.
 5. Used when different implementations of objects have common methods or properties that can share a common implementation.
 
-**Interface**:
+**👉Interface**:
 
 1. Cannot contain implementations, only declarations of methods, properties, events, or indexers.
 2. Members of an interface are implicitly public.
 3. A class or struct can implement multiple interfaces (multiple inheritance).
 4. Cannot contain fields or constructors.
 5. Used to define a contract for classes without imposing inheritance hierarchies.
-## Q10: What is an encapsulation?
-**Encapsulation**:
+## 🤔Q10: What is an encapsulation?
+**👉Encapsulation**:
 
 1. Encapsulation is the concept of restricting direct access to the internal state (fields) of an object and only exposing the necessary methods to interact with it. This ensures controlled access to the data and better security.
 2. This is typically achieved through the use of access modifiers such as private, public, protected, and internal. 
@@ -291,11 +295,11 @@ class Program
 }
 ```
 In a real-world bank account, you can't just take money out of the vault or look at the books yourself. You need to interact with the bank via ATMs or customer service, which controls access to your account.
-## Q11: Explain polymorphism and its types in C#.?
-**Polymorphism**:
+## 🤔Q11: Explain polymorphism and its types in C#.?
+**👉Polymorphism**:
 
 1. Polymorphism is a core concept in object-oriented programming (OOP) that allows objects to be treated as instances of their parent class rather than their actual derived class.  
-**Polymorphism** means "many forms." It allows a method or function to behave differently based on the object it is acting upon. It can be **compile-time** (method overloading) or **runtime** (method overriding).  
+**👉Polymorphism** means "many forms." It allows a method or function to behave differently based on the object it is acting upon. It can be **compile-time** (method overloading) or **runtime** (method overriding).  
 ```c#
 // Base class
 public class Notification
@@ -332,12 +336,14 @@ class Program
     }
 }
 ```
-**What is Polymorphism, and how does it improve code flexibility?**
+**👉What is Polymorphism, and how does it improve code flexibility?**
+
 1. Polymorphism allows one interface to be used for different types. It can be achieved through method overriding or method overloading.
 
 **How does method overriding support polymorphism in C#?**
+
 1. Method overriding allows a derived class to provide a specific implementation of a method that is already defined in the base class. This is a key feature of runtime polymorphism.
-## Q12: Can you explain the difference between method overloading and method overriding with examples?
+## 🤔Q12: Can you explain the difference between method overloading and method overriding with examples?
 **Method Overloading**:
 
 1. Same method name but different parameters (compile-time polymorphism).
@@ -368,7 +374,7 @@ public class DerivedClass : BaseClass
     }
 }
 ```
-## Q13: What is the default behavior of C# language in term of dispatching??
+## 🤔Q13: What is the default behavior of C# language in term of dispatching??
 **Static Dispatch**
 
 In C#, the default behavior for dispatching (method/property invocation) follows early binding or static dispatch. This means that, by default, C# uses the compile-time type of an object to determine which method or property to call. This is known as static (or early) binding because the decision of which method to call is made at compile time.
@@ -391,9 +397,73 @@ public class Dog : Animal
 Animal animal = new Dog();
 animal.Speak(); // Output: "Animal speaks."
 ```
-**Explanation**:
+**👉Explanation**:
 
 Compile-Time Binding: In this example, even though animal holds a Dog object, the method Speak() from the Animal class is invoked. This happens because the declared type of animal is Animal, and the method Speak() is not virtual. Therefore, static dispatch is used, and the decision to call the Animal.Speak() method is made at compile time.
+
+**👉Another Example:**
+```c#
+User user = new Customer();
+Console.WriteLine(user.UserName); // Output: user: aamir
+
+public class User
+{
+    public string UserName { get; set; } = "user: aamir";
+}
+
+public class Customer : User
+{
+    public string UserName { get; set; } = "customer: aamir";
+}
+```
+**👉Explanation**
+
+It will print **Base User Name**
+
+👉The Problem here is that we are violating liskov principle and base class will hide the child class implementation.
+
+👉In the code provided, you're defining the UserName property in both the base class User and the derived class Customer. This violates the Liskov Substitution Principle (LSP) because the base class User and the derived class Customer don't behave consistently when substituted for one another. Additionally, the derived class's property is hiding the base class property instead of overriding it. This can lead to confusion and unexpected behavior.
+
+**👉Key Concepts**
+
+**Liskov Substitution Principle (LSP)**: The Liskov Substitution Principle states that objects of a derived class must be able to replace objects of the base class without affecting the correctness of the program. In other words, a subclass should behave in a way that is consistent with the expectations from the base class.
+Liskov Substitution Principle (LSP), which says that a derived class (Customer) should be able to replace its base class (User) without breaking the behavior.
+
+**👉Inheritance**: The Customer class inherits from the User class, which means it gets all the properties and methods of the User class.
+
+**👉Property Hiding (Shadowing)**: In the Customer class, the UserName property is redefined using the new keyword (implicitly, since it's not marked virtual in the base class), which means it hides the UserName property from the User class. This is not polymorphism; it’s property hiding or shadowing.
+
+1. Here, the variable user is of type User, but it holds an instance of Customer. This means you are creating an object of Customer, but referring to it as a User.
+2. **Property Access**: When you access user.UserName, you are accessing the UserName property from the User class, not from the Customer class.
+    - Why? This is because property hiding (not overriding) is at play here. Since the type of the variable (user) is User, it will access the UserName property defined in the User class, which has the default       value "Base User Name". The Customer's version of UserName is not considered because it’s hidden, not overridden.
+3. **Output**: The value of user.UserName will be "Base User Name", because the UserName property from the User class is accessed.
+
+**👉Why Not "Customer User Name"?**
+
+For the Customer's UserName to be used polymorphically, you would need to use inheritance with polymorphism by marking the base property as virtual and the derived property as override. Here’s how you would do that:
+
+**👉Using Virtual and Override for Polymorphism**
+
+If you want the Customer class to properly override the UserName property in a polymorphic way, you can use the virtual and override keywords:
+```c#
+User user = new Customer();
+Console.WriteLine(user.UserName); // Output: user: aamir
+
+public class User
+{
+    public string UserName { get; set; } = "user: aamir";
+}
+
+public class Customer : User
+{
+    public string UserName { get; set; } = "customer: aamir";
+}
+```
+**👉Explanation of the Updated Code:**
+- virtual in the User class: This allows the property to be overridden in derived classes.
+- override in the Customer class: This provides a new implementation of the UserName property in the Customer class.
+
+Now, when you create a Customer object and reference it as a User, the overridden UserName property from the Customer class will be used, and the output will be "Customer User Name".
 
 **Virtual Methods (Dynamic Dispatch)**
 
@@ -478,7 +548,7 @@ General Support: Handling a customer inquiry.
 This use of dynamic dispatch or late binding enables the Open/Closed Principle in OOP, where code is open for extension but closed for modification, as we can introduce new SupportPersonnel types without changing the base class or calling code.
 
 **👉**In short, the default behavior in C# is static dispatch, and to enable dynamic dispatch, you use virtual methods.**
-## Q14: Imagine two classes with inheritence hierarchy below.
+## 🤔Q14: Imagine two classes with inheritance hierarchy below.
 ```c#
 public class BaseClass
 {
@@ -637,7 +707,7 @@ For the Customer's UserName to be used polymorphically, you would need to use in
 If you want the Customer class to properly override the UserName property in a polymorphic way, you can use the virtual and override keywords:
 ```c#
 User user = new Customer();
-Console.WriteLine(user.UserName); // Output: Customer User Name
+Console.WriteLine(user.UserName); // Output: user: aamir
 
 public class User
 {
