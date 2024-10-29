@@ -256,7 +256,6 @@ public class SMSNotification : INotification
 5. Used to define a contract for classes without imposing inheritance hierarchies.
 ## 🤔Q10: What is an encapsulation?
 **👉Encapsulation**:
-
 1. Encapsulation is the concept of restricting direct access to the internal state (fields) of an object and only exposing the necessary methods to interact with it. This ensures controlled access to the data and better security.
 2. This is typically achieved through the use of access modifiers such as private, public, protected, and internal. 
 ```c#
@@ -297,9 +296,8 @@ class Program
 In a real-world bank account, you can't just take money out of the vault or look at the books yourself. You need to interact with the bank via ATMs or customer service, which controls access to your account.
 ## 🤔Q11: Explain polymorphism and its types in C#.?
 **👉Polymorphism**:
-
-1. Polymorphism is a core concept in object-oriented programming (OOP) that allows objects to be treated as instances of their parent class rather than their actual derived class.  
-**👉Polymorphism** means "many forms." It allows a method or function to behave differently based on the object it is acting upon. It can be **compile-time** (method overloading) or **runtime** (method overriding).  
+1. **Polymorphism** is a core concept in object-oriented programming (OOP) that allows objects to be treated as instances of their parent class rather than their actual derived class.  
+**Polymorphism** means "many forms." It allows a method or function to behave differently based on the object it is acting upon. It can be **compile-time** (method overloading) or **runtime** (method overriding).  
 ```c#
 // Base class
 public class Notification
