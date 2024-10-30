@@ -137,12 +137,37 @@ public sealed class ApplicationLogger
 ```
 By sealing the ApplicationLogger, you prevent other developers from subclassing and potentially modifying the logging behavior, which could create inconsistent log formats or levels.
 
-**👉Abstract Classes**
+**👉<ins>Abstract Classes</ins>**
 
 1. Provide a base class with some implementation and abstract methods that derived classes must implement.
 2. Use an **abstract class** when there is shared behavior among subclasses, but use an **interface** when different classes need to follow the same contract, without enforcing shared behavior.
+```c#
+public abstract class Payment
+{
+    public void LogTransaction(decimal amount) // Concrete method
+    {
+        Console.WriteLine($"Logging transaction of {amount:C}.");
+    }
+    public abstract void ProcessPayment(decimal amount); // Abstract method
+}
 
-**👉Partial classes**
+public class CreditCardPayment : Payment
+{
+    public override void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing credit card payment of {amount:C}.");
+    }
+}
+
+public class PayPalPayment : Payment
+{
+    public override void ProcessPayment(decimal amount)
+    {
+        Console.WriteLine($"Processing PayPal payment of {amount:C}.");
+    }
+}
+```
+**👉<ins>Partial classes</ins>**
 
 1. A partial class in C# allows you to split the definition of a class across multiple files. Each part of the class can be in a separate file, but they’re all combined into a single class at compile time. This feature is particularly useful when working on large, complex classes or when collaborating on projects where different developers might work on different aspects of the same class.
 
@@ -190,8 +215,47 @@ public partial class Employee
 ```
 By splitting these concerns, the Employee class remains manageable, organized, and easier to maintain.
 
-**👉Generic classes**
-1. Allow the definition of classes with placeholders for the type of its fields, methods, parameters, etc.
+**👉<ins>Generic classes</ins>**
+1. Generic classes in C# allow you to create classes that can work with any data type while providing type safety. They are particularly useful for building reusable, flexible components that can operate on various types without sacrificing performance or security. In real-world applications, generic classes are commonly used for data structures, services, repositories, and utility functions.
+```c#
+var customerRepository = new Repository<Customer>();
+customerRepository.Add(new Customer { Name = "John Doe" });
+
+var productRepository = new Repository<Product>();
+productRepository.Add(new Product { Name = "Laptop" });
+Console.WriteLine(productRepository.GetAll().Count());
+
+public sealed class Customer
+{
+    public long Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+}
+public sealed class Product
+{
+    public long Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+}
+
+public interface IRepository<T> where T : class
+{
+    void Add(T entity);
+    void Update(T entity);
+    void Delete(T entity);
+    T GetById(int id);
+    IEnumerable<T> GetAll();
+}
+
+public class Repository<T> : IRepository<T> where T : class
+{
+    private readonly List<T> _dataStore = new List<T>();
+
+    public void Add(T entity) => _dataStore.Add(entity);
+    public void Update(T entity) { }
+    public void Delete(T entity) => _dataStore.Remove(entity);
+    public T GetById(int id) { return default!; }
+    public IEnumerable<T> GetAll() => _dataStore;
+}
+```
 ## 🤔Q7: Can Abstract class be Sealed or Static in C#?
 1. NO. Abstract class are used for inheritance, but sealed and static both will not allow the class to be inherited.
 ## 🤔Q8: Can you create an instance of an Abstract class or an Interface?
