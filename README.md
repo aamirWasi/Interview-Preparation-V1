@@ -116,6 +116,26 @@ Static classes are often used to hold utility methods, such as mathematical calc
 **👉Sealed Class**
 
 1. Sealed Class: In most cases, we never intend this class to be able to be inherited by other classes, we'll get a significant performance boost by adding sealed keyword in a class not inherited by other classes. By sealing the class, the JIT compiler can directly know the object's actual data type. Meanwhile, for unsealed classes, JIT needs to check whether the class has subclasses or not.
+2. A sealed class in C# is a class that cannot be inherited. It is useful when you want to prevent any further modification or extension of a class by subclassing. This can be helpful for security, performance, or to preserve behavior that shouldn't change.
+```c#
+var logger = new ApplicationLogger();
+logger.LogInfo("Application started.");
+logger.LogError("An unexpected error occurred.");
+
+public sealed class ApplicationLogger
+{
+    public void LogInfo(string message)
+    {
+        Console.WriteLine($"INFO: {message}");
+    }
+
+    public void LogError(string message)
+    {
+        Console.WriteLine($"ERROR: {message}");
+    }
+}
+```
+By sealing the ApplicationLogger, you prevent other developers from subclassing and potentially modifying the logging behavior, which could create inconsistent log formats or levels.
 
 **👉Abstract Classes**
 
