@@ -108,7 +108,7 @@ DateUtils provides utility functions for working with dates and times, which don
 *   It **cannot be instantiated**.
 *   It **cannot have constructors** (except static constructors).
 *   **All members must be static** (methods, fields, properties, etc.).
-*   It's sealed, meaning it cannot be inherited.
+*   It's **sealed**, meaning it cannot be inherited.
 Static classes are often used to hold utility methods, such as mathematical calculations, logging, or configuration helpers.
 
 **👉Static constructor**: "Static constructor is called once when the class is first used."
