@@ -181,6 +181,25 @@ Employee.DatabaseOperations.cs (Handles CRUD operations)
 
 Employee.Validation.cs (Handles validation)
 ```c#
+Employee employee = new Employee
+{
+    Name = "John Doe",
+    Age = 30,
+    Department = "Engineering"
+};
+
+if (employee.IsValid())
+{
+    Console.WriteLine($"{employee.Name} is valid.");
+    employee.SaveToDatabase();
+}
+else
+{
+    Console.WriteLine($"{employee.Name} is not valid.");
+}
+
+employee.DeleteFromDatabase();
+
 // Employee.BasicInfo.cs
 public partial class Employee
 {
@@ -208,7 +227,6 @@ public partial class Employee
 {
     public bool IsValid()
     {
-        // Validate employee information (e.g., age should be > 18)
         return Age > 18;
     }
 }
