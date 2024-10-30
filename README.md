@@ -142,6 +142,14 @@ By sealing the ApplicationLogger, you prevent other developers from subclassing 
 1. Provide a base class with some implementation and abstract methods that derived classes must implement.
 2. Use an **abstract class** when there is shared behavior among subclasses, but use an **interface** when different classes need to follow the same contract, without enforcing shared behavior.
 ```c#
+Payment payment = new CreditCardPayment();
+payment.LogTransaction(35m);
+payment.ProcessPayment(120m);
+
+payment = new PayPalPayment();
+payment.LogTransaction(25m);
+payment.ProcessPayment(100m);
+
 public abstract class Payment
 {
     public void LogTransaction(decimal amount) // Concrete method
