@@ -177,7 +177,7 @@ public class PayPalPayment : Payment
 ```
 **👉<ins>Partial classes</ins>**
 
-1. A partial class in C# allows you to split the definition of a class across multiple files but each part of a partial class must be in the same namespace. Each part of the class can be in a separate file, but they’re all combined into a single class at compile time. This feature is particularly useful when working on large, complex classes or when collaborating on projects where different developers might work on different aspects of the same class.
+1. A partial class in C# allows you to split the definition of a class across multiple files. Each part of the class can be in a separate file and must be in the same namespace, but they’re all combined into a single class at compile time. This feature is particularly useful when working on large, complex classes or when collaborating on projects where different developers might work on different aspects of the same class.
 
 Example: Employee Management System
 
