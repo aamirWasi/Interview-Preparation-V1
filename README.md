@@ -81,7 +81,7 @@ PATCH is typically not used for creating new resources, as it is primarily for m
 ## 🤔Q5: What is Finalize?
 1. Finalize is a method which is automatically called by the garbage collector to dispose the no longer needed objects 
 ## 🤔Q6: What are the different types of classes in C#?
-**👉Static class**:
+**👉<ins>Static class</ins>**:
 
 1. In C#, a **static class** is a class that cannot be instantiated, meaning you cannot create an object from it. All members of a static class must also be static. It's typically used to group related methods that don’t act on instance data and are shared across the application.
 ```c#
@@ -113,7 +113,7 @@ Static classes are often used to hold utility methods, such as mathematical calc
 
 **👉Static constructor**: "Static constructor is called once when the class is first used."
 
-**👉Sealed Class**
+**👉<ins>Sealed Class</ins>**
 
 1. Sealed Class: In most cases, we never intend this class to be able to be inherited by other classes, we'll get a significant performance boost by adding sealed keyword in a class not inherited by other classes. By sealing the class, the JIT compiler can directly know the object's actual data type. Meanwhile, for unsealed classes, JIT needs to check whether the class has subclasses or not.
 2. A sealed class in C# is a class that cannot be inherited. It is useful when you want to prevent any further modification or extension of a class by subclassing. This can be helpful for security, performance, or to preserve behavior that shouldn't change.
