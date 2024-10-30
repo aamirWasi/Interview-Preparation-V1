@@ -1634,6 +1634,7 @@ The single-responsibility principle is better respected, as each class has a foc
 ## 🤔Q17: What are access modifiers in C#? How do they relate to encapsulation?
 Access modifiers in C# (like public, private, protected, internal) control the visibility of class members, supporting encapsulation by allowing you to hide certain details from external access.
 
+1.**Public**: Accessible from anywhere in the application.
 **Real-Life Example**: A Bank Account
 ```c#
 public class BankAccount
@@ -1648,6 +1649,87 @@ public class BankAccount
     public decimal GetBalance()  // Publicly accessible method
     {
         return balance;
+    }
+}
+```
+2.**Private**: Accessible only within the class where it is defined.
+```c#
+public class PaymentProcessor
+{
+    private double CalculateDiscount(double amount)
+    {
+        return amount * 0.05;
+    }
+
+    public double ProcessPayment(double amount)
+    {
+        double discount = CalculateDiscount(amount);
+        return amount - discount;
+    }
+}
+```
+3.**Protected**: Accessible only within the class and derived (child) classes.
+```c#
+public class Logger
+{
+    protected string FormatLogMessage(string message)
+    {
+        return $"{DateTime.Now}: {message}";
+    }
+}
+
+public class FileLogger : Logger
+{
+    public void LogToFile(string message)
+    {
+        string formattedMessage = FormatLogMessage(message);
+    }
+}
+```
+4.**Internal**: Accessible only within the same assembly or project.
+```c#
+internal class DataParser
+{
+    internal string ParseData(string data)
+    {
+        // Parsing logic
+        return data;
+    }
+}
+```
+5.**Protected Internal**:  Accessible within the same assembly and also to derived classes in other assemblies.
+```c#
+public class CoreService
+{
+    protected internal void LogEvent(string message)
+    {
+        // Logging logic
+    }
+}
+
+public class ExtendedService : CoreService
+{
+    public void Execute()
+    {
+        LogEvent("Extended Service Executed");
+    }
+}
+```
+6.**Private Protected**: Accessible only within the class or derived classes within the same assembly.
+```c#
+public class BaseService
+{
+    private protected void PerformInternalOperation()
+    {
+        // Internal operation logic
+    }
+}
+
+public class SpecializedService : BaseService
+{
+    public void Execute()
+    {
+        PerformInternalOperation();
     }
 }
 ```
