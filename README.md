@@ -84,6 +84,24 @@ PATCH is typically not used for creating new resources, as it is primarily for m
 **👉Static class**:
 
 1. In C#, a **static class** is a class that cannot be instantiated, meaning you cannot create an object from it. All members of a static class must also be static. It's typically used to group related methods that don’t act on instance data and are shared across the application.
+```c#
+string currentDateTime = DateUtils.GetCurrentDateTime(); // Returns current date and time
+int daysBetween = DateUtils.CalculateDaysBetween(DateTime.Now, DateTime.Now.AddDays(5)); // Returns 5
+Console.WriteLine(daysBetween);
+public static class DateUtils
+{
+    public static string GetCurrentDateTime()
+    {
+        return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+    }
+
+    public static int CalculateDaysBetween(DateTime startDate, DateTime endDate)
+    {
+        return (endDate - startDate).Days;
+    }
+}
+```
+DateUtils provides utility functions for working with dates and times, which don’t require maintaining any state. The static class can be accessed globally and makes date operations easier.
 
 **👉Key Characteristics of a Static Class**:
 
