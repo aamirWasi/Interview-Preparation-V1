@@ -427,7 +427,7 @@ public class SMSNotification : INotification
 4. Cannot contain fields or constructors.
 5. Used to define a contract for classes without imposing inheritance hierarchies.
 
-## 🤔Q24: What are Value Types and Reference Types in C#?
+## 🤔Q: What are Value Types and Reference Types in C#?
 In C#, data types are divided into two categories: Value Types and Reference Types. This distinction affects how values are stored and manipulated within memory.
 
 👉**Value Types**: Store data directly and are allocated on the stack. This means that when you assign one value type to another, a direct copy of the value is created. Basic data types (int, double, bool, etc.) and structs are examples of value types. Operations on value types are generally faster due to stack allocation.
