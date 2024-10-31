@@ -1734,7 +1734,7 @@ public class SpecializedService : BaseService
 }
 ```
 **Interview Tip**: Explain how access modifiers help encapsulate the data, ensuring only the required parts are accessible from outside the class.
-## 🤔🤔🤔Q18: In a real-life e-commerce application, you have a class called OrderManager responsible for creating, updating, and deleting orders as well as sending confirmation emails and updating inventory. How would you refactor this class to follow the Single Responsibility Principle?
+## 🤔Q18: In a real-life e-commerce application, you have a class called OrderManager responsible for creating, updating, and deleting orders as well as sending confirmation emails and updating inventory. How would you refactor this class to follow the Single Responsibility Principle?
 **What is the Single Responsibility Principle? Can you give a real-life example?**
 
 **S — Single Responsibility Principle (SRP)**: The Single Responsibility Principle states that a class should have only one reason to change, meaning it should have only one responsibility or purpose.
@@ -1897,7 +1897,7 @@ This line **awaits all tasks to complete**, but only at this point does the meth
 Using Task.WhenAll here provides a more optimized solution if each service can safely execute without waiting for another.
 ### Summary
 By not using await immediately, we’ve started all three tasks without waiting. The tasks run asynchronously and concurrently, which makes it possible to fetch all three sets of data simultaneously rather than sequentially. Only when we reach await Task.WhenAll(...) does the method wait for all tasks to complete, making the process highly efficient.
-## 🤔🤔🤔Q19: Imagine you’re working on a payment processing system with multiple payment methods, such as credit card, PayPal, and bank transfer. How would you design it to be easily extendable for adding new payment methods without modifying existing code?
+## 🤔Q19: Imagine you’re working on a payment processing system with multiple payment methods, such as credit card, PayPal, and bank transfer. How would you design it to be easily extendable for adding new payment methods without modifying existing code?
 **What is the Open/Closed Principle? Can you provide a real-life example?**
 
 **O — Open/Closed Principle (OCP)**: The Open/Closed Principle means that classes should be open for extension but closed for modification. You should be able to add new functionality without changing existing code.
@@ -1957,7 +1957,7 @@ public class PaymentService
 }
 ```
 **Interview Tip**: Demonstrate how adding new functionality (like a new payment method) involves creating a new class (PayPalPayment) rather than modifying the existing PaymentProcessor or CreditCardPayment class. This makes the system easier to maintain and extend.
-## 🤔🤔🤔Q19: Imagine you have a payment processing system that handles different types of payment methods (e.g., credit card, PayPal, or bank transfer). You have a base class PaymentProcessor that defines common behavior for all payment types, and specific processors like CreditCardProcessor and PayPalProcessor inherit from this base class.
+## 🤔Q19: Imagine you have a payment processing system that handles different types of payment methods (e.g., credit card, PayPal, or bank transfer). You have a base class PaymentProcessor that defines common behavior for all payment types, and specific processors like CreditCardProcessor and PayPalProcessor inherit from this base class.
 **What is the Liskov Substitution Principle (LSP)? Can you provide a real-life example?**
 
 **L — Liskov Substitution Principle (LSP)**: The Liskov Substitution Principle (LSP) is one of the five SOLID principles. It states that objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program. In other words, a subclass should be able to stand in for its parent class without breaking the behavior expected from the parent class.
@@ -2055,7 +2055,7 @@ public class NotificationService
 }
 ```
 You can pass either EmailSender or SmsSender to the Notify method, and it will work without issues, thanks to LSP. Each sender behaves according to its own type but maintains the contract defined by the NotificationSender base class.
-## 🤔🤔🤔Q20:  You have an IEmployee interface with methods like Work, AttendMeeting, TakeBreak, and ProcessPayroll. Why does this violate ISP, and how can you refactor it?
+## 🤔Q20:  You have an IEmployee interface with methods like Work, AttendMeeting, TakeBreak, and ProcessPayroll. Why does this violate ISP, and how can you refactor it?
 **What is the Interface Segregation Principle? How would you apply it in a real-life situation?**
 
 **I — Interface Segregation Principle (ISP)**: The Interface Segregation Principle states that no client should be forced to implement methods it does not use. Instead of having large, general-purpose interfaces, it's better to have smaller, specific ones.
@@ -2109,7 +2109,7 @@ public class RegularUser : IRegularUser
 }
 ```
 **Interview Tip**: Discuss how splitting the interface into smaller, more specific interfaces (like IAdminUser, IReportViewer, IRegularUser) ensures that clients (classes) only implement what they need. This reduces unnecessary code and makes the system more modular.
-## 🤔🤔🤔Q21:  In a notification system, you have a NotificationService that sends emails and SMS messages directly by instantiating EmailSender and SmsSender classes within it. How can you refactor this to follow the Dependency Inversion Principle?
+## 🤔Q21:  In a notification system, you have a NotificationService that sends emails and SMS messages directly by instantiating EmailSender and SmsSender classes within it. How can you refactor this to follow the Dependency Inversion Principle?
 **What is the Dependency Inversion Principle? Can you explain with a real-world example?**
 
 **D — Dependency Inversion Principle (DIP)**: The Dependency Inversion Principle states that high-level modules should not depend on low-level modules; both should depend on abstractions. Also, abstractions should not depend on details; details should depend on abstractions.
@@ -2188,9 +2188,9 @@ public class SMSNotificationSender : INotificationSender
 }
 ```
 **Interview Tip**: Emphasize that the NotificationService depends on the INotificationSender interface (abstraction), not on specific implementations like EmailNotificationSender or SMSNotificationSender. This makes the system flexible—changing the notification method doesn’t affect the high-level module.
-## 🤔🤔🤔Q22:  How do SOLID principles help in writing better code?
+## 🤔Q22:  How do SOLID principles help in writing better code?
 Adhering to SOLID principles, especially DIP, makes it easier to mock dependencies in unit tests. For instance, if a service depends on an interface instead of a concrete implementation, you can easily inject a mock or stub to test different scenarios without touching the actual implementation.
-## 🤔🤔🤔Q22: What is the Dependency Inversion Principle (DIP), and how does it differ from Dependency Injection?
+## 🤔Q22: What is the Dependency Inversion Principle (DIP), and how does it differ from Dependency Injection?
 **DIP**: The Dependency Inversion Principle (DIP) is a design principle in the SOLID principles that says:
 1. High-level modules (business logic) should not depend on low-level modules (details). Both should depend on abstractions. Abstractions should not depend on details. Details (implementations) should depend on abstractions.
 2. DIP is one of the SOLID principles and states that high-level modules should not depend on low-level modules. Both should depend on abstractions (interfaces or abstract classes). This decouples classes and makes the system more flexible and maintainable. Dependency Injection is a technique used to implement DIP by injecting dependencies (like services) rather than hardcoding them inside classes.
@@ -2538,7 +2538,7 @@ Here, the IServiceProvider creates a new instance of TransientService when reque
 - To solve this, avoid injecting transient services directly into singletons. Instead, inject a factory (Func) or the IServiceProvider to create transient services as needed, ensuring their proper lifecycle.
 - This ensures that the singleton service can still use transient services without violating their expected lifetimes.
 By following these patterns, you can avoid lifecycle mismatches and maintain proper dependency management in your ASP.NET Core application.
-## 🤔🤔🤔Q23: What are extension methods and where would you use them?
+## 🤔Q23: What are extension methods and where would you use them?
 **Extension methods** in C# allow developers to add new methods to existing types without modifying, deriving from, or recompiling the original types. They are static methods defined in a static class, but called as if they were instance methods on the extended type. Extension methods provide a flexible way to extend the functionality of a class or interface.
 
 To use extension methods, the static class containing the extension method must be in scope, which usually requires a using directive for the namespace of the class.
@@ -2619,7 +2619,7 @@ Why Use Extension Methods Here?
 - **Cleaner Syntax**: Instead of creating a separate DiscountCalculator class or utility function, you can invoke CalculateDiscount directly on the Product object.
 - **Encapsulation**: The method logic is encapsulated, and the Product class remains untouched. You don't have to modify or inherit from Product to add this functionality.
 
-### 🤔🤔🤔the"𝙩𝙝𝙞𝙨" keyword:
+### 🤔the"𝙩𝙝𝙞𝙨" keyword:
 
 However, this keyword is powerful in creating 𝐞𝐱𝐭𝐞𝐧𝐬𝐢𝐨𝐧 𝐦𝐞𝐭𝐡𝐨𝐝𝐬.
 𝟐𝟎𝟐𝟐 𝐅𝐈𝐅𝐀 𝐖𝐨𝐫𝐥𝐝 𝐂𝐮𝐩 𝐟𝐢𝐧𝐚𝐥 was a football match, Argentina vs France.
@@ -2657,7 +2657,7 @@ builder.Services.AddAuthorization(options =>
     });
 });
 ```
-🤔🤔🤔Why use 𝐞𝐱𝐭𝐞𝐧𝐬𝐢𝐨𝐧 𝐦𝐞𝐭𝐡𝐨𝐝𝐬?
+🤔Why use 𝐞𝐱𝐭𝐞𝐧𝐬𝐢𝐨𝐧 𝐦𝐞𝐭𝐡𝐨𝐝𝐬?
 
 👉Extension methods allow you to add new methods to existing types, including those you don't have control over (like built-in .NET types).
 
@@ -2667,7 +2667,7 @@ builder.Services.AddAuthorization(options =>
 
 👉Instead of creating utility classes with static methods, you can use extension methods for a more object-oriented feel.
 
-## 🤔🤔🤔Q24: What are Value Types and Reference Types in C#?
+## 🤔Q24: What are Value Types and Reference Types in C#?
 In C#, data types are divided into two categories: Value Types and Reference Types. This distinction affects how values are stored and manipulated within memory.
 
 👉**Value Types**: Store data directly and are allocated on the stack. This means that when you assign one value type to another, a direct copy of the value is created. Basic data types (int, double, bool, etc.) and structs are examples of value types. Operations on value types are generally faster due to stack allocation.
@@ -2712,7 +2712,7 @@ int i = (int)arrayList[0]; //Unboxing
 ### Summary
 - it is recommended to use boxing and unboxing when it is necessary only.
 - Converting from one type to another type is not good from a performance point of view.
-## 🤔🤔🤔Q24: What are delegates and how are they used in C#?
+## 🤔Q24: What are delegates and how are they used in C#?
 **Delegates** in C# are type-safe function pointers or references to methods with a specific parameter list and return type. They allow methods to be passed as parameters, stored in variables, and returned by other methods, which enables flexible and extensible programming designs such as event handling and callback methods. Delegates are particularly useful in implementing the observer pattern and designing frameworks or components that need to notify other objects about events or changes without knowing the specifics of those objects.
 
 There are three main types of delegates in C#:
@@ -2996,7 +2996,7 @@ public class FileDownloader
 
 public delegate void DownloadCompletedCallback(string message);
 ```
-## 🤔🤔🤔Q25: Can you explain the concept of middleware in ASP.NET Core?
+## 🤔Q25: Can you explain the concept of middleware in ASP.NET Core?
  Middleware in ASP.NET Core is software that's assembled into an application pipeline to handle requests and responses. Each component in the middleware pipeline is responsible for invoking the next component in the sequence or short-circuiting the chain if necessary. Middleware components can perform a variety of tasks, such as authentication, routing, session management, and logging.
  
 Middleware enables you to customize the request pipeline in ways that are most suited to your application's needs. They are executed in the order they are added to the pipeline, allowing for precise control over how requests are processed and how responses are constructed.
@@ -3142,7 +3142,7 @@ public class RequestLoggingMiddleware
     }
 }
 ```
-## 🤔🤔🤔Q26: What is CORS(Cross - Origin Resource Sharing) ?
+## 🤔Q26: What is CORS(Cross - Origin Resource Sharing) ?
 **CORS(Cross - Origin Resource Sharing)** is a security feature implemented by web browsers that controls how web applications interact with resources from different origins (domains). 
 
 **CORS (Cross-Origin Resource Sharing)** is a security feature implemented by browsers to prevent unauthorized cross-origin requests. It is important for security purposes, ensuring that web applications can't freely access resources from different origins without permission.
@@ -3163,7 +3163,7 @@ builder
 // Apply the CORS policy globally
 app.UseCors("AllowSpecificOrigins");
 ```
-## 🤔🤔🤔Q27. What are attributes in C# and how can they be used?
+## 🤔Q27. What are attributes in C# and how can they be used?
 **Attributes** in C# are a powerful way to add declarative information to your code. They are used to add metadata, such as compiler instructions, annotations, or custom information, to program elements (classes, methods, properties, etc.). Attributes can influence the behavior of certain components at runtime or compile time, and they can be queried through reflection.
 
 **Attributes** don’t change the functionality of your code directly but can be used to modify how the code behaves at runtime or during compile-time.
@@ -3218,7 +3218,7 @@ public class MyClass
     public void MyMethod() { }
 }
 ```
-### 🤔🤔🤔Q28. **What is a race condition, and how can it occur in a multi-threaded .NET application?**
+### 🤔Q28. **What is a race condition, and how can it occur in a multi-threaded .NET application?**
 *   **Follow-up**: Imagine you are building an e-commerce application where multiple users can update the stock of products. How would a race condition manifest in this scenario, and how can you avoid it?  
       
     **Answer Guide**:
@@ -3347,7 +3347,7 @@ User 2 updates stock to: 80
 
 Final stock: 80
             
-### 🤔🤔🤔**2. What is a deadlock, and how can it occur in a .NET application?**
+### 🤔**2. What is a deadlock, and how can it occur in a .NET application?**
 **Follow-up**: Suppose you are developing a banking application where transfers between accounts can happen in parallel. How might a deadlock occur during a funds transfer between two accounts, and how can you prevent it?  
   
 **Answer Guide**:
@@ -3606,7 +3606,7 @@ Both threads have completed.
       
     
 
-### 🤔🤔🤔**3. How would you avoid deadlocks when using** `async` **and** `await` **in .NET?**
+### 🤔**3. How would you avoid deadlocks when using** `async` **and** `await` **in .NET?**
 
 *   **Follow-up**: In an order processing system, you have asynchronous calls to an external payment gateway followed by calls to update the order status in the database. How would you structure your code to avoid deadlocks?
     
@@ -3628,14 +3628,14 @@ Both threads have completed.
 *   For a financial application, you might prefer `Monitor.TryEnter` with a timeout to avoid deadlocks and provide better control over how long the system waits for a lock.
     
 
-5. **🤔🤔🤔 Mutex (Mutual Exclusion)**
+5. **🤔 Mutex (Mutual Exclusion)**
 
 *   A **mutex** is a locking mechanism that ensures that only one thread can access a shared resource at a time. It is like having a key to a door: only one person (thread) can hold the key (mutex) and access the room (shared resource) at any given time. The key must be released (unlocked) for others to use it.  
       
     Imagine a single bathroom key that two people (threads) are trying to use. Only one person can enter the bathroom at a time (mutual exclusion). The second person waits until the first person finishes and hands over the key (releases the mutex).  
     
 
-6. **🤔🤔🤔 Semaphore**
+6. **🤔 Semaphore**
 
 *   **Semaphore** is used to allow multiple threads to access a limited number of resources concurrently, making it suitable for scenarios where multiple instances of a resource can be shared up to a certain capacity.
     
@@ -3649,7 +3649,7 @@ Both threads have completed.
     
     *   Think of a parking lot with only 3 spaces (semaphore capacity = 3). As soon as all spots are taken, new cars must wait for one of the cars to leave before parking. Each car that enters reduces the available spaces, and when a car leaves, a new spot opens up for another car.
 
-## 🤔🤔🤔Q29. What is async/await and how does it work?
+## 🤔Q29. What is async/await and how does it work?
 👉1. **async**: The method is marked as asynchronous, which tells the compiler to generate a state machine.
 👉2. **await**: Awaits the result of an asynchronous method without blocking the calling thread.
 
@@ -3793,11 +3793,11 @@ In this example, DivideAsync performs a division operation asynchronously and ma
 
 Handling exceptions in tasks is crucial for writing robust and error-resistant asynchronous C# applications, ensuring that your application can gracefully recover from errors encountered during asynchronous operations.
 
-**🤔🤔🤔async/await and Task.Wait**:
+**🤔async/await and Task.Wait**:
 
 In C#, both async/await and Task.Wait are used for handling asynchronous operations, but they work differently in terms of their behavior and how they should be used in modern asynchronous programming.
 
-**1.🤔 async/await**
+**1.🤔async/await**
 
 👉**Purpose**: async/await is designed to simplify writing asynchronous code. It makes asynchronous code look like synchronous code, making it easier to read and maintain.
 
@@ -3913,7 +3913,7 @@ This line awaits all tasks to complete, but only at this point does the method p
 
 By not using await immediately, we’ve started all three tasks **without waiting**. The tasks run asynchronously and concurrently, which makes it possible to fetch all three sets of data simultaneously rather than sequentially. Only when we reach await Task.WhenAll(...) does the method wait for all tasks to complete, making the process highly efficient.
 
-### 🤔🤔🤔What if you add await before each of these method calls, like this:
+### 🤔What if you add await before each of these method calls, like this:
 ```c#
 var orders = await FetchOrdersAsync();
 var inventory = await FetchInventoryAsync();
@@ -3957,7 +3957,7 @@ When using await Task.WhenAll(ordersTask, inventoryTask, customersTask);, all th
 
 Using await on each task line by line results in sequential execution (like traditional synchronous programming), making it less efficient for multiple independent asynchronous tasks. Using Task.WhenAll allows them to run concurrently, providing much faster overall performance.
 
-### 🤔🤔🤔Does Task.Run() creates new thread everytime?
+### 🤔Does Task.Run() creates new thread everytime?
 
 No, **Task.Run()** does not necessarily create a new thread every time it is called. Instead, it utilizes the ThreadPool to execute the task, which means it can reuse existing threads from the pool. Here's how it works:
 
@@ -4016,7 +4016,7 @@ class Program
 
 In summary, while Task.Run() may create new threads when necessary, it primarily relies on reusing existing threads from the ThreadPool, making it an efficient way to run tasks asynchronously without the overhead of manual thread management.
 
-### 🤔🤔🤔What is the diffrence between ThreadPool.QueueWorkItem and new Thread().Start()?
+### 🤔What is the diffrence between ThreadPool.QueueWorkItem and new Thread().Start()?
 The ThreadPool.QueueUserWorkItem and new Thread().Start() methods in .NET are both used to create and manage threads, but they have different purposes, behaviors, and use cases.
 
 👉**ThreadPool.QueueUserWorkItem**: Adds work to a shared ThreadPool of pre-existing threads. Best for short-lived, frequent tasks that don’t need a dedicated thread (e.g., handling requests in a web server).
@@ -4101,7 +4101,7 @@ new Thread(() => Console.WriteLine("Long background task running")).Start();
 - **ThreadPool**: A bank’s server handling many user transactions quickly.
 
 - **new Thread**: An analysis tool processing large datasets for hours.
-### 🤔🤔🤔What is the purpose of ConfigureAwait(false) method in Task class?
+### 🤔What is the purpose of ConfigureAwait(false) method in Task class?
 The ConfigureAwait(false) method is used in asynchronous programming in .NET to control how the continuation of an asynchronous task is executed. Here's a detailed explanation of its purpose and benefits:
 
 **Purpose of ConfigureAwait(false)**
@@ -4160,7 +4160,7 @@ class Program
  - It can improve performance, reduce deadlocks, and provide more flexible control over task continuations.
 
 By applying ConfigureAwait(false) thoughtfully, you can write more efficient and robust asynchronous code.
-### 🤔🤔🤔What is the difference between Task.WaitAll() and Task.WhenAll()?
+### 🤔What is the difference between Task.WaitAll() and Task.WhenAll()?
 Task.WaitAll() and Task.WhenAll() are both methods used to handle multiple tasks in .NET, but they have different behaviors and use cases.
 
 **1. Method Type**
@@ -4271,7 +4271,7 @@ class Program
 
 - Use Task.WaitAll() when you want to block the current thread until all tasks are complete and you do not require asynchronous behavior.
 - Use Task.WhenAll() when you want to run tasks asynchronously and await their completion without blocking the current thread.
-## 🤔🤔🤔Q27. Describe the Entity Framework and its advantages?
+## 🤔Q27. Describe the Entity Framework and its advantages?
 👉**1. Explain the difference between `DbContext` and `DbSet`.**
 
 **DbContext**: This is a class that manages the database connection and is used to configure and interact with the database using EF Core. It is responsible for querying and saving data.
@@ -4493,12 +4493,12 @@ You can also use raw SQL for non-query commands:
 ```c#
 context.Database.ExecuteSqlRaw("UPDATE Customers SET IsActive = 0 WHERE Id = {0}", customerId);
 ```
-## 🤔🤔🤔Q28. What is .NET?
+## 🤔Q28. What is .NET?
 .NET is a comprehensive development platform used for building a wide variety of applications, including web, mobile, desktop, and gaming. It supports multiple programming languages, such as C#, F#, and Visual Basic. .NET provides a large class library called Framework Class Library (FCL) and runs on a Common Language Runtime (CLR) which offers services like memory management, security, and exception handling.
-## 🤔🤔🤔Q29. What is the purpose of the .NET Standard?
+## 🤔Q29. What is the purpose of the .NET Standard?
 1.  The purpose of **.NET Standard** is to create a **common set of APIs** that can be used across different .NET platforms (like .NET Core, .NET Framework, Xamarin, and others). It ensures **code compatibility** between these platforms, so you can write libraries that work everywhere without needing to rewrite code for each platform.  
     - In essence, it helps **unify** the .NET ecosystem and makes code **more portable**.
-## 🤔🤔🤔Q30. Explain the differences between .NET Core, .NET Framework, and Xamarin.
+## 🤔Q30. Explain the differences between .NET Core, .NET Framework, and Xamarin.
 .NET Core, .NET Framework, and Xamarin are all part of the .NET ecosystem, but they serve different purposes and are used in different types of projects. Understanding the differences between them can help you choose the right technology for your specific needs.
 
 **.NET Framework**:
@@ -4521,11 +4521,11 @@ A .NET platform for building mobile applications that can run on iOS, Android, a
 Allows developers to write mobile applications using C# and .NET libraries while providing native performance and look-and-feel on each platform.
 Integrates with Visual Studio, providing a rich development environment.
 Xamarin.Forms allows for the creation of UIs from a single, shared codebase, while Xamarin.iOS and Xamarin.Android provide access to platform-specific APIs.
-## 🤔🤔🤔Q31. Can you explain the Common Language Runtime (CLR)?
+## 🤔Q31. Can you explain the Common Language Runtime (CLR)?
 The CLR is a virtual machine component of the .NET framework that manages the execution of .NET programs. It provides important services such as memory management, type safety, exception handling, garbage collection, and thread management. The CLR converts Intermediate Language (IL) code into native machine code through a process called Just-In-Time (JIT) compilation. This ensures that .NET applications can run on any device or platform that supports the .NET framework.
-## 🤔🤔🤔Q32. What is the difference between managed and unmanaged code?
+## 🤔Q32. What is the difference between managed and unmanaged code?
 Managed code is executed by the CLR, which provides services like garbage collection, exception handling, and type checking. It's called "managed" because the CLR manages a lot of the functionalities that developers would otherwise need to implement themselves. Unmanaged code, on the other hand, is executed directly by the operating system, and all memory allocation, type safety, and security must be handled by the programmer. Examples of unmanaged code include applications written in C or C++.
-## 🤔🤔🤔Q33. Explain the basic structure of a C# program.
+## 🤔Q33. Explain the basic structure of a C# program.
 A basic C# program consists of the following elements:
 
 **Namespace declaration**: A way to organize code and control the scope of classes and methods in larger projects.
@@ -4549,13 +4549,13 @@ namespace HelloWorld
     }
 }
 ```
-## 🤔🤔🤔Q34. What is garbage collection in .NET?
+## 🤔Q34. What is garbage collection in .NET?
 **Garbage collection (GC)** in .NET is an automatic memory management feature that frees up memory used by objects that are no longer accessible in the program. It eliminates the need for developers to manually release memory, thereby reducing memory leaks and other memory-related errors. The GC operates on a separate thread and works in three phases: marking, relocating, and compacting. During the marking phase, it identifies which objects in the heap are still in use. During the relocating phase, it updates the references to objects that will be compacted. Finally, during the compacting phase, it reclaims the space occupied by the garbage objects and compacts the remaining objects to make memory allocation more efficient.
 
 1. **Finalize** is a method which is automatically called by the garbage collector to dispose the no longer needed objects
 
 2. **FINALLY** The finally block is used to execute a given set of statements, whether an exception occur or not. Finally block is mostly used to dispose the unwanted objects when they are no more required. This is good for performance, otherwise you have to wait for garbage collector to dispose them.
-## 🤔🤔🤔Q35. Explain the concept of exception handling in C#?
+## 🤔Q35. Explain the concept of exception handling in C#?
 Exception handling in C# is a mechanism to handle runtime errors, allowing a program to continue running or fail gracefully instead of crashing. It is done using the try, catch, and finally blocks. The try block contains code that might throw an exception, while catch blocks are used to handle the exception. The finally block contains code that is executed whether an exception is thrown or not, often for cleanup purposes.
 ```c#
 try {
@@ -4571,7 +4571,7 @@ finally {
     Console.WriteLine("Operation completed.");
 }
 ```
-## 🤔🤔🤔Q36. Can you describe what a namespace is and how it is used in C#?
+## 🤔Q36. Can you describe what a namespace is and how it is used in C#?
 A namespace in C# is used to organize code into a hierarchical structure. It allows the grouping of logically related classes, structs, interfaces, enums, and delegates. Namespaces help avoid naming conflicts by qualifying the uniqueness of each type. For example, the System namespace in .NET includes classes for basic system operations, such as console input/output, file reading/writing, and data manipulation.
 ```c#
 using System;
@@ -4587,7 +4587,7 @@ namespace MyApplication
     }
 }
 ```
-## 🤔🤔🤔Q37. Describe what LINQ is and give an example of where it might be used.
+## 🤔Q37. Describe what LINQ is and give an example of where it might be used.
 **LINQ (Language Integrated Query)** is a powerful feature in C# that allows developers to write expressive, readable code to query and manipulate data. It provides a uniform way to query various data sources, such as collections in memory, databases (via LINQ to SQL, LINQ to Entities), XML documents (LINQ to XML), and more. LINQ queries offer three main benefits: they are strongly typed, offer compile-time checking, and support IntelliSense, which enhances developer productivity and code maintainability.
 
 LINQ can be used in a variety of scenarios, including filtering, sorting, and grouping data. It supports both method syntax and query syntax, providing flexibility in how queries are expressed.
@@ -4617,7 +4617,7 @@ class Program
     }
 }
 ```
-## 🤔🤔🤔Q38. How do you manage memory in .NET applications?
+## 🤔Q38. How do you manage memory in .NET applications?
 **Memory management** in .NET applications is primarily handled automatically by the Garbage Collector (GC), which provides a high-level abstraction for memory allocation and deallocation, ensuring that developers do not need to manually free memory. However, understanding and cooperating with the GC can help improve your application's performance and memory usage. Here are key aspects of memory management in .NET:
 
 - **Garbage Collection**: Automatically reclaims memory occupied by unreachable objects, freeing developers from manually deallocating memory and helping to avoid memory leaks.
@@ -4631,7 +4631,7 @@ class Program
 - **Large Object Heap (LOH) Management**: Large objects are allocated on a separate heap, and knowing how to manage large object allocations can help reduce memory fragmentation and improve performance.
 
 Here is an example demonstrating the use of the IDisposable interface and using statement for resource management:
-## 🤔🤔🤔Q39. Explain the concept of threading in .NET.
+## 🤔Q39. Explain the concept of threading in .NET.
 **Threading** in .NET allows for the execution of multiple operations simultaneously within the same process. It enables applications to perform background tasks, UI responsiveness, and parallel computations, improving overall application performance and efficiency. The .NET framework provides several ways to create and manage threads:
 
 **System.Threading.Thread**: A low-level approach to create and manage threads directly. This class offers fine-grained control over thread behavior.
@@ -4641,7 +4641,7 @@ Here is an example demonstrating the use of the IDisposable interface and using 
 **Task Parallel Library (TPL)**: Provides a higher-level abstraction over threading, using tasks that represent asynchronous operations. TPL uses the ThreadPool internally and supports features like task chaining, cancellation, and continuation.
 
 **async and await**: Keywords that simplify asynchronous programming, making it easier to write asynchronous code that's as straightforward as synchronous code.
-## 🤔🤔🤔Q40. What is reflection in .NET and how would you use it?
+## 🤔Q40. What is reflection in .NET and how would you use it?
 **Reflection** in .NET is a powerful feature that allows runtime inspection of assemblies, types, and their members (such as methods, fields, properties, and events). It enables creating instances of types, invoking methods, and accessing fields and properties dynamically, without knowing the types at compile time. Reflection is used for various purposes, including building type browsers, dynamically invoking methods, and reading custom attributes.
 
 Reflection can be particularly useful in scenarios such as:
@@ -4684,7 +4684,7 @@ class Program
 In this example, reflection is used to obtain the Type object for MyClass, create an instance of MyClass, and then retrieve and invoke the MethodToInvoke method. This demonstrates how reflection allows for dynamic type inspection and invocation, providing flexibility and power in how code interacts with objects.
 
 Using reflection comes with a performance cost, so it should be used judiciously, especially in performance-critical paths of an application.
-## 🤔🤔🤔Q41. Can you describe the process of code compilation in .NET?
+## 🤔Q41. Can you describe the process of code compilation in .NET?
 The process of code compilation in .NET involves converting high-level code (such as C#) into a platform-independent Intermediate Language (IL) and then into platform-specific machine code. This process is facilitated by the .NET Compiler Platform ("Roslyn" for C# and Visual Basic) and the Common Language Runtime (CLR). Here's an overview of the steps involved:
 
 1. **Source Code to Intermediate Language (IL)**:
@@ -4723,7 +4723,7 @@ public class Program
 }
 ```
 This simple program is compiled to IL when built and then JIT-compiled to native code by the CLR when executed. Understanding the compilation process in .NET is crucial for grasping how .NET applications are built, deployed, and executed across different environments and platforms.
-## 🤔🤔🤔Q42. What is the main difference between DateTime and DateTimeOffset?
+## 🤔Q42. What is the main difference between DateTime and DateTimeOffset?
 1. **DateTime**
 
 - **Represents**: A point in time (date and time) without explicitly accounting for time zone information.
@@ -4777,7 +4777,7 @@ Imagine you're building a calendar app that allows users to set reminders or sch
 **Summary**:
 - Use DateTime for simple date/time representations where time zone context is not critical.
 - Use DateTimeOffset when time zone or UTC offset information is important, especially for globally distributed applications.
-## 🤔🤔🤔Q43. Class vs Record in C#?
+## 🤔Q43. Class vs Record in C#?
 **Class**
 
 A class in C# is a reference type that can encapsulate data (fields) and behavior (methods). Classes allow you to define objects that contain data and behavior in the form of properties and methods.
@@ -4839,7 +4839,7 @@ public record Person(string Name, int Age);
 **👉Can you explain positional records and their advantages?**
 
 - Positional records allow for a concise syntax for declaring records, especially useful for simple data structures.
-## 🤔🤔🤔Q44. Explain the Builder Pattern and how it can be used for constructing complex objects like an Order in an e-commerce system.
+## 🤔Q44. Explain the Builder Pattern and how it can be used for constructing complex objects like an Order in an e-commerce system.
 The **Builder Pattern** helps in constructing complex objects step by step. The builder pattern constructs the order object step by step based on your selections.
 
 **Code Example:**
@@ -5002,7 +5002,7 @@ public class Client
     }
 }
 ```
-## 🤔🤔🤔Q45. How would you use the Prototype Pattern in a user authentication system where user profiles need to be cloned and modified for temporary sessions?
+## 🤔Q45. How would you use the Prototype Pattern in a user authentication system where user profiles need to be cloned and modified for temporary sessions?
 The **Prototype Pattern** is used when the cost of creating a new object is expensive or complex. Instead of creating a new object from scratch, you can clone an existing object and make modifications.
 
 **Visualization**:
@@ -5120,7 +5120,7 @@ Original Profile After Cloning:
 
 Username: JohnDoe, Role: Admin, IsTemporary: False
 ```
-## 🤔🤔🤔Q46. Can you explain the Abstract Factory Pattern using a User Authentication System that supports different providers (e.g., Google, Facebook)?
+## 🤔Q46. Can you explain the Abstract Factory Pattern using a User Authentication System that supports different providers (e.g., Google, Facebook)?
 The **Abstract Factory** Pattern provides an interface to create a family of related or dependent objects without specifying their concrete classes. In an authentication system, you may want to support multiple login providers like Google, Facebook, etc., with each provider having its own login and user profile mechanisms.
 
 **Code Example**:
@@ -5220,7 +5220,7 @@ public class Client
 **Visualization:**
 
 Imagine an app that supports login with both Google and Facebook. The user selects one provider, and the app uses the correct login and profile-fetching mechanism for the chosen provider without the need to modify the core logic.
-## 🤔🤔🤔Q47.  How would you use the Factory Method Pattern to create different types of notifications (email, SMS, push) in a notification system?
+## 🤔Q47.  How would you use the Factory Method Pattern to create different types of notifications (email, SMS, push) in a notification system?
 The **Factory Method Pattern** is ideal when you need to create different types of objects but want to delegate the object creation logic to subclasses. In a notification system that sends different types of notifications (e.g., email, SMS, push notifications), the Factory Method Pattern helps in cleanly separating the logic for creating these different notifications.
 
 **Scenario**:
